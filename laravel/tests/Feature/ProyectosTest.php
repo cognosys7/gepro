@@ -94,8 +94,9 @@ class ProyectosTest extends TestCase
     {
         Livewire::test(ProyectosTabla::class, ['opcion' => 211])
             ->assertViewHas('acciones', fn ($a) => array_keys($a) === ProyectosTabla::POR_OPCION[211])
-            ->assertSee('Pagina=PROYECTO_ACTIVIDAD', false)
-            ->assertSee('Pfiltro=2', false);
+            //LOS CONTRATOS (ESTUDIOS, OBRAS...) YA ABREN LA PANTALLA DE LARAVEL CON SU TIPO
+            ->assertSee('/contratos?opcion=211&amp;tipo=2', false)
+            ->assertDontSee('Pagina=PROYECTO_ACTIVIDAD', false);
         Livewire::test(ProyectosTabla::class, ['opcion' => 510])
             ->assertViewHas('acciones', fn ($a) => array_keys($a) === ['comunicacion']);
     }
