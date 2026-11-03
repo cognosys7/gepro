@@ -23,7 +23,7 @@ function muestraVista() {
     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS ?>/js/flexigrid/miflexigridgris.css"  />
     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS ?>/css/botones.css"  />
     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS ?>/js/flexigrid/flexigrid.js"></script>       
-    <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSPROY ?>/js/GEN_ARCHIVO.js"></script>    
+    <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSPROY ?>/js/GEN_ARCHIVO.js?v=20261028_01"></script>    
 
 
     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS ?>/js/colorbox/colorbox.css" />    
@@ -36,6 +36,9 @@ function muestraVista() {
     <!--/*EDGAR*/-->
 
     <script type="text/javascript">
+        //TECLA ESC EN LA PESTAÑA DE EDICION: VUELVE AL LISTADO (ventana-modal.js)
+        window.VentanaCancelar = function () { Cancelar(); };
+
         function cerrarPopup()
         {
         parent.$.colorbox.close();
@@ -50,9 +53,20 @@ function muestraVista() {
         $('#flex1').flexReload();
         }
 
+        //COLUMNAS AJUSTADAS AL ANCHO DE LA VENTANA: LOS BOTONES CON ANCHO FIJO Y EL RESTO EN PROPORCION (ventana-modal.js)
+        var AdjAjustarColumnas = VentanaColumnasAdaptables("#flex1",
+            {DES_ARCHIVO: 50, FEC_CARGA: 30, Estado: 20},
+            {Boton3: 76, Boton5: 116, Boton1: 76, Boton2: 76});
+
+        //AL CARGAR LA GRILLA: "VER ARCHIVO" COMO BOTON "DESCARGAR" (ventana-modal.js) Y COLUMNAS AJUSTADAS
+        function AdjAlCargarGrilla() {
+            GrillaEstilizarAcciones('#flex1');
+            AdjAjustarColumnas();
+        }
+
     </script>
     <div id="Mensajes"></div>
-    <div class="row-fluid">
+    <div class="row-fluid vm-ventana">
         <div class="span12">
             <div class="box">
                 <?php
@@ -77,7 +91,17 @@ function muestraVista() {
                     $crudArchivoDescargar = $lCollection->Get('crudArchivoDescargar');
                     $VTitulo = $lCollection->Get('VTitulo');
                     /* EDGAR */
+                    //SUBTITULO DE LA CABECERA: "Migrar Plan de Avance Mensual" -> "Plan de Avance Mensual"
+                    $AdjSubtitulo = trim(preg_replace('/^Migrar\s+/i', '', (string)$VTitulo));
                     ?>
+                    <div class="vm-cabecera">
+                        <span class="vm-icono"><i class="icon-paper-clip"></i></span>
+                        <div class="vm-titulos">
+                            <h3>Archivos adjuntos</h3>
+                            <?php if ($AdjSubtitulo !== '') { ?><small><?php echo htmlspecialchars($AdjSubtitulo, ENT_QUOTES, 'UTF-8'); ?></small><?php } ?>
+                        </div>
+                        <button type="button" class="vm-cerrar" title="Cerrar" onclick="cerrarPopup();">&times;</button>
+                    </div>
                     <div class="box-content">
                         <!--
         <table style="height: 30px; width: 100%; background-color: #EDEDED;border: solid 1px #CCCCCC;">
@@ -177,7 +201,8 @@ function muestraVista() {
                                                             rp: 10,
                                                             height: $("#datos").innerHeight,
                                                             query: '',
-                                                            nowrap: false
+                                                            nowrap: false,
+                                                            onSuccess: AdjAlCargarGrilla
 
                                                             /*EDGAR*/
         <?php if ($PIDE > 0) { ?>, title: '<?php //visTabla_DatosPadre($DatosPadre);  ?>'    <?php } ?>
@@ -353,7 +378,7 @@ function muestraVista() {
     <?php } ?>
 
     </script>        
-    <form action="mainpage.php" class="validform form-horizontal" id="formulario" name="formulario" method="post" enctype="multipart/form-data">
+    <form action="mainpage.php" class="validform fm-form" id="formulario" name="formulario" method="post" enctype="multipart/form-data">
         <input type="hidden" name="Pagina" value="<?php echo $PaginaFormulario; ?>">
         <input type="hidden" name="ActionForm" value="<?php echo $ActionFormulario; ?>">
         <input type="hidden" name="SeleccionarID" value="<?php echo $SeleccionarID ?>">

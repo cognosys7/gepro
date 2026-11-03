@@ -71,7 +71,26 @@ function muestraMenu()
 ?>
     <div id="sidebar" class="nav-collapse">
         <br><br><br>
+        <!--BUSCADOR DE OPCIONES DEL MENU-->
+        <div class="menu-buscar">
+            <i class="icon-search"></i>
+            <input type="text" id="menu-buscar-texto" placeholder="Buscar opción..." autocomplete="off">
+        </div>
         <ul class="nav nav-list">
+            <?php
+            //FUERA DE GEPRO (POR EJEMPLO EN SEGURIDAD) SE MUESTRA EL REGRESO A GEPRO
+            if (MAINPROY != "/gepro")
+            {
+            ?>
+            <li>
+                <a href="../../gepro/Vista/mainpage.php">
+                    <i class="icon-arrow-left"></i>
+                    <span>Volver a GEPRO</span>
+                </a>
+            </li>
+            <?php
+            }
+            ?>
             <li <?php if (($SOp == "") || ($SOp == 0)){ ?>class="active"<?php }?>>
                 <a href="AntiRefresh.php?Op=0&&Oc=0">
                     <i class="icon-dashboard"></i>
@@ -87,6 +106,7 @@ function muestraMenu()
                     $UrlOpcion  = $objMenus->OpcEnlace;
                     $DesOpcion  = $objMenus->OpcDestino;
                     $OpcTipoEnlace = $objMenus->OpcTipoEnlace;
+                    $IconoGrupo = IconoGrupoMenu($NomOpcion, $objMenus->OpcImagen);
                     if ($DesOpcion == 1)
                     {
                         $target = "_self";
@@ -125,7 +145,7 @@ function muestraMenu()
                     ?>
                     <li <?php if ($SOp == $CodOpcion){ ?>class="active"<?php }?>>
                         <a href="<?php echo $UrlOpcion;?>" <?php if ($NivelN == 0){?> target="<?php echo $target;?>" <?php } else{?> class="dropdown-toggle"<?php }?>>
-                            <i class="icon-list-alt"></i>
+                            <i class="<?php echo $IconoGrupo;?>"></i>
                             <span><?php echo $NomOpcion;?></span>
                             <?php 
                             if ($NivelN == 1)  
@@ -188,19 +208,82 @@ function muestraMenu()
                 }
             }
             ?>
-            
-            <li>
-                <a href="../../gepro/Vista/mainpage.php">
-                    <i class="icon-home"></i>
-                    <span>Ir a GEPRO</span>
-                </a>
-            </li>
         </ul>
         <div id="sidebar-collapse" class="visible-desktop">
             <i class="icon-double-angle-left"></i>
         </div>
-    </div>    
+    </div>
+    <script type="text/javascript">
+        //BUSCADOR DEL MENU: FILTRA LAS OPCIONES SIN DISTINGUIR MAYUSCULAS NI TILDES (ESC LIMPIA)
+        $(function () {
+            function normalizar(texto) {
+                return texto.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+            }
+            $('#menu-buscar-texto').on('input', function () {
+                var buscado = normalizar($.trim($(this).val()));
+                $('#sidebar .nav-list').children('li').each(function () {
+                    var $grupo   = $(this);
+                    var $submenu = $grupo.children('.submenu');
+                    var $flecha  = $grupo.find('> a > .arrow');
+                    if (buscado === '') {
+                        $grupo.show();
+                        $submenu.css('display', '').children('li').show();
+                        $flecha.attr('class', 'arrow ' + ($grupo.hasClass('active') ? 'icon-angle-down' : 'icon-angle-right'));
+                        return;
+                    }
+                    var coincideGrupo = normalizar($grupo.children('a').text()).indexOf(buscado) >= 0;
+                    if ($submenu.length) {
+                        var nVisibles = 0;
+                        $submenu.children('li').each(function () {
+                            var visible = coincideGrupo || normalizar($(this).text()).indexOf(buscado) >= 0;
+                            $(this).toggle(visible);
+                            if (visible) nVisibles++;
+                        });
+                        $grupo.toggle(nVisibles > 0);
+                        $submenu.css('display', nVisibles > 0 ? 'block' : '');
+                        $flecha.attr('class', 'arrow icon-angle-down');
+                    } else {
+                        $grupo.toggle(coincideGrupo);
+                    }
+                });
+            }).on('keydown', function (e) {
+                if (e.keyCode === 27) {
+                    $(this).val('').trigger('input');
+                }
+            });
+        });
+    </script>
     <?php
+}
+
+//ICONO DEL GRUPO DEL MENU: EL DE OpcImagen SI ES VALIDO, SI NO SEGUN EL NOMBRE DEL GRUPO
+function IconoGrupoMenu($Nombre, $Imagen)
+{
+    $Imagen = trim((string)$Imagen);
+    if (preg_match('/^icon-[a-z0-9-]+$/', $Imagen))
+    {
+        return $Imagen;
+    }
+    //EL ORDEN IMPORTA: "TABLERO BI - PROYECTOS" DEBE TOMAR EL ICONO DE TABLEROS
+    //(strtolower NO CAMBIA LAS TILDES: SE BUSCA "configuraci" Y "gesti")
+    $lstIconos = array(
+        'tablero'       => 'icon-bar-chart',
+        'configuraci'   => 'icon-cogs',
+        'gesti'         => 'icon-briefcase',
+        'mantenimiento' => 'icon-wrench',
+        'reporte'       => 'icon-file-text',
+        'ayuda'         => 'icon-question-sign',
+        'seguridad'     => 'icon-shield'
+    );
+    $sNombre = strtolower((string)$Nombre);
+    foreach ($lstIconos as $sClave => $sIcono)
+    {
+        if (strpos($sNombre, $sClave) !== false)
+        {
+            return $sIcono;
+        }
+    }
+    return 'icon-list-alt';
 }
 
 function muestraSistema() {

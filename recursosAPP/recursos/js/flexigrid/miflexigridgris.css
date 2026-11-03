@@ -143,3 +143,73 @@ idem para el input text
     background:url("images/wbg.gif") repeat-x scroll center top #FAFAFA;
     
 }
+
+
+/*****************************************************
+Ajustes de presentacion de la grilla
+*****************************************************/
+/*Filas alternadas: gris azulado mas marcado*/
+.flexigrid tr.erow td {
+    background: #eef2f6;
+    border-bottom: 1px solid #eef2f6;
+}
+
+/*Columna ordenada: un tono mas que la fila*/
+.flexigrid tr td.sorted {
+    background: #f1f5f9;
+    border-bottom: 1px solid #f1f5f9;
+}
+.flexigrid tr.erow td.sorted {
+    background: #e2e9f0;
+    border-bottom: 1px solid #e2e9f0;
+}
+
+/*Alto de fila: mas espacio vertical en cada celda*/
+.flexigrid div.bDiv td div {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+
+/*Encabezado: fondo azul grisaceo y texto oscuro en negrita*/
+.flexigrid div.hDiv,
+div.colCopy {
+    background: #dde6ef;
+    border-color: #b8c7d6;
+    border-bottom: 2px solid #9fb3c8;
+}
+.flexigrid div.hDiv th,
+div.colCopy {
+    color: #1f3550;
+    font-weight: bold;
+}
+.flexigrid div.hDiv th div {
+    padding-top: 7px;
+    padding-bottom: 6px;
+}
+
+/*Encabezado de la columna ordenada*/
+.flexigrid div.hDiv th.sorted {
+    background: #c5d4e3;
+}
+.flexigrid div.hDiv th.sorted div {
+    padding-bottom: 6px;
+}
+
+/*Al pasar el mouse: mantiene el alto del encabezado (borde naranja de 1px)*/
+.flexigrid div.hDiv th.thOver div,
+.flexigrid div.hDiv th.sorted.thOver div {
+    padding-bottom: 5px;
+}
+
+/*Fila seleccionada: se repite la regla base para que no la tape el color de las filas alternadas*/
+.flexigrid div.bDiv tr.trSelected:hover td,
+.flexigrid div.bDiv tr.trSelected:hover td.sorted,
+.flexigrid div.bDiv tr.trOver.trSelected td.sorted,
+.flexigrid div.bDiv tr.trOver.trSelected td,
+.flexigrid tr.trSelected td.sorted,
+.flexigrid tr.trSelected td {
+    background: #d5effc url(images/hl.png) repeat-x top;
+    border-right: 1px solid #d2e3ec;
+    border-left: 1px solid #eef8ff;
+    border-bottom: 1px solid #a8d8eb;
+}

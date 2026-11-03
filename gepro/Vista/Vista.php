@@ -47,7 +47,12 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS ?>/framework/style.css">
                 
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/estilos.css"  type="text/css" media="screen" />
-                
+                <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/menu.css"  type="text/css" media="screen" />
+                <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/botones-app.css"  type="text/css" media="screen" />
+                <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/pagina.css"  type="text/css" media="screen" />
+                <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/formulario.css"  type="text/css" media="screen" />
+                <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/importacion.css"  type="text/css" media="screen" />
+
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/js/jquery-ui/jquery.ui.core.css"  type="text/css" media="screen"/>
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/js/jquery-ui/jquery.ui.theme.css" type="text/css" media="screen"/>
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/js/jquery-ui/jquery.ui.tabs.css" type="text/css" media="screen"/>
@@ -67,7 +72,11 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
                 <!--VALIDACION-->
                 <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/validacion/jquery.validate.js"></script>
                 <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/validacion/reglas.js"></script>
-                
+
+                <!--COLUMNAS ADAPTABLES DE LAS GRILLAS (VentanaColumnasAdaptables)-->
+                <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/ventana-modal.js"></script>
+                <!--FORMULARIOS POR SECCIONES (FormularioSecciones)-->
+                <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/formulario.js"></script>
                 <!--<script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/function.js"></script>-->
             </head>
             <body>					
@@ -125,6 +134,11 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
                     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/js/jquery-ui/jquery.ui.datepicker.css" media="screen"/>
                     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/estilos_lightbox.css"  />
                     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/botones.css"  />
+                    <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/botones-app.css"  />
+                    <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/pagina.css"  />
+                    <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/formulario.css"  />
+                    <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/importacion.css"  />
+                    <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/css/ventana-modal.css"  />
                     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/js/flexigrid/flexigrid_searchbar_on_top.css"/>
                     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/js/colorbox/colorbox.css" />
                     <link rel="stylesheet" type="text/css" href="<?php echo RECURSOSGEN_RECURSOS?>/js/flexigrid/flexigrid_searchbar_on_top.css"/>
@@ -139,8 +153,11 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
                     <!--VALIDACION-->
                     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/validacion/jquery.validate.js"></script>
                     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/validacion/reglas.js"></script>
+                    <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/ventana-modal.js"></script>
+                    <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/formulario.js"></script>
                 </head>
-                <body>
+                <!--vm-emergente: VENTANA EMERGENTE CON CABECERA AUTOMATICA (ventana-modal.js)-->
+                <body<?php if ($aVistaLocal == 'muestraVista') { echo ' class="vm-emergente"'; } ?>>
                     <?php $aVistaLocal();?>
                 </body>
             </html>

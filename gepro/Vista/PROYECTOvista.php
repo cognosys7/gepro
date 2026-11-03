@@ -77,7 +77,7 @@ function muestraVista() {
                         <div id="tabs">
                             <!-- CAMBIAR ETIQUETAS DE LAS PESTAÑAS-->
                             <ul>
-                                <li><a href="#tabs-1">Listado de Proyectos <?php echo $BotonVer['Nuevo'] ?></a></li>
+                                <li><a href="#tabs-1">Listado de Proyectos</a></li>
                                 <li><a href="#tabs-2">Detalle de Proyectos </a></li>
                             </ul>
                             <!--CONTENIDO DE LA PESTAÑA 1-->
@@ -406,7 +406,7 @@ function GeneraForm() {
              */
         });
     </script>        
-    <form action="mainpage.php" class="validform form-horizontal" id="formulario" name="formulario" method="post">
+    <form action="mainpage.php" class="validform fm-form" id="formulario" name="formulario" method="post">
         <input type="hidden" name="Pagina" value="<?php echo $PaginaFormulario; ?>">
         <input type="hidden" name="ActionForm" value="<?php echo $ActionFormulario; ?>">
         <input type="hidden" name="SeleccionarID" value="<?php echo $SeleccionarID ?>">
@@ -417,468 +417,281 @@ function GeneraForm() {
 
 
 
-        <legend><?php echo $TitulFormulario; ?></legend>  
+        <legend><?php echo $TitulFormulario; ?></legend>
 
-        <!--/*EDGAR*/--> 
-        <?php //visTabla_DatosPadre($DatosPadre);   ?>
-        <!--/*EDGAR*/-->
-
-
-        <table>
-            <tr>
-                <td width="20%" rowspan="2">
-                    <!--<img src="../recursos/images/MINEM.png" width="90%" >-->
-                    <div class="control-group">
-                        <label class="control-label" for="COD_INTERNO">Código de Proyecto: <span class="error"></span></label>
-                        <!--<div class="controls">-->
-                        <input <?php echo $Control_Bloqueo['COD_INTERNO']; ?>  name="COD_INTERNO" id="COD_INTERNO" value="<?php echo $COD_INTERNO; ?>" onChange="conMayusculas(this)" maxlength="12" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingresa Código Interno" style="width:60%; background:#CCCCCC " />					
-                        <!--</div>-->
-                    </div>
-                </td>
-                <td width="35%" align='center'> 
-                    <strong>
-                        <h4>REGISTRO DEL PROYECTO</h4>
-                        INFORME TÉCNICO
-                    </strong>
-                </td>
-                <td rowspan="2"></td>
-                <td width="40%"></td>
-            </tr>
-            <tr>    <td align='center'> <strong>Déscripción Resumida de cada Proyecto y de los Mecanismos de Ejecucción</strong></td>
-            </tr>
-        </table>
-
-
-        <legend style="color:#dddddd"></legend>
-
-
-
-        <div class="control-group">
-            <label class="control-label" for="DES_LARGA_PROYECTO">Descripción Larga: <span class="error">*</span></label>
-            <div class="controls">
-                <textarea <?php echo $Control_Bloqueo['DES_LARGA_PROYECTO']; ?> rows="2"  name="DES_LARGA_PROYECTO" id="DES_LARGA_PROYECTO" rows="5"  maxlength="500" class="xlarge  required show-popover"  data-trigger="hover" data-content="Ingrese Descripción Larga" ><?php echo $DES_LARGA_PROYECTO; ?></textarea>				
+        <!--CABECERA DEL REGISTRO: CODIGO DEL PROYECTO Y TITULO DEL INFORME-->
+        <div class="fm-resumen">
+            <div class="fm-resumen-titulo">
+                <h4>Registro del Proyecto <small>Informe técnico</small></h4>
+                <p>Descripción resumida de cada proyecto y de los mecanismos de ejecución</p>
+            </div>
+            <div class="control-group fm-resumen-codigo">
+                <label class="control-label" for="COD_INTERNO">Código de Proyecto</label>
+                <div class="controls">
+                    <input <?php echo $Control_Bloqueo['COD_INTERNO']; ?>  name="COD_INTERNO" id="COD_INTERNO" value="<?php echo $COD_INTERNO; ?>" onChange="conMayusculas(this)" maxlength="12" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingresa Código Interno" />
+                </div>
             </div>
         </div>
 
+        <!--DATOS GENERALES-->
+        <div class="fm-seccion">
+            <div class="fm-seccion-titulo"><i class="icon-folder-open"></i> Datos generales</div>
+            <div class="fm-campos">
+                <div class="control-group fm-completo">
+                    <label class="control-label" for="DES_LARGA_PROYECTO">Descripción Larga: <span class="error">*</span></label>
+                    <div class="controls">
+                        <textarea <?php echo $Control_Bloqueo['DES_LARGA_PROYECTO']; ?> name="DES_LARGA_PROYECTO" id="DES_LARGA_PROYECTO" rows="2"  maxlength="500" class="xlarge  required show-popover"  data-trigger="hover" data-content="Ingrese Descripción Larga" ><?php echo $DES_LARGA_PROYECTO; ?></textarea>
+                    </div>
+                </div>
 
-        <div class="control-group">
-            <label class="control-label" for="IDE_ETAPA_CONTRATO">Fase - Componente:<span class="error">*</span></label>
-            <div class="controls"> 
-                <?php comboIDE_ETAPA_CONTRATO('IDE_ETAPA_CONTRATO', $DataSet_GEN_INTERVENCION_1, $IDE_ETAPA_CONTRATO, 1, " style='width: 51%;' ") ?>				
-            </div>
-        </div>  						
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="IDE_ETAPA_CONTRATO">Fase - Componente:<span class="error">*</span></label>
+                    <div class="controls">
+                        <?php comboIDE_ETAPA_CONTRATO('IDE_ETAPA_CONTRATO', $DataSet_GEN_INTERVENCION_1, $IDE_ETAPA_CONTRATO, 1, "") ?>
+                    </div>
+                </div>
 
+                <div class="control-group">
+                    <label class="control-label" for="EST_PROYECTO">Estado:<span class="error">*</span></label>
+                    <div class="controls">
+                        <?php comboEST_PROYECTO('EST_PROYECTO', $DataSet_GEN_TABLAS_4, $EST_PROYECTO, 1, $Control_Bloqueo['EST_PROYECTO']) ?>
+                    </div>
+                </div>
 
-        <div class="control-group" style="display:none">
-            <label class="control-label" for="DES_VIABILIDAD">Viabilidad: <span class="error"></span></label>
-            <div class="controls">
-                <input  name="DES_VIABILIDAD" id="DES_VIABILIDAD" value="<?php echo $DES_VIABILIDAD; ?>"  maxlength="200" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Viabilidad"/>					
-            </div>
-        </div>	
+                <div class="control-group">
+                    <label class="control-label" for="IDE_PORTAFOLIO">Portafolio:<span class="error">*</span></label>
+                    <div class="controls">
+                        <?php comboIDE_PORTAFOLIO('IDE_PORTAFOLIO', $DataSet_GEN_PORTAFOLIO_PROYECTO_1, $IDE_PORTAFOLIO, 1, "") ?>
+                    </div>
+                </div>
 
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="IDE_PROGRAMA">Programa:<span class="error"></span></label>
+                    <div class="controls">
+                        <?php comboIDE_PROGRAMA('IDE_PROGRAMA', $DataSet_GEN_PROGRAMA_PROYECTO_1, $IDE_PROGRAMA, 1, "") ?>
+                    </div>
+                </div>
 
-        <div class="control-group" style="display:none">
-            <label class="control-label" for="IDE_PROYECTO">Ide: <span class="error"></span></label>
-            <div class="controls">
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="IDE_CENCOSTO">Centro de Costo:<span class="error"></span></label>
+                    <div class="controls">
+                        <?php comboIDE_CENCOSTO('IDE_CENCOSTO', $DataSet_GEN_CENTRO_COSTO_1, $IDE_CENCOSTO, 1, $Control_Bloqueo['IDE_CENCOSTO']) ?>
+                    </div>
+                </div>
 
-                <input  name="IDE_PROYECTO" id="IDE_PROYECTO" value="<?php echo $IDE_PROYECTO; ?>" onChange="conMayusculas(this)" maxlength="25" type="text" data-trigger="hover" data-content=""/>
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="DES_VIABILIDAD">Viabilidad: <span class="error"></span></label>
+                    <div class="controls">
+                        <input  name="DES_VIABILIDAD" id="DES_VIABILIDAD" value="<?php echo $DES_VIABILIDAD; ?>"  maxlength="200" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Viabilidad"/>
+                    </div>
+                </div>
 
-            </div>
-        </div>		
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="IDE_PROYECTO">Ide: <span class="error"></span></label>
+                    <div class="controls">
+                        <input  name="IDE_PROYECTO" id="IDE_PROYECTO" value="<?php echo $IDE_PROYECTO; ?>" onChange="conMayusculas(this)" maxlength="25" type="text" data-trigger="hover" data-content=""/>
+                    </div>
+                </div>
 
-
-        <legend style="color:#dddddd"></legend>
-
-
-        <table width='100%'>
-            <tr>
-                <td><strong>I. DESCRIPCION DE PROYECTO</strong> 
-                    <br>
-                    (Úbicación, Área de Intervención, Cuenca Hidrográfica, Número de PAM's, Stakeholder, etc )
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_UBICACION_PROYECTO">Ubicación de Proyecto: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_UBICACION_PROYECTO" id="DES_UBICACION_PROYECTO" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_UBICACION_PROYECTO; ?></textarea>				                
-            <!--<input  name="DES_UBICACION_PROYECTO" id="DES_UBICACION_PROYECTO" value="<?php echo $DES_UBICACION_PROYECTO; ?>"  maxlength="200" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Ubicación de Proyecto"/>-->					
-                        </div>
-                    </div>	
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_AREA_INTERVENCION">Área de intervención Ambiental (m2): <span class="error"></span></label>
-                        <div class="controls">
-                            <!--<input  name="DES_AREA_INTERVENCION" id="DES_AREA_INTERVENCION" value="<?php echo $DES_AREA_INTERVENCION; ?>"  maxlength="30" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Área de intervención"/>-->					
-                            <textarea name="DES_AREA_INTERVENCION" id="DES_AREA_INTERVENCION" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_AREA_INTERVENCION; ?></textarea>				                            
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_CUENCA_HIDROGRAFICA">Cuenca Hidrográfica: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_CUENCA_HIDROGRAFICA" id="DES_CUENCA_HIDROGRAFICA" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_CUENCA_HIDROGRAFICA; ?></textarea>				                            
-                            <!--<input  name="DES_CUENCA_HIDROGRAFICA" id="DES_CUENCA_HIDROGRAFICA" value="<?php echo $DES_CUENCA_HIDROGRAFICA; ?>"  maxlength="80" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Cuenca Hidrográfica"/>-->					
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="NUM_PAMS"># de Pasivos a Remediar: <span class="error"></span></label>
-                        <div class="controls">
-                            <input  name="NUM_PAMS" id="NUM_PAMS" value="<?php echo $NUM_PAMS; ?>"  maxlength="25" type="text" class="number show-popover" data-trigger="hover" data-content="Ingrese Número de PAMs" style='width:14.5%;' />					
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_STAKEHOLDER">Stakeholder: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_STAKEHOLDER" id="DES_STAKEHOLDER" rows="3"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_STAKEHOLDER; ?></textarea>				                            
-                            <!--<input  name="DES_STAKEHOLDER" id="DES_STAKEHOLDER" value="<?php echo $DES_STAKEHOLDER; ?>"  maxlength="200" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Stakeholder"/>-->					
-                        </div>
-                    </div>	
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_ESTATUS">Componentes de Remediación: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_ESTATUS" id="DES_ESTATUS" rows="6"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_ESTATUS; ?></textarea>				
-                        </div>
-                    </div>	
-
-                </td>
-            </tr>
-        </table>
-
-        <legend style="color:#dddddd ; display:none"></legend>                
-
-
- 
-
-        <table width='100%' style="display:none">
-            <tr>
-                <td><strong>III. ACCIONES DE GESTIÓN DEL PROYECTO</strong> 
-                    <br>
-                    ( Gestión de Consultorias, Ejecución de Consultorias, Ejecución de Obra, Supervisión de Obras, Operación, Mantenimiento y Post Cierre )
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-                    <div class="control-group">
-                        <label class="control-label" for="DES_ACCION_GESTION">Acción de Gestión: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_ACCION_GESTION" id="DES_ACCION_GESTION" rows="8"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Acción de Gestión" ><?php echo $DES_ACCION_GESTION; ?></textarea>				
-                        </div>
-                    </div>	
-                </td>
-            </tr>
-        </table>     
-
-
-        <legend style="color:#dddddd "></legend>
-
-        <table width='100%' >
-            <tr>
-                <td><strong>II. GESTIÓN SOCIAL</strong> 
-
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_ACCION_GESTION_SOCIAL">Objetivo General de la Gestion Social: <span class="error"></span></label>
-                        <div class="controls"> 
-                            <textarea name="DES_ACCION_GESTION_SOCIAL" id="DES_ACCION_GESTION_SOCIAL" rows="3"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Acción de Gestión Social" ><?php echo $DES_ACCION_GESTION_SOCIAL; ?></textarea>				
-                        </div>
-                    </div>						
-
-                </td>
-            </tr>
-        </table>
-        
-        <br>
-        <td><strong>III. OBJETIVOS, ACCIONES, OPORTUNIDADES, COSTOS Y SEGUIMIENTO</strong> 
-        <br>
-            ( Describir los Objetivos especificos, Acciones, Oportunidades de mejora, Costos y Seguimiento )
-        </td>
-                
-        <div class="control-group">
-            <label class="control-label" for="DES_ACCION_GESTION_SOCIAL"><span class="error"></span></label>
-            <div class="controls"> 
-                <table width='50%' >
-                    <tr>
-                        <td><button type=button  onclick="AbrirObjEsp(<?php echo $SeleccionarID ;?>)" title = "boton1" style='width:90%;' >Objetivos Específicos de Gestión Social</button>
-                        </td>
-
-                        <td><button type=button  onclick="AbrirAccGes(<?php echo $SeleccionarID ;?>)" title = "boton2" style='width:90%;' >Principales Acciones de Gestión</button>
-                        </td>
-
-                        <td><button type=button  onclick="AbrirAccCor(<?php echo $SeleccionarID ;?>)" title = "boton3" style='width:90%;' >Desviaciones y Acciones Correctivas</button>
-                        </td>
-                    </tr>
-
-                    <tr>
-                        <td><button type=button  onclick="AbrirOpoMej(<?php echo $SeleccionarID ;?>)" title = "boton4" style='width:90%;' >Oportunidades de Mejora y Analisis de Riesgo</button>
-                        </td>
-
-                        <td><button type=button  onclick="AbrirCosCom(<?php echo $SeleccionarID ;?>)" title = "boton5" style='width:90%;' >Costos del Proyecto por Componente</button>
-                        </td>
-
-                        <td><button type=button  onclick="AbrirSegPry(<?php echo $SeleccionarID ;?>)" title = "boton6" style='width:90%;' >Seguimiento del Proyecto</button>
-                        </td>
-                    </tr>
-                </table>
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="TIP_GRUPO_PROYECTO">Tipo de Grupo de Proyecto:<span class="error"></span></label>
+                    <div class="controls">
+                        <?php comboTIP_GRUPO_PROYECTO('TIP_GRUPO_PROYECTO', $DataSet_GEN_TABLAS_3, $TIP_GRUPO_PROYECTO, 1, "") ?>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <br>
-        
-        
-
-        <legend style="color:#dddddd ; display:none"></legend>
-
-        <table width='100%' style="display:none">
-            <tr>
-                <td><strong>V. ACCIONES CORRECTIVAS</strong> 
-                    <br>
-                    ( Acciones Planteadas en el Proximo Trimestre para atender alguna desviación en el Programa de Remedicación de los PAM's )
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_ACCION_CORRECTIVA">Acción Correctiva: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_ACCION_CORRECTIVA" id="DES_ACCION_CORRECTIVA" rows="5"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Acción Correctiva" ><?php echo $DES_ACCION_CORRECTIVA; ?></textarea>				
-                        </div>
-                    </div>						
-
-                </td>
-            </tr>
-        </table> 
-
-
-        <legend style="color:#dddddd ; display:none"></legend>
-
-        <table width='100%' style="display:none">
-            <tr>
-                <td><strong>VI. OPORTUNIDADES DE MEJORA Y ANALSIS</strong> 
-            </tr>
-
-            <tr>
-                <td>
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_OPORTUNIDAD_MEJORA">Oportunidad de Mejora: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_OPORTUNIDAD_MEJORA" id="DES_OPORTUNIDAD_MEJORA" rows="5"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Oportunidad de Mejora" ><?php echo $DES_OPORTUNIDAD_MEJORA; ?></textarea>				
-                        </div>
-                    </div>						
-
-
-                </td>
-            </tr>
-        </table>
-
-
-        <legend></legend>
-
-        <div class="control-group">
-            <label class="control-label" for="IDE_PORTAFOLIO">Portafolio:<span class="error">*</span></label>
-            <div class="controls"> 
-                <?php comboIDE_PORTAFOLIO('IDE_PORTAFOLIO', $DataSet_GEN_PORTAFOLIO_PROYECTO_1, $IDE_PORTAFOLIO, 1, " style='width: 51%;' ") ?>				
+        <!--I. DESCRIPCION DEL PROYECTO-->
+        <div class="fm-seccion">
+            <div class="fm-seccion-titulo"><i class="icon-map-marker"></i> I. Descripción del proyecto
+                <small>Ubicación, área de intervención, cuenca hidrográfica, número de PAM's, stakeholder, etc.</small>
             </div>
-        </div>  						
-
-
-        <div class="control-group">
-            <label class="control-label" for="IDE_PROGRAMA">Programa:<span class="error"></span></label>
-            <div class="controls"> 
-                <?php comboIDE_PROGRAMA('IDE_PROGRAMA', $DataSet_GEN_PROGRAMA_PROYECTO_1, $IDE_PROGRAMA, 1, " style='width: 51%;' ") ?>				
-            </div>
-        </div>  						
-
-
-        <div class="control-group">
-            <label class="control-label" for="IDE_CENCOSTO">Centro de Costo:<span class="error"></span></label>
-            <div class="controls"> 
-                <?php comboIDE_CENCOSTO('IDE_CENCOSTO', $DataSet_GEN_CENTRO_COSTO_1, $IDE_CENCOSTO, 1, $Control_Bloqueo['IDE_CENCOSTO']) ?>				
-            </div>
-        </div>  						
-
-
-        <legend style="color:#dddddd"></legend>
-
-
-        <table width='100%'>
-            <tr>
-                <td><strong>DETALLES DEL PROYECTO DE INVERSIÓN PÚBLICA</strong>
-                </td>
-            </tr>
-
-            <tr>
-                <td>
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="COD_UNICO">Código Único: <span class="error"></span></label>
-                        <div class="controls">
-                            <input <?php echo $Control_Bloqueo['COD_UNICO']; ?>   name="COD_UNICO" id="COD_UNICO" value="<?php echo $COD_UNICO; ?>" onChange="conMayusculas(this)" maxlength="10" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingresa Código Único" style='width:14.5%;' />					
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="COD_SNIP">Código SNIP: <span class="error"></span></label>
-                        <div class="controls">
-                            <input <?php echo $Control_Bloqueo['COD_SNIP']; ?>   name="COD_SNIP" id="COD_SNIP" value="<?php echo $COD_SNIP; ?>" onChange="conMayusculas(this)" maxlength="10" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Código SNIP" style='width:14.5%;' />					
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="TIP_PROYECTO">Tipo de Proyecto:<span class="error"></span></label>
-                        <div class="controls"> 
-                            <?php comboTIP_PROYECTO('TIP_PROYECTO', $DataSet_GEN_TABLAS_2, $TIP_PROYECTO, 1, " style='width: 51%;' ") ?>				
-                        </div>
-                    </div> 
-
-
-                    <div class="control-group" style="display:none">
-                        <label class="control-label" for="DES_UNIDAD_FORMULADORA">Unidad Formuladora: <span class="error"></span></label>
-                        <div class="controls">
-                            <input <?php echo $Control_Bloqueo['DES_UNIDAD_FORMULADORA']; ?>  name="DES_UNIDAD_FORMULADORA" id="DES_UNIDAD_FORMULADORA" value="<?php echo $DES_UNIDAD_FORMULADORA; ?>"  maxlength="200" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Unidad Formuladora"/>					
-                        </div>
+            <div class="fm-campos">
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="DES_UBICACION_PROYECTO">Ubicación de Proyecto: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_UBICACION_PROYECTO" id="DES_UBICACION_PROYECTO" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_UBICACION_PROYECTO; ?></textarea>
                     </div>
+                </div>
 
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="DES_AREA_INTERVENCION">Área de intervención Ambiental (m2): <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_AREA_INTERVENCION" id="DES_AREA_INTERVENCION" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_AREA_INTERVENCION; ?></textarea>
+                    </div>
+                </div>
 
-                    <div class="control-group" style="display:none">
-                        <label class="control-label" for="IDE_ENTIDAD_EJECUTORA">Sede Ejecutora:<span class="error">*</span></label>
-                        <div class="controls"> 
-                            <?php comboIDE_ENTIDAD_EJECUTORA('IDE_ENTIDAD_EJECUTORA', $DataSet_GEN_ENTIDAD_1, $IDE_ENTIDAD_EJECUTORA, 1, " style='width: 51%;' ") ?>				
-                        </div>
-                    </div> 
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="DES_CUENCA_HIDROGRAFICA">Cuenca Hidrográfica: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_CUENCA_HIDROGRAFICA" id="DES_CUENCA_HIDROGRAFICA" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_CUENCA_HIDROGRAFICA; ?></textarea>
+                    </div>
+                </div>
 
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="DES_STAKEHOLDER">Stakeholder: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_STAKEHOLDER" id="DES_STAKEHOLDER" rows="2"  maxlength="1000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_STAKEHOLDER; ?></textarea>
+                    </div>
+                </div>
 
+                <div class="control-group">
+                    <label class="control-label" for="NUM_PAMS"># de Pasivos a Remediar: <span class="error"></span></label>
+                    <div class="controls">
+                        <input  name="NUM_PAMS" id="NUM_PAMS" value="<?php echo $NUM_PAMS; ?>"  maxlength="25" type="text" class="number show-popover fm-numero" data-trigger="hover" data-content="Ingrese Número de PAMs" />
+                    </div>
+                </div>
 
-                    <div class="control-group" style="display:none">
-                        <label class="control-label" for="TIP_MONEDA">Tipo Moneda:<span class="error"></span></label>
-                        <div class="controls"> 
-                            <?php comboTIP_MONEDA('TIP_MONEDA', $DataSet_GEN_TABLAS_1, $TIP_MONEDA, 1, $Control_Bloqueo['TIP_MONEDA']) ?>				
-                        </div>
-                    </div>  						
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="IMP_APROBADO_LOC">Monto Aprobado Local: <span class="error"></span></label>
-                        <div class="controls">
-                            <input <?php echo $Control_Bloqueo['IMP_APROBADO_LOC']; ?>  name="IMP_APROBADO_LOC" id="IMP_APROBADO_LOC" value="<?php echo FormatoMonedas($IMP_APROBADO_LOC); ?>" onChange="conMayusculas(this)" maxlength="25" type="text" class="number  show-popover" data-trigger="hover" data-content="Ingrese Monto Aprobado Local" style='width:14.5%;' />					
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group" style="display:none">
-                        <label class="control-label" for="IMP_APROBADO_EXT">Monto Aprobado (Ext): <span class="error"></span></label>
-                        <div class="controls">
-                            <input <?php echo $Control_Bloqueo['IMP_APROBADO_EXT']; ?>  name="IMP_APROBADO_EXT" id="IMP_APROBADO_EXT" value="<?php echo FormatoMonedas($IMP_APROBADO_EXT); ?>" onChange="conMayusculas(this)" maxlength="25" type="text" class="number show-popover" data-trigger="hover" data-content="Ingrese Monto Aprobado Extranjera" style='width:14.5%;' />					
-                        </div>
-                    </div>								
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="FEC_APROBACION">Fecha Aprobación:<span class="error"></span></label>
-                        <div class="controls">
-                            <div class="span12">    
-                                <input <?php echo $Control_Bloqueo['FEC_APROBACION']; ?> name="FEC_APROBACION" id="FEC_APROBACION" style="width: 10%" value="<?php echo $FEC_APROBACION; ?>" minlength="1" maxlength="10" type="text"  class="alphanumeric show-popover" data-trigger="hover" data-content="Seleccione Fecha Aprobación" placeholder="DD/MM/YYYY"/>					
-                            </div>
-                        </div>
-                    </div>						
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="FEC_INICIO_PROY">Fecha Inicio:<span class="error"></span></label>
-                        <div class="controls">
-                            <div class="span12">    
-                                <input <?php echo $Control_Bloqueo['FEC_INICIO_PROY']; ?> name="FEC_INICIO_PROY" id="FEC_INICIO_PROY" style="width: 10%" value="<?php echo $FEC_INICIO_PROY; ?>" minlength="1" maxlength="10" type="text"  class="alphanumeric  show-popover" data-trigger="hover" data-content="Seleccione Fecha Inicio" placeholder="DD/MM/YYYY"/>					
-                            </div>
-                        </div>
-                    </div>						
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="FEC_TERMINO_PROY">Fecha Término:<span class="error"></span></label>
-                        <div class="controls">
-                            <div class="span12">    
-                                <input <?php echo $Control_Bloqueo['FEC_TERMINO_PROY']; ?> name="FEC_TERMINO_PROY" id="FEC_TERMINO_PROY" style="width: 10%" value="<?php echo $FEC_TERMINO_PROY; ?>" minlength="1" maxlength="10" type="text"  class="alphanumeric  show-popover" data-trigger="hover" data-content="Seleccione Fecha Término" placeholder="DD/MM/YYYY"/>					
-                            </div>
-                        </div>
-                    </div>						
-
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="NUM_BENEFICIARIOS">Nº Beneficiarios: <span class="error"></span></label>
-                        <div class="controls">
-                            <input  name="NUM_BENEFICIARIOS" id="NUM_BENEFICIARIOS" value="<?php echo $NUM_BENEFICIARIOS; ?>" onChange="conMayusculas(this)" maxlength="25" type="text" class="number show-popover" data-trigger="hover" data-content="Ingrese Número de Beneficiarios" style='width:14.5%;' />					
-                        </div>
-                    </div>							
-
-
-                    <div class="control-group" style="display:none">
-                        <label class="control-label" for="DES_CORTA_PROYECTO">Descripción Corta: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea name="DES_CORTA_PROYECTO" id="DES_CORTA_PROYECTO" rows="2"  maxlength="100" class="xlarge   show-popover"  data-trigger="hover" data-content="Descripción Corta" ><?php echo $DES_CORTA_PROYECTO; ?></textarea>				
-                        </div>
-                    </div>						
-
-
-                    <div class="control-group">
-                        <label class="control-label" for="DES_PROYECTO_ENGLISH">Descripción en Ingles: <span class="error"></span></label>
-                        <div class="controls">
-                            <textarea <?php echo $Control_Bloqueo['DES_PROYECTO_ENGLISH']; ?> name="DES_PROYECTO_ENGLISH" id="DES_PROYECTO_ENGLISH" rows="2"  maxlength="200" class="xlarge alphanumeric show-popover"  data-trigger="hover" data-content="Descripción en Ingles" ><?php echo $DES_PROYECTO_ENGLISH; ?></textarea>				
-                        </div>
-                    </div>	
-
-
-                </td>
-            </tr>
-        </table>
-
-
-
-
-
-
-        <div class="control-group" style="display:none">
-            <label class="control-label" for="TIP_GRUPO_PROYECTO">Tipo de Grupo de Proyecto:<span class="error"></span></label>
-            <div class="controls"> 
-                <?php comboTIP_GRUPO_PROYECTO('TIP_GRUPO_PROYECTO', $DataSet_GEN_TABLAS_3, $TIP_GRUPO_PROYECTO, 1, "") ?>				
+                <div class="control-group fm-completo">
+                    <label class="control-label" for="DES_ESTATUS">Componentes de Remediación: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_ESTATUS" id="DES_ESTATUS" rows="3"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Estatus" ><?php echo $DES_ESTATUS; ?></textarea>
+                    </div>
+                </div>
             </div>
-        </div>  						
+        </div>
 
-
-        <legend></legend>
-
-
-        <div class="control-group">
-            <label class="control-label" for="EST_PROYECTO">Estado:<span class="error">*</span></label>
-            <div class="controls"> 
-                <?php comboEST_PROYECTO('EST_PROYECTO', $DataSet_GEN_TABLAS_4, $EST_PROYECTO, 1, $Control_Bloqueo['EST_PROYECTO']) ?>				
+        <!--II. GESTION SOCIAL-->
+        <div class="fm-seccion">
+            <div class="fm-seccion-titulo"><i class="icon-group"></i> II. Gestión social</div>
+            <div class="fm-campos">
+                <div class="control-group fm-completo">
+                    <label class="control-label" for="DES_ACCION_GESTION_SOCIAL">Objetivo General de la Gestion Social: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_ACCION_GESTION_SOCIAL" id="DES_ACCION_GESTION_SOCIAL" rows="2"  maxlength="4000" class="xlarge  show-popover"  data-trigger="hover" data-content="Ingrese Acción de Gestión Social" ><?php echo $DES_ACCION_GESTION_SOCIAL; ?></textarea>
+                    </div>
+                </div>
             </div>
-        </div>  						
+        </div>
 
+        <!--III. OBJETIVOS, ACCIONES, OPORTUNIDADES, COSTOS Y SEGUIMIENTO (SE ABREN EN VENTANA EMERGENTE)-->
+        <div class="fm-seccion">
+            <div class="fm-seccion-titulo"><i class="icon-tasks"></i> III. Objetivos, acciones, oportunidades, costos y seguimiento
+                <small>Describir los objetivos específicos, acciones, oportunidades de mejora, costos y seguimiento</small>
+            </div>
+            <div class="fm-enlaces">
+                <button type="button" class="fm-enlace" onclick="AbrirObjEsp(<?php echo $SeleccionarID ;?>)"><i class="icon-flag"></i>Objetivos Específicos de Gestión Social</button>
+                <button type="button" class="fm-enlace" onclick="AbrirAccGes(<?php echo $SeleccionarID ;?>)"><i class="icon-check"></i>Principales Acciones de Gestión</button>
+                <button type="button" class="fm-enlace" onclick="AbrirAccCor(<?php echo $SeleccionarID ;?>)"><i class="icon-wrench"></i>Desviaciones y Acciones Correctivas</button>
+                <button type="button" class="fm-enlace" onclick="AbrirOpoMej(<?php echo $SeleccionarID ;?>)"><i class="icon-warning-sign"></i>Oportunidades de Mejora y Análisis de Riesgo</button>
+                <button type="button" class="fm-enlace" onclick="AbrirCosCom(<?php echo $SeleccionarID ;?>)"><i class="icon-money"></i>Costos del Proyecto por Componente</button>
+                <button type="button" class="fm-enlace" onclick="AbrirSegPry(<?php echo $SeleccionarID ;?>)"><i class="icon-eye-open"></i>Seguimiento del Proyecto</button>
+            </div>
+        </div>
 
+        <!--PROYECTO DE INVERSION PUBLICA-->
+        <div class="fm-seccion">
+            <div class="fm-seccion-titulo"><i class="icon-briefcase"></i> Detalles del proyecto de inversión pública</div>
+            <div class="fm-campos">
+                <div class="control-group">
+                    <label class="control-label" for="COD_UNICO">Código Único: <span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['COD_UNICO']; ?>   name="COD_UNICO" id="COD_UNICO" value="<?php echo $COD_UNICO; ?>" onChange="conMayusculas(this)" maxlength="10" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingresa Código Único" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="COD_SNIP">Código SNIP: <span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['COD_SNIP']; ?>   name="COD_SNIP" id="COD_SNIP" value="<?php echo $COD_SNIP; ?>" onChange="conMayusculas(this)" maxlength="10" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Código SNIP" />
+                    </div>
+                </div>
+
+                <div class="control-group fm-ancho">
+                    <label class="control-label" for="TIP_PROYECTO">Tipo de Proyecto:<span class="error"></span></label>
+                    <div class="controls">
+                        <?php comboTIP_PROYECTO('TIP_PROYECTO', $DataSet_GEN_TABLAS_2, $TIP_PROYECTO, 1, "") ?>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="IMP_APROBADO_LOC">Monto Aprobado Local: <span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['IMP_APROBADO_LOC']; ?>  name="IMP_APROBADO_LOC" id="IMP_APROBADO_LOC" value="<?php echo FormatoMonedas($IMP_APROBADO_LOC); ?>" onChange="conMayusculas(this)" maxlength="25" type="text" class="number  show-popover fm-numero" data-trigger="hover" data-content="Ingrese Monto Aprobado Local" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="NUM_BENEFICIARIOS">Nº Beneficiarios: <span class="error"></span></label>
+                    <div class="controls">
+                        <input  name="NUM_BENEFICIARIOS" id="NUM_BENEFICIARIOS" value="<?php echo $NUM_BENEFICIARIOS; ?>" onChange="conMayusculas(this)" maxlength="25" type="text" class="number show-popover fm-numero" data-trigger="hover" data-content="Ingrese Número de Beneficiarios" />
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="FEC_APROBACION">Fecha Aprobación:<span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['FEC_APROBACION']; ?> name="FEC_APROBACION" id="FEC_APROBACION" value="<?php echo $FEC_APROBACION; ?>" minlength="1" maxlength="10" type="text"  class="alphanumeric show-popover" data-trigger="hover" data-content="Seleccione Fecha Aprobación" placeholder="DD/MM/YYYY"/>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="FEC_INICIO_PROY">Fecha Inicio:<span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['FEC_INICIO_PROY']; ?> name="FEC_INICIO_PROY" id="FEC_INICIO_PROY" value="<?php echo $FEC_INICIO_PROY; ?>" minlength="1" maxlength="10" type="text"  class="alphanumeric  show-popover" data-trigger="hover" data-content="Seleccione Fecha Inicio" placeholder="DD/MM/YYYY"/>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label" for="FEC_TERMINO_PROY">Fecha Término:<span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['FEC_TERMINO_PROY']; ?> name="FEC_TERMINO_PROY" id="FEC_TERMINO_PROY" value="<?php echo $FEC_TERMINO_PROY; ?>" minlength="1" maxlength="10" type="text"  class="alphanumeric  show-popover" data-trigger="hover" data-content="Seleccione Fecha Término" placeholder="DD/MM/YYYY"/>
+                    </div>
+                </div>
+
+                <div class="control-group fm-completo">
+                    <label class="control-label" for="DES_PROYECTO_ENGLISH">Descripción en Ingles: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea <?php echo $Control_Bloqueo['DES_PROYECTO_ENGLISH']; ?> name="DES_PROYECTO_ENGLISH" id="DES_PROYECTO_ENGLISH" rows="2"  maxlength="200" class="xlarge alphanumeric show-popover"  data-trigger="hover" data-content="Descripción en Ingles" ><?php echo $DES_PROYECTO_ENGLISH; ?></textarea>
+                    </div>
+                </div>
+
+                <!--CAMPOS QUE NO SE MUESTRAN (SE ENVIAN CON EL FORMULARIO)-->
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="DES_UNIDAD_FORMULADORA">Unidad Formuladora: <span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['DES_UNIDAD_FORMULADORA']; ?>  name="DES_UNIDAD_FORMULADORA" id="DES_UNIDAD_FORMULADORA" value="<?php echo $DES_UNIDAD_FORMULADORA; ?>"  maxlength="200" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Ingrese Unidad Formuladora"/>
+                    </div>
+                </div>
+
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="IDE_ENTIDAD_EJECUTORA">Sede Ejecutora:<span class="error">*</span></label>
+                    <div class="controls">
+                        <?php comboIDE_ENTIDAD_EJECUTORA('IDE_ENTIDAD_EJECUTORA', $DataSet_GEN_ENTIDAD_1, $IDE_ENTIDAD_EJECUTORA, 1, " style='width: 51%;' ") ?>
+                    </div>
+                </div>
+
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="TIP_MONEDA">Tipo Moneda:<span class="error"></span></label>
+                    <div class="controls">
+                        <?php comboTIP_MONEDA('TIP_MONEDA', $DataSet_GEN_TABLAS_1, $TIP_MONEDA, 1, $Control_Bloqueo['TIP_MONEDA']) ?>
+                    </div>
+                </div>
+
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="IMP_APROBADO_EXT">Monto Aprobado (Ext): <span class="error"></span></label>
+                    <div class="controls">
+                        <input <?php echo $Control_Bloqueo['IMP_APROBADO_EXT']; ?>  name="IMP_APROBADO_EXT" id="IMP_APROBADO_EXT" value="<?php echo FormatoMonedas($IMP_APROBADO_EXT); ?>" onChange="conMayusculas(this)" maxlength="25" type="text" class="number show-popover" data-trigger="hover" data-content="Ingrese Monto Aprobado Extranjera" />
+                    </div>
+                </div>
+
+                <div class="control-group" style="display:none">
+                    <label class="control-label" for="DES_CORTA_PROYECTO">Descripción Corta: <span class="error"></span></label>
+                    <div class="controls">
+                        <textarea name="DES_CORTA_PROYECTO" id="DES_CORTA_PROYECTO" rows="2"  maxlength="100" class="xlarge   show-popover"  data-trigger="hover" data-content="Descripción Corta" ><?php echo $DES_CORTA_PROYECTO; ?></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--SECCIONES QUE NO SE MUESTRAN (ACCIONES DE GESTION, ACCIONES CORRECTIVAS, OPORTUNIDADES DE MEJORA):
+            SUS CAMPOS SE SIGUEN ENVIANDO CON EL FORMULARIO, COMO ANTES-->
+        <div style="display:none">
+            <textarea name="DES_ACCION_GESTION" id="DES_ACCION_GESTION" maxlength="4000"><?php echo $DES_ACCION_GESTION; ?></textarea>
+            <textarea name="DES_ACCION_CORRECTIVA" id="DES_ACCION_CORRECTIVA" maxlength="4000"><?php echo $DES_ACCION_CORRECTIVA; ?></textarea>
+            <textarea name="DES_OPORTUNIDAD_MEJORA" id="DES_OPORTUNIDAD_MEJORA" maxlength="4000"><?php echo $DES_OPORTUNIDAD_MEJORA; ?></textarea>
+        </div>
 
         <?php echo $crudGrabarCancelar; ?>
 

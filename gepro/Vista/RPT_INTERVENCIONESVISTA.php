@@ -111,7 +111,7 @@ function muestraVista() {
                             </ul>
                             <!--CONTENIDO DE LA PESTAÑA 1-->
                             <div id="tabs-1">                                
-                                <form name="formularioGrid" class="validform form-horizontal" id="formularioGrid" action="mainpage.php" method="post"> 
+                                <form name="formularioGrid" class="validform fm-form" id="formularioGrid" action="mainpage.php" method="post"> 
                                     <!-- PASO DE VARIABLES A OTRA PÁGINA -->
                                     <input type="hidden" name="Pagina" value="<?php echo $PaginaFormulario; ?>">
                                     <input type="hidden" name="ActionForm" value="">                                
@@ -275,7 +275,7 @@ function GeneraForm() {
             });            
         });
     </script>        
-    <form action="mainpage.php" class="validform form-horizontal" id="formulario" name="formulario" method="post">
+    <form action="mainpage.php" class="validform fm-form" id="formulario" name="formulario" method="post">
         <input type="hidden" name="Pagina" value="<?php echo $PaginaFormulario; ?>">
         <input type="hidden" name="ActionForm" value="<?php echo $ActionFormulario; ?>">        
         <legend><?php echo $TitulFormulario; ?></legend>         

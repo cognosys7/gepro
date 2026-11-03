@@ -1,0 +1,221 @@
+/*****************************************************
+Resultados de la importacion (paginas gepro/Vista/migrar_<TABLA>vista.php)
+Se abren como ventana modal desde migrar_FORMATO. Cada pagina trae su propio
+<style> (.hijo { width: 30% }, table, td...): estas reglas solo aplican cuando
+la pagina tiene la cabecera tb_video_cabezera y le ganan por especificidad
+*****************************************************/
+
+html:has(.tb_video_cabezera),
+body:has(.tb_video_cabezera) {
+    height: 100%;
+    margin: 0;
+    background: #fff;
+}
+
+/*Contenedor: ocupa toda la ventana modal*/
+body .padre:has(> .hijo .tb_video_cabezera) {
+    height: 100%;
+    display: block;
+}
+body .padre > .hijo:has(.tb_video_cabezera) {
+    width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #263645;
+}
+body .padre > .hijo:has(.tb_video_cabezera) > br {
+    display: none;
+}
+
+/*"Resultados de la importacion": exito en verde*/
+body .padre > .hijo:has(.tb_video_cabezera) .panel-heading {
+    padding: 10px 20px 0;
+}
+body .padre > .hijo:has(.tb_video_cabezera) .panel-title {
+    margin: 0;
+    font-size: 14px;
+    color: #1e7b3c;
+}
+body .padre > .hijo:has(.tb_video_cabezera) .panel-title:before {
+    content: "\2714  ";
+}
+
+/*Tablas sin el fondo gris ni el borde oscuro de la pagina*/
+body .padre > .hijo:has(.tb_video_cabezera) table {
+    width: 100% !important;
+    margin: 0;
+    border: 0;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+/*Cabecera: azul marino de la marca, titulo y archivo*/
+body .padre > .hijo:has(.tb_video_cabezera) tr.tb_video_cabezera td {
+    padding: 14px 18px;
+    background: #0773B3;
+    color: #fff;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 1.5;
+    text-align: left;
+}
+/*Los iconos de salir a los lados se repiten con el boton Regresar*/
+body .padre > .hijo:has(.tb_video_cabezera) tr.tb_video_cabezera td:has(> button[onclick^="salir"]) {
+    display: none;
+}
+
+/*TABLAS DE RESULTADOS. Hay tres variantes en las paginas:
+  1) table.table-bordered aparte con "etiqueta | cantidad" y la fila del boton
+  2) la misma tabla con filas de datos (Budget: Estado | Periodo | ...)
+  3) una sola tabla: cabecera azul + filas tr.detalle + fila del boton (Matriz Personal, Budget)
+  Se muestran como bloque y cada fila como flex: las celdas del boton no siempre tienen
+  colspan y, como tabla, dejaban franjas vacias*/
+body .padre > .hijo:has(.tb_video_cabezera) table.table-bordered,
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) {
+    display: block;
+}
+body .padre > .hijo:has(.tb_video_cabezera) table.table-bordered {
+    margin: 16px 20px;
+    width: calc(100% - 40px) !important;
+    border: 1px solid #dfe5eb;
+    border-radius: 4px;
+}
+body .padre > .hijo:has(.tb_video_cabezera) table.table-bordered > thead,
+body .padre > .hijo:has(.tb_video_cabezera) table.table-bordered > tbody,
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) > tbody {
+    display: block;
+}
+body .padre > .hijo:has(.tb_video_cabezera) table.table-bordered tr,
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr {
+    display: flex;
+    align-items: stretch;
+}
+/*La fila de encabezados de columnas de la variante 3 tambien es tb_video_cabezera:
+  sin el fondo azul de la pagina*/
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr.tb_video_cabezera:has(> th) {
+    background: transparent !important;
+}
+/*Celdas: columnas del mismo ancho*/
+body .padre > .hijo:has(.tb_video_cabezera) table.table-bordered tr > *,
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr:not(.tb_video_cabezera:has(> td)) > * {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    overflow-wrap: anywhere;
+    padding: 10px 14px;
+    border: 0;
+    border-bottom: 1px solid #edf1f5;
+    background: #fff;
+    font-size: 13px;
+    color: #263645;
+    text-align: left;
+    vertical-align: middle;
+}
+/*Variante 3: la cabecera azul ocupa todo el ancho (los iconos de salir se ocultan)*/
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr.tb_video_cabezera:has(> td) > td {
+    flex: 1 1 auto;
+}
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr.detalle:first-of-type,
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr.tb_video_cabezera:has(> td) + tr {
+    margin-top: 16px;
+}
+body .padre > .hijo:has(.tb_video_cabezera) table:has(tr.detalle) tr:not(.tb_video_cabezera:has(> td)) {
+    margin-left: 20px;
+    margin-right: 20px;
+    border-left: 1px solid #dfe5eb;
+    border-right: 1px solid #dfe5eb;
+}
+/*"Etiqueta | cantidad": la cantidad destacada en verde a la derecha*/
+body .padre > .hijo:has(.tb_video_cabezera) table tr:has(> th:nth-child(2):last-child) > th:first-child {
+    flex: 1 1 auto;
+    font-weight: bold;
+}
+body .padre > .hijo:has(.tb_video_cabezera) table tr:has(> th:nth-child(2):last-child) > th:last-child {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    justify-content: flex-end;
+    font-size: 22px;
+    font-weight: bold;
+    color: #1e7b3c;
+    text-align: right;
+}
+/*Encabezado de columnas (Estado | Periodo | ...): fondo claro, texto pequeno*/
+body .padre > .hijo:has(.tb_video_cabezera) table tr:has(> th:nth-child(3)) > th {
+    background: #eef3f8;
+    color: #1f3550;
+    font-size: 12px;
+    font-weight: bold;
+}
+/*Fila del boton: pie de la ventana, boton a la derecha*/
+body .padre > .hijo:has(.tb_video_cabezera) table tr:has(.importar-btn) {
+    justify-content: flex-end;
+    background: #f4f7fa;
+}
+/*!important: la regla general de celdas (mas especifica) no debe estirar ni alinear a la izquierda el boton*/
+body .padre > .hijo:has(.tb_video_cabezera) table tr:has(.importar-btn) > td {
+    flex: 0 0 auto !important;
+    justify-content: flex-end;
+    border-bottom: 0 !important;
+    background: #f4f7fa !important;
+    text-align: right !important;
+}
+body .padre > .hijo:has(.tb_video_cabezera) .importar-btn {
+    min-width: 120px;
+    height: 34px;
+    padding: 6px 16px;
+    border: 1px solid #0773B3;
+    border-radius: 4px;
+    background: #0773B3;
+    color: #fff;
+    font-size: 14px;
+}
+body .padre > .hijo:has(.tb_video_cabezera) .importar-btn:hover {
+    background: #093d64;
+}
+
+/*Animacion de carga mientras se importa. Solo CSS, sin imagenes externas.
+La pagina de resultados (migrar_*vista.php) no llega al navegador hasta que el servidor termina,
+por eso la animacion va en la ventana modal que la contiene (migrar_FORMATOvista.php la abre con
+className "cbox-importando"): el iframe es transparente mientras carga y la pagina de resultados
+la tapa con su fondo blanco. #loading es el indicador propio de cada pagina de resultados*/
+#colorbox.cbox-importando #cboxLoadedContent {
+    position: relative;
+}
+#colorbox.cbox-importando .cboxIframe {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+#colorbox.cbox-importando #cboxLoadedContent::after,
+#loading::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 52px;
+    height: 52px;
+    margin: -26px 0 0 -26px;
+    border: 5px solid #d5e1ee;
+    border-top-color: #0773B3;
+    border-radius: 50%;
+    animation: importacion-gira 0.9s linear infinite;
+}
+#colorbox.cbox-importando #cboxLoadedContent::before,
+#loading::before {
+    content: "Importando, espere por favor...";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    margin-top: 42px;
+    text-align: center;
+    font: 14px Arial, Helvetica, sans-serif;
+    color: #0773B3;
+}
+@keyframes importacion-gira {
+    to { transform: rotate(360deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    #colorbox.cbox-importando #cboxLoadedContent::after,
+    #loading::after { animation-duration: 3s; }
+}

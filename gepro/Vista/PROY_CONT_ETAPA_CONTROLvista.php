@@ -531,7 +531,7 @@ function GeneraForm() {
         Filtrar_TipoConcepto ( <?php echo $VIDE_INTERVENCION ;?> ) ;
 
     </script>        
-    <form action="mainpage.php" class="validform form-horizontal" id="formulario" name="formulario" method="post">
+    <form action="mainpage.php" class="validform fm-form" id="formulario" name="formulario" method="post">
         <input type="hidden" name="Pagina" value="<?php echo $PaginaFormulario; ?>">
         <input type="hidden" name="ActionForm" value="<?php echo $ActionFormulario; ?>">
         <input type="hidden" name="SeleccionarID" value="<?php echo $SeleccionarID ?>">
