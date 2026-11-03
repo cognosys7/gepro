@@ -72,3 +72,30 @@ Se carga despues del tema flaty para ajustar su presentacion
     color: #fff;
     font-weight: bold;
 }
+
+/*Nombres largos ("Tableros Presupuesto e Inversiones", "Seguridad del Sistema"): el tema fija
+  38px de alto y la segunda linea quedaba tapada. Con el menu abierto la opcion crece y el
+  texto pasa a dos lineas junto al icono; con el menu recogido se mantiene el alto del tema*/
+#sidebar:not(.sidebar-collapsed) .nav-list > li > a {
+    display: flex;
+    align-items: center;
+    height: auto;
+    min-height: 38px;
+    line-height: 17px;
+    padding-top: 8px !important;
+    padding-bottom: 8px !important;
+    box-sizing: border-box;
+}
+#sidebar:not(.sidebar-collapsed) .nav-list > li > a > span {
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: normal;
+}
+#sidebar:not(.sidebar-collapsed) .nav-list > li > a > [class*=icon-]:first-child {
+    flex: 0 0 auto;
+}
+#sidebar:not(.sidebar-collapsed) .nav-list > li > a .arrow {
+    flex: 0 0 auto;
+    float: none;
+    margin-left: 6px;
+}

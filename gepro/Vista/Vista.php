@@ -75,6 +75,8 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
 
                 <!--COLUMNAS ADAPTABLES DE LAS GRILLAS (VentanaColumnasAdaptables)-->
                 <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/ventana-modal.js"></script>
+                <!--ICONOS DE LAS ACCIONES DE LAS GRILLAS (GrillaIconos)-->
+                <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/grilla-iconos.js"></script>
                 <!--FORMULARIOS POR SECCIONES (FormularioSecciones)-->
                 <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/formulario.js"></script>
                 <!--<script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/function.js"></script>-->
@@ -154,6 +156,7 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
                     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/validacion/jquery.validate.js"></script>
                     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/validacion/reglas.js"></script>
                     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/ventana-modal.js"></script>
+                    <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/grilla-iconos.js"></script>
                     <script language="JavaScript" type="text/javascript" src="<?php echo RECURSOSGEN_RECURSOS?>/js/formulario.js"></script>
                 </head>
                 <!--vm-emergente: VENTANA EMERGENTE CON CABECERA AUTOMATICA (ventana-modal.js)-->

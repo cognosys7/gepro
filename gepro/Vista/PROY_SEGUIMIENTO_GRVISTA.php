@@ -337,7 +337,7 @@ function GeneraForm() {
         <br>
 
         <div class="control-group" style="display:none">	
-            <label class="control-label" for="COD_PROYECTO">Código SPRING: <span class="error">*</span></label>				
+            <label class="control-label" for="COD_PROYECTO">Código: <span class="error">*</span></label>				
             <div class="controls">
                 <input readonly name="COD_PROYECTO" id="COD_PROYECTO" value="<?php echo $VCOD_PROYECTO; ?>" onChange="conMayusculas(this)" maxlength="50" type="text" class="input-xlarge alphanumeric " data-trigger="hover" data-content=""/>
             </div>			

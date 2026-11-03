@@ -393,7 +393,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="NUM_ANHO">Año Fiscal: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="NUM_ANHO" id="NUM_ANHO" value="<?php echo $NUM_ANHO; ?>" onChange="conMayusculas(this)" maxlength="4" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Año Fiscal. Actualizado desde el SPRING" style='width:14.5%;' />					
+                <input readonly  name="NUM_ANHO" id="NUM_ANHO" value="<?php echo $NUM_ANHO; ?>" onChange="conMayusculas(this)" maxlength="4" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Año Fiscal" style='width:14.5%;' />					
             </div>
         </div>								
 
@@ -404,7 +404,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="COD_ESPECIFICA_GASTO">Cód. Específica Gasto: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="COD_ESPECIFICA_GASTO" id="COD_ESPECIFICA_GASTO" value="<?php echo $COD_ESPECIFICA_GASTO; ?>" onChange="conMayusculas(this)" maxlength="30" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Código Específica de Gasto. Actualizado desde el SPRING" style='width:14.5%;' />					
+                <input readonly  name="COD_ESPECIFICA_GASTO" id="COD_ESPECIFICA_GASTO" value="<?php echo $COD_ESPECIFICA_GASTO; ?>" onChange="conMayusculas(this)" maxlength="30" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Código Específica de Gasto" style='width:14.5%;' />					
             </div>
         </div>								
 
@@ -412,7 +412,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="DES_ESPECIFICA_GASTO">Específica de Gasto: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="DES_ESPECIFICA_GASTO" id="DES_ESPECIFICA_GASTO" value="<?php echo $DES_ESPECIFICA_GASTO; ?>" onChange="conMayusculas(this)" maxlength="200" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Específica de Gasto. Actualizado desde el SPRING"/>					
+                <input readonly  name="DES_ESPECIFICA_GASTO" id="DES_ESPECIFICA_GASTO" value="<?php echo $DES_ESPECIFICA_GASTO; ?>" onChange="conMayusculas(this)" maxlength="200" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Específica de Gasto"/>					
             </div>
         </div>								
 

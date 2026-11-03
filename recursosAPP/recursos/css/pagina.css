@@ -257,3 +257,52 @@ td.gr-franja > div {
     background: #0773B3;
     color: #fff;
 }
+
+/*Iconos de las acciones de las grillas (js/grilla-iconos.js): boton cuadrado con fondo suave
+  del color de la accion; al pasar el mouse se rellena con el color*/
+.gr-ico {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: background .15s, color .15s, transform .1s;
+}
+.gr-ico:hover {
+    color: #fff !important;
+    transform: translateY(-1px);
+}
+.gr-ico:active {
+    transform: none;
+}
+.gr-ico[disabled] {
+    opacity: .4;
+    cursor: default;
+}
+.gr-ico.gr-azul    { background: #e3f1fb; border-color: #c4e2f6; color: #0773B3; }
+.gr-ico.gr-azul:hover    { background: #0773B3; }
+.gr-ico.gr-verde   { background: #e5f4e8; border-color: #c3e4ca; color: #1f7a3d; }
+.gr-ico.gr-verde:hover   { background: #1f7a3d; }
+.gr-ico.gr-ambar   { background: #fff4dc; border-color: #f2dba5; color: #a86b00; }
+.gr-ico.gr-ambar:hover   { background: #c98a10; }
+.gr-ico.gr-rojo    { background: #fdeaea; border-color: #f4c7c7; color: #c62828; }
+.gr-ico.gr-rojo:hover    { background: #c62828; }
+.gr-ico.gr-violeta { background: #f1edfb; border-color: #d6cdf0; color: #5a3fa8; }
+.gr-ico.gr-violeta:hover { background: #5a3fa8; }
+.gr-ico.gr-teal    { background: #e3f3f4; border-color: #b9e0e4; color: #007F8F; }
+.gr-ico.gr-teal:hover    { background: #007F8F; }
+.gr-ico.gr-gris    { background: #eef1f4; border-color: #d3dae1; color: #4b5b6b; }
+.gr-ico.gr-gris:hover    { background: #4b5b6b; }
+
+/*Celdas con iconos: centradas verticalmente con el texto de las otras columnas*/
+.flexigrid div.bDiv td div:has(> .gr-ico) {
+    text-align: center;
+}
