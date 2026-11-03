@@ -422,6 +422,125 @@ return [
         'nuevo' => false, 'editar' => true, 'eliminar' => false,
     ],
 
+    /*
+    | Pantallas que dependen de otro registro ('de'): se abren en la ventana modal desde Contratos.
+    | Contrato -> Etapas (PROY_COMPONENTE) -> Control anual (PROY_CONT_ETAPA_CONTROL) -> Control mensual
+    | (PROY_CONT_COMP_CONTROL_DET); Etapas -> Recursos (PROY_COMP_RECURSO). El acceso se valida con
+    | Proyectos ('acceso'). Los SP hacen el trabajo de fondo: el de etapas crea su plan y actividades y el
+    | del control mensual recalcula los totales del control anual.
+    */
+
+    'PROY_COMPONENTE' => [
+        'titulo' => 'Etapas del contrato', 'icono' => 'fa-layer-group', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COMPONENTE', 'id' => 'IDE_PROY_COMPONENTE', 'sp' => 'dbo.SP_PROY_COMPONENTE',
+        'estado' => 'IDE_ESTADO', 'eliminado' => '9',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_PROYECTO_ACTIVIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO_ACTIVIDAD', 'IDE_CARTERA', 'IDE_COMPONENTE', 'NUM_SEC_COMPONENTE', 'IDE_MODO_EJECUCION', 'IDE_PROC_ITEM', 'IMP_COMPONENTE', 'IDE_ESTADO'],
+        'campos' => [
+            //SOLO LAS ETAPAS DE LA FASE - COMPONENTE (INTERVENCION) DEL CONTRATO
+            'IDE_COMPONENTE' => ['Etapa del componente', 'combo', ['requerido' => true, 'grilla' => true,
+                'lista' => ['dbo.GEN_COMPONENTE', 'IDE_COMPONENTE', 'DES_COMPONENTE', 'EST_COMPONENTE'],
+                'filtro_sql' => ['IDE_COMPONENTE IN (SELECT IDE_COMPONENTE FROM dbo.GEN_INTERVENCION_COMP WHERE IDE_INTERVENCION = ?)', ['{de.IDE_INTERVENCION}']]]],
+            'IDE_CARTERA' => ['Etapa contractual', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.PROY_CARTERA', 'IDE_CARTERA', 'DES_CARTERA', 'EST_CARTERA']]],
+            'IDE_MODO_EJECUCION' => ['Modo de ejecución', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_MODO_EJECUCION', 'IDE_MODO_EJECUCION', 'DES_MODO_EJECUCION', 'EST_MODO_EJECUCION']]],
+            'IDE_ESTADO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'excluir' => ['9'], 'lista' => ['dbo.GEN_ESTADO', 'IDE_ESTADO', 'DES_ESTADO', 'EST_ESTADO']]],
+            'FEC_INICIO' => ['Fecha inicio', 'fecha', ['grilla' => true, 'expresion' => '(SELECT TOP 1 P.FEC_INICIO FROM dbo.PROY_COMPONENTE_PLAN P WHERE P.IDE_PROY_COMPONENTE = T.IDE_PROY_COMPONENTE ORDER BY P.IDE_PLAN DESC)']],
+            'FEC_TERMINO' => ['Fecha fin', 'fecha', ['grilla' => true, 'expresion' => '(SELECT TOP 1 P.FEC_TERMINO FROM dbo.PROY_COMPONENTE_PLAN P WHERE P.IDE_PROY_COMPONENTE = T.IDE_PROY_COMPONENTE ORDER BY P.IDE_PLAN DESC)']],
+            'IMP_COMPONENTE' => ['Importe (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+        ],
+        'acciones' => [
+            ['Control', 'fa-gauge-high', 'gr-azul', 'Control anual de la etapa', ['catalogo' => 'PROY_CONT_ETAPA_CONTROL']],
+            ['Recurso', 'fa-briefcase', 'gr-violeta', 'Recursos de la etapa', ['catalogo' => 'PROY_COMP_RECURSO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_CONT_ETAPA_CONTROL' => [
+        'titulo' => 'Control anual de la etapa', 'icono' => 'fa-gauge-high', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_CONT_ETAPA_CONTROL', 'id' => 'IDE_CONT_ETAPA_CONTROL', 'sp' => 'dbo.SP_PROY_CONT_ETAPA_CONTROL', 'estado' => 'EST_ETAPA_CONTROL',
+        'de' => ['tabla' => 'dbo.PROY_COMPONENTE', 'id' => 'IDE_PROY_COMPONENTE', 'columna' => 'IDE_PROY_COMPONENTE',
+            'titulo' => "CONCAT((SELECT G.DES_COMPONENTE FROM dbo.GEN_COMPONENTE G WHERE G.IDE_COMPONENTE = X.IDE_COMPONENTE), ' · ', (SELECT CONCAT(LTRIM(RTRIM(A.COD_PROYECTO)), ' - ', A.DES_PROYECTO) FROM dbo.PROYECTO_ACTIVIDAD A WHERE A.IDE_PROYECTO_ACTIVIDAD = X.IDE_PROYECTO_ACTIVIDAD))"],
+        'parametros' => ['IDE_PROY_COMPONENTE', 'IDE_PLAN', 'NUM_ANIO', 'TIP_CONCEPTO', 'IMP_BRUTO', 'IMP_IMPONIBLE', 'PCT_IGV', 'IMP_IGV', 'IMP_NETO', 'IMP_PENALIDAD', 'IMP_PAGO', 'EST_ETAPA_CONTROL'],
+        //LOS MONTOS SON LA SUMA DEL CONTROL MENSUAL (LOS RECALCULA SP_PROY_CONT_COMP_CONTROL_DET)
+        'campos' => [
+            'IDE_PLAN' => ['Plan', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_PLAN', 'IDE_PLAN', 'DES_PLAN', 'EST_PLAN']]],
+            'TIP_CONCEPTO' => ['Concepto', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '66', 'solo' => [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]]],
+            'IMP_BRUTO' => ['Monto bruto', 'numero', ['grilla' => true, 'calculado' => true]],
+            'IMP_NETO' => ['Monto neto facturado', 'numero', ['grilla' => true, 'calculado' => true]],
+            'IMP_PAGO' => ['Monto a pagar', 'numero', ['grilla' => true, 'calculado' => true]],
+            'EST_ETAPA_CONTROL' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '102', 'excluir' => ['2']]],
+        ],
+        'nuevo_valores' => ['PCT_IGV' => '0.18', 'EST_ETAPA_CONTROL' => '11', 'IMP_BRUTO' => '0', 'IMP_IMPONIBLE' => '0', 'IMP_IGV' => '0', 'IMP_NETO' => '0', 'IMP_PENALIDAD' => '0', 'IMP_PAGO' => '0'],
+        //COMO SU SelGrd: POR EL NOMBRE DEL PLAN Y DEL CONCEPTO ("5. REPROG 04" DESPUES DE "5. REPROG 01")
+        'orden' => [
+            ['(SELECT P.DES_PLAN FROM dbo.GEN_PLAN P WHERE P.IDE_PLAN = T.IDE_PLAN)', 'asc'],
+            ["(SELECT G.DES_ITEM FROM dbo.GEN_TABLAS G WHERE G.COD_TABLA = '66' AND G.COD_ITEM = T.TIP_CONCEPTO)", 'asc'],
+        ],
+        'acciones' => [
+            ['Detalle', 'fa-calendar-days', 'gr-ambar', 'Control mensual', ['catalogo' => 'PROY_CONT_COMP_CONTROL_DET']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_CONT_COMP_CONTROL_DET' => [
+        'titulo' => 'Control mensual de la etapa', 'icono' => 'fa-calendar-days', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_CONT_COMP_CONTROL_DET', 'id' => 'IDE_CONT_ETAPA_CONTROL_DET', 'sp' => 'dbo.SP_PROY_CONT_COMP_CONTROL_DET', 'estado' => 'EST_ETAPA_CONTROL_DET',
+        'de' => ['tabla' => 'dbo.PROY_CONT_ETAPA_CONTROL', 'id' => 'IDE_CONT_ETAPA_CONTROL', 'columna' => 'IDE_CONT_ETAPA_CONTROL',
+            'titulo' => "CONCAT((SELECT P.DES_PLAN FROM dbo.GEN_PLAN P WHERE P.IDE_PLAN = X.IDE_PLAN), ' · ', (SELECT T.DES_ITEM FROM dbo.GEN_TABLAS T WHERE T.COD_TABLA = '66' AND T.COD_ITEM = X.TIP_CONCEPTO))"],
+        'parametros' => ['IDE_CONT_ETAPA_CONTROL', 'NUM_ITEM', 'NUM_ANIO', 'NUM_MES', 'DES_CONCEPTO_PAGO', 'PCT_AVANCE', 'IMP_BRUTO', 'IMP_REAJUSTE',
+            'IMP_AMORT_ADEL_DIR', 'IMP_AMORT_ADEL_MAT', 'IMP_AMORTIZACION', 'IMP_SALDO_SIN_IGV', 'IMP_DEDUC_ADEL_DIR', 'IMP_DEDUC_ADEL_MAT', 'IMP_IMPONIBLE',
+            'PCT_IGV', 'IMP_IGV', 'IMP_NETO', 'IMP_PENALIDAD', 'IMP_RETENCION', 'IMP_PAGO', 'EST_ETAPA_CONTROL_DET', 'NUM_MES_PROVISION', 'NUM_ANIO_PROVISION'],
+        'campos' => [
+            'NUM_ANIO' => ['Año', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '101', 'clave_numerica' => true]],
+            'NUM_MES' => ['Mes', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '18', 'clave_numerica' => true]],
+            'NUM_ANIO_PROVISION' => ['Año provisión', 'combo', ['tabla' => '101', 'clave_numerica' => true]],
+            'NUM_MES_PROVISION' => ['Mes provisión', 'combo', ['tabla' => '18', 'clave_numerica' => true]],
+            'DES_CONCEPTO_PAGO' => ['Concepto de pago', 'area', ['requerido' => true, 'max' => 150, 'grilla' => true]],
+            'PCT_AVANCE' => ['% de avance', 'numero', ['seccion' => 'Montos']],
+            'IMP_BRUTO' => ['Monto bruto', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_REAJUSTE' => ['Reajustes', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_AMORT_ADEL_DIR' => ['Amort. adelanto directo', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_AMORT_ADEL_MAT' => ['Amort. adelanto materiales', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_AMORTIZACION' => ['Amortización', 'numero', ['seccion' => 'Montos']],
+            'IMP_SALDO_SIN_IGV' => ['Saldo sin IGV', 'numero', ['grilla' => true, 'seccion' => 'Montos', 'auto' => true]],
+            'IMP_DEDUC_ADEL_DIR' => ['Deduc. adelanto directo', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_DEDUC_ADEL_MAT' => ['Deduc. adelanto materiales', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_IMPONIBLE' => ['Monto imponible', 'numero', ['grilla' => true, 'seccion' => 'Montos', 'auto' => true]],
+            'PCT_IGV' => ['% IGV', 'numero', ['oculto' => true]],
+            'IMP_IGV' => ['IGV (18%)', 'numero', ['grilla' => true, 'seccion' => 'Montos', 'auto' => true]],
+            'IMP_NETO' => ['Neto facturado', 'numero', ['grilla' => true, 'seccion' => 'Montos', 'auto' => true]],
+            'IMP_PENALIDAD' => ['Penalidad', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_RETENCION' => ['Retención', 'numero', ['grilla' => true, 'seccion' => 'Montos']],
+            'IMP_PAGO' => ['Monto a pagar', 'numero', ['grilla' => true, 'seccion' => 'Montos', 'auto' => true]],
+            'EST_ETAPA_CONTROL_DET' => ['Estado', 'combo', ['oculto' => true, 'tabla' => '99']],
+        ],
+        //EL % DE IGV Y EL PLAN (PARA LA FORMULA) SALEN DEL CONTROL ANUAL; EL AÑO INICIAL ES EL ACTUAL
+        'nuevo_valores' => ['PCT_IGV' => '{de.PCT_IGV}', 'EST_ETAPA_CONTROL_DET' => '1', 'NUM_ANIO' => date('y'), 'PCT_AVANCE' => '0',
+            'IMP_BRUTO' => '0', 'IMP_REAJUSTE' => '0', 'IMP_AMORT_ADEL_DIR' => '0', 'IMP_AMORT_ADEL_MAT' => '0', 'IMP_AMORTIZACION' => '0',
+            'IMP_DEDUC_ADEL_DIR' => '0', 'IMP_DEDUC_ADEL_MAT' => '0', 'IMP_PENALIDAD' => '0', 'IMP_RETENCION' => '0'],
+        'calculo' => App\Calculos\ControlMensual::class,
+        'orden' => [['NUM_ANIO', 'asc'], ['NUM_MES', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos', ['legado' => ['GEN_ARCHIVO', ['PIDE' => '{id}', 'Tabla' => 'PROY_CONT_COMP_CONTROL_DET']]]],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_COMP_RECURSO' => [
+        'titulo' => 'Recursos de la etapa', 'icono' => 'fa-briefcase', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COMP_RECURSO', 'id' => 'IDE_PROY_COMP_REC', 'sp' => 'dbo.SP_PROY_COMP_RECURSO', 'estado' => 'EST_PROY_COMP_REC',
+        'de' => ['tabla' => 'dbo.PROY_COMPONENTE', 'id' => 'IDE_PROY_COMPONENTE', 'columna' => 'IDE_PROY_COMPONENTE',
+            'titulo' => "CONCAT((SELECT G.DES_COMPONENTE FROM dbo.GEN_COMPONENTE G WHERE G.IDE_COMPONENTE = X.IDE_COMPONENTE), ' · ', (SELECT CONCAT(LTRIM(RTRIM(A.COD_PROYECTO)), ' - ', A.DES_PROYECTO) FROM dbo.PROYECTO_ACTIVIDAD A WHERE A.IDE_PROYECTO_ACTIVIDAD = X.IDE_PROYECTO_ACTIVIDAD))"],
+        'parametros' => ['IDE_PROY_COMPONENTE', 'IDE_RECURSO', 'IDE_ROL', 'EST_PROY_COMP_REC'],
+        'campos' => [
+            'IDE_RECURSO' => ['Recurso', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO']]],
+            'IDE_ROL' => ['Rol o función', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_ROLES', 'IDE_ROL', 'DES_ROL', 'EST_ROL', ['IDE_FASE' => 18]]]],
+            'EST_PROY_COMP_REC' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
     'PROC_UNIDAD_MEDIDA' => [
         'titulo' => 'Unidades de medida', 'icono' => 'fa-ruler',
         'tabla' => 'dbo.PROC_UNIDAD_MEDIDA', 'id' => 'IDE_UNIDAD_MEDIDA', 'sp' => 'dbo.SP_PROC_UNIDAD_MEDIDA', 'estado' => 'EST_UNIDAD_MEDIDA',

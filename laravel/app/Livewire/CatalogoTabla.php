@@ -15,8 +15,8 @@ use Livewire\WithPagination;
 
 /**
  * Grilla de cualquier catalogo de config/catalogos.php (reemplaza Flexigrid + SelGrd de su SP_<TABLA>):
- * filas no eliminadas (estado <> '2'), busqueda con parametros en las columnas de texto y orden
- * por las columnas de la grilla antes de paginar.
+ * filas no eliminadas, busqueda con parametros en las columnas de texto y orden antes de paginar.
+ * Tambien sirve a las pantallas que dependen de otro registro ($de) y a los catalogos jerarquicos ($padre).
  */
 class CatalogoTabla extends Component
 {
@@ -45,7 +45,11 @@ class CatalogoTabla extends Component
     #[Locked]
     public int $nivel = 1;
 
-    public function mount(string $pagina, ?string $padre = null): void
+    /** Pantallas que dependen de otro registro (definicion 'de'): su id */
+    #[Locked]
+    public ?string $de = null;
+
+    public function mount(string $pagina, ?string $padre = null, ?string $de = null): void
     {
         $def = Catalogo::definicion($pagina);
         $this->pagina = $pagina;
@@ -54,6 +58,10 @@ class CatalogoTabla extends Component
             abort_unless($fila, 404);
             $this->padre = (string) $padre;
             $this->nivel = count(Catalogo::cadena($def, $fila)) + 1;
+        }
+        if (! empty($def['de'])) {
+            abort_unless($de !== null && Catalogo::filaDe($def, $de), 404);
+            $this->de = (string) $de;
         }
         $this->validarOrden();
     }
@@ -69,6 +77,26 @@ class CatalogoTabla extends Component
     public function urlHijos(int|string $id): string
     {
         return route('catalogos.index', ['pagina' => $this->pagina, 'padre' => $id]);
+    }
+
+    /**
+     * URL de una accion de la fila ('acciones' en la definicion): otra pantalla de catalogos que depende
+     * de este registro ('catalogo' => PAGINA) o una del sistema actual ('legado' => [Pagina, parametros])
+     */
+    public function urlAccion(array $accion, object $fila): string
+    {
+        $id = trim((string) $fila->ID);
+        if (isset($accion['catalogo'])) {
+            return route('catalogos.index', ['pagina' => $accion['catalogo'], 'de' => $id]);
+        }
+        [$pagina, $parametros] = $accion['legado'];
+        $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2];
+        foreach ($parametros as $nombre => $valor) {
+            $consulta[$nombre] = str_replace('{id}', $id, (string) $valor);
+        }
+        $consulta['vmSinCabecera'] = 1;
+
+        return app(Seguridad::class)->urlLegado('mainpage.php?'.http_build_query($consulta));
     }
 
     public function def(): array
@@ -106,11 +134,14 @@ class CatalogoTabla extends Component
 
     private function validarOrden(): void
     {
-        $columnas = Catalogo::columnasGrilla($this->def());
-        if (! array_key_exists($this->orden, $columnas)) {
-            //POR DEFECTO, LA PRIMERA COLUMNA DE TEXTO DE LA GRILLA
+        $def = $this->def();
+        $columnas = Catalogo::columnasGrilla($def);
+        //SIN ORDEN ELEGIDO: EL DE LA DEFINICION ('orden') O LA PRIMERA COLUMNA DE TEXTO DE LA GRILLA
+        if (! array_key_exists($this->orden, $columnas) && empty($def['orden'])) {
             $texto = array_keys(array_filter($columnas, fn ($c) => in_array($c[1], ['texto', 'area'], true)));
             $this->orden = $texto[0] ?? array_key_first($columnas);
+        } elseif (! array_key_exists($this->orden, $columnas)) {
+            $this->orden = '';
         }
         $this->direccion = $this->direccion === 'desc' ? 'desc' : 'asc';
     }
@@ -120,7 +151,7 @@ class CatalogoTabla extends Component
     {
     }
 
-    /** Baja logica con el Delete de su SP (pone el estado en '2') */
+    /** Baja logica con el Delete de su SP */
     public function eliminar(int|string $id): void
     {
         $id = trim((string) $id);
@@ -128,12 +159,22 @@ class CatalogoTabla extends Component
             return;
         }
         $def = $this->def();
+        //EN UNA PANTALLA QUE DEPENDE DE OTRO REGISTRO, SOLO SE ELIMINAN SUS PROPIAS FILAS
+        if (! empty($def['de']) && ! DB::table($def['tabla'])->where($def['id'], $id)->where($def['de']['columna'], $this->de)->exists()) {
+            return;
+        }
         try {
             Procedimiento::grabar($def['sp'], 'Delete', ['pCodigo' => $id, 'pUsuario' => (int) Auth::id()]);
             $this->dispatch('aviso', tipo: 'ok', mensaje: 'Registro eliminado.');
         } catch (\RuntimeException $e) {
             $this->dispatch('aviso', tipo: 'error', mensaje: 'No se pudo eliminar: '.$e->getMessage());
         }
+    }
+
+    /** Expresion SQL de una columna de la grilla (columna de la tabla o expresion calculada) */
+    private function expresion(string $columna, array $campo): string
+    {
+        return Catalogo::esColumna($campo) ? '[T].['.$columna.']' : $campo[2]['expresion'];
     }
 
     public function render()
@@ -143,31 +184,45 @@ class CatalogoTabla extends Component
         $columnas = Catalogo::columnasGrilla($def);
         $texto = trim($this->buscar);
 
-        //JERARQUIA: LA RAIZ O LOS HIJOS DEL PADRE; FILTRO FIJO DEL CATALOGO (COMO SU SelGrd)
+        //JERARQUIA (RAIZ O HIJOS DEL PADRE), REGISTRO "de" Y FILTRO FIJO DEL CATALOGO (COMO SU SelGrd)
         $contexto = Catalogo::contexto($def, Catalogo::fila($def, $this->padre));
         $filtro = [];
         foreach (array_merge($def['filtro'] ?? [], $contexto['filtro']) as $columna => $valor) {
             $filtro['T.'.$columna] = $valor;
         }
+        if (! empty($def['de'])) {
+            $filtro['T.'.$def['de']['columna']] = $this->de;
+        }
 
-        $filas = DB::table($def['tabla'].' as T')
-            //COMO SelGrd DE SU SP: estado <> '2' (TAMPOCO MUESTRA LOS QUE TIENEN ESTADO NULL)
-            ->where('T.'.$def['estado'], '<>', '2')
+        $consulta = DB::table($def['tabla'].' as T')
+            //COMO SelGrd DE SU SP: estado <> eliminado (TAMPOCO MUESTRA LOS QUE TIENEN ESTADO NULL)
+            ->where('T.'.$def['estado'], '<>', Catalogo::eliminado($def))
             ->when($filtro, fn ($q) => $q->where($filtro))
             ->when($texto !== '', function ($q) use ($texto, $columnas) {
                 $patron = '%'.str_replace(['[', '%', '_'], ['[[]', '[%]', '[_]'], $texto).'%';
                 $q->where(function ($q) use ($patron, $columnas) {
                     foreach ($columnas as $columna => $c) {
-                        if (in_array($c[1], ['texto', 'area'], true)) {
+                        if (in_array($c[1], ['texto', 'area'], true) && Catalogo::esColumna($c)) {
                             $q->orWhere('T.'.$columna, 'like', $patron);
                         }
                     }
                 });
             })
-            ->orderBy('T.'.$this->orden, $this->direccion)
-            //DESEMPATE POR LA CLAVE (SI NO ES YA LA COLUMNA DEL ORDEN: SQL SERVER NO ACEPTA REPETIRLA)
-            ->when($this->orden !== $def['id'], fn ($q) => $q->orderBy('T.'.$def['id']))
-            ->select(array_merge(['T.'.$def['id'].' as ID'], array_map(fn ($c) => 'T.'.$c, array_keys($columnas))))
+            ->select('T.'.$def['id'].' as ID');
+        foreach ($columnas as $columna => $c) {
+            $consulta->selectRaw($this->expresion($columna, $c).' AS ['.$columna.']');
+        }
+        if ($this->orden !== '') {
+            $consulta->orderByRaw($this->expresion($this->orden, $columnas[$this->orden]).' '.$this->direccion);
+        } else {
+            //ORDEN DE LA DEFINICION: COLUMNAS O EXPRESIONES (P. EJ. EL NOMBRE DEL PLAN, COMO SU SelGrd)
+            foreach ($def['orden'] as [$columna, $direccion]) {
+                $direccion = $direccion === 'desc' ? 'desc' : 'asc';
+                str_contains($columna, '(') ? $consulta->orderByRaw($columna.' '.$direccion) : $consulta->orderBy('T.'.$columna, $direccion);
+            }
+        }
+        //DESEMPATE POR LA CLAVE (SI NO ES YA LA COLUMNA DEL ORDEN: SQL SERVER NO ACEPTA REPETIRLA)
+        $filas = $consulta->when($this->orden !== $def['id'], fn ($q) => $q->orderBy('T.'.$def['id']))
             ->paginate($this->porPagina);
 
         //DESCRIPCIONES DE LOS COMBOS (INCLUIDO EL ESTADO) PARA MOSTRARLAS EN LUGAR DE LOS CODIGOS

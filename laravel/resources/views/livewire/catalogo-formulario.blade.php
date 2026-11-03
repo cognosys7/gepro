@@ -4,9 +4,18 @@
             $puede = $this->puedeGrabar();
             $tipos = ['texto' => 'text', 'area' => 'textarea', 'numero' => 'number', 'combo' => 'select', 'fecha' => 'date'];
             $principal = collect($def['campos'])->filter(fn ($c) => in_array($c[1], ['texto', 'area'], true))->keys()->first();
+            //CAMPOS DEL FORMULARIO AGRUPADOS POR SECCION ('seccion' en el campo; por defecto "Datos")
+            $secciones = [];
+            foreach ($def['campos'] as $campo => $c) {
+                if (empty($c[2]['oculto']) && \App\Support\Catalogo::esColumna($c)) {
+                    $secciones[$c[2]['seccion'] ?? 'Datos'][$campo] = $c;
+                }
+            }
+            $conCalculo = ! empty($def['calculo']);
+            $ancho = count($def['campos']) > 10 ? '' : 'fm-panel-angosto';
         @endphp
         <div class="fm-fondo" wire:keydown.escape="cerrar">
-            <form class="fm-panel fm-panel-angosto" wire:submit="guardar" novalidate>
+            <form class="fm-panel {{ $ancho }}" wire:submit="guardar" novalidate>
                 <div class="fm-panel-cabecera">
                     <span class="fm-panel-icono"><i class="fa-solid {{ ! $puede ? 'fa-eye' : ($idRegistro ? 'fa-pen-to-square' : 'fa-plus') }}"></i></span>
                     <div>
@@ -21,25 +30,34 @@
                     @if ($errors->any() && ! $errors->has('general'))
                         <p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> Revise los campos marcados.</p>
                     @endif
-                    <section class="fm-seccion">
-                        <h3><i class="fa-solid {{ $def['icono'] }}"></i> Datos</h3>
-                        <div class="fm-campos">
-                            @foreach ($def['campos'] as $campo => [$etiqueta, $tipo, $o])
-                                @continue(! empty($o['oculto']))
-                                @include('livewire.partes.campo', ['c' => [
-                                    'nombre' => $campo,
-                                    'etiqueta' => $etiqueta.(! empty($o['requerido']) && ! $this->bloqueado($campo) ? ' *' : ''),
-                                    'tipo' => $tipos[$tipo],
-                                    'extra' => array_filter([
-                                        'opciones' => $combos[$campo] ?? null,
-                                        'maxlength' => $o['max'] ?? null,
-                                        'step' => $tipo === 'numero' ? 'any' : null,
-                                        'clase' => $tipo === 'area' ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),
-                                    ], fn ($v) => $v !== null),
-                                ]])
-                            @endforeach
-                        </div>
-                    </section>
+                    @foreach ($secciones as $nombreSeccion => $camposSeccion)
+                        <section class="fm-seccion">
+                            <h3>
+                                <i class="fa-solid {{ $loop->first ? $def['icono'] : 'fa-calculator' }}"></i> {{ $nombreSeccion }}
+                                @if ($conCalculo && $puede && ! $loop->first)
+                                    {{-- CALCULO AUTOMATICO: LOS MONTOS EN VERDE SE CALCULAN SOLOS --}}
+                                    <label class="fm-auto-calculo"><input type="checkbox" wire:model.live="autoCalcular"> Calcular montos automáticamente (en verde)</label>
+                                @endif
+                            </h3>
+                            <div class="fm-campos">
+                                @foreach ($camposSeccion as $campo => [$etiqueta, $tipo, $o])
+                                    @include('livewire.partes.campo', ['c' => [
+                                        'nombre' => $campo,
+                                        'etiqueta' => $etiqueta.(! empty($o['requerido']) && ! $this->bloqueado($campo) ? ' *' : ''),
+                                        'tipo' => $tipos[$tipo],
+                                        'extra' => array_filter([
+                                            'opciones' => $combos[$campo] ?? null,
+                                            'maxlength' => $o['max'] ?? null,
+                                            'step' => $tipo === 'numero' ? 'any' : null,
+                                            'clase' => $tipo === 'area' ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),
+                                            'live' => $conCalculo && $tipo === 'numero' ? true : null,
+                                            'auto' => ! empty($o['auto']) && $this->autoCalcular ? true : null,
+                                        ], fn ($v) => $v !== null),
+                                    ]])
+                                @endforeach
+                            </div>
+                        </section>
+                    @endforeach
                 </div>
 
                 <div class="fm-panel-pie">

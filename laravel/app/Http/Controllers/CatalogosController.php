@@ -17,7 +17,19 @@ class CatalogosController extends Controller
     {
         $def = Catalogo::definicion($pagina);
 
+        //PANTALLAS QUE DEPENDEN DE OTRO REGISTRO (ETAPAS, CONTROL ANUAL, CONTROL MENSUAL...): NO ESTAN EN EL
+        //MENU; SE ABREN EN LA VENTANA MODAL Y EL ACCESO SE VALIDA CON LA PAGINA DE ORIGEN ('acceso')
         $perfil = $request->attributes->get('perfilGepro');
+        if (! empty($def['de'])) {
+            abort_unless($seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], $def['acceso']), 403, 'Su perfil no tiene acceso a esta opción.');
+            $de = (string) $request->query('de', '');
+            abort_unless(preg_match('/^[0-9]{1,12}$/', $de), 404);
+            $filaDe = Catalogo::filaDe($def, $de);
+            abort_unless($filaDe, 404);
+
+            return view('catalogos.embebido', ['titulo' => $def['titulo'], 'pagina' => $pagina, 'def' => $def, 'de' => $de, 'filaDe' => $filaDe]);
+        }
+
         $menu = $seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], $pagina);
         abort_unless($menu, 403, 'Su perfil no tiene acceso a esta opción.');
         PuenteSesionLegado::marcarOpcion($menu['padre'], $menu['id'], $perfil['perfil'], (int) $seguridad->sistema());

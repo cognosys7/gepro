@@ -193,6 +193,10 @@ class ProyectoContratosTabla extends Component
     public function urlAccion(string $clave, object $fila): string
     {
         [, , , $pagina, $parametros] = self::ACCIONES[$clave];
+        //PANTALLAS QUE YA ESTAN EN LARAVEL (config/catalogos.php, P. EJ. LAS ETAPAS DEL CONTRATO)
+        if (\App\Support\Catalogo::existe($pagina) && ! empty(config('catalogos.'.$pagina.'.de'))) {
+            return route('catalogos.index', ['pagina' => $pagina, 'de' => (int) $fila->ID]);
+        }
         $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2];
         foreach ($parametros as $nombre => $valor) {
             $consulta[$nombre] = str_replace(

@@ -19,7 +19,8 @@
         @endif
     </div>
 
-    @php($conAcciones = ! empty($def['editar']) || $this->puede('eliminar') || $this->conHijos())
+    {{-- TODAS LAS ACCIONES DE LA FILA EN UNA COLUMNA FIJA A LA DERECHA: SE VEN AUNQUE LA GRILLA SE DESPLACE --}}
+    @php($conAcciones = ! empty($def['editar']) || $this->puede('eliminar') || $this->conHijos() || ! empty($def['acciones']))
     <div class="gp-tabla-caja">
         <table class="gp-tabla">
             <thead>
@@ -36,7 +37,7 @@
                         </th>
                     @endforeach
                     @if ($conAcciones)
-                        <th class="gp-col-accion">Acciones</th>
+                        <th class="gp-col-accion gp-col-fija">Acciones</th>
                     @endif
                 </tr>
             </thead>
@@ -52,13 +53,23 @@
                             @elseif ($tipo === 'fecha')
                                 <td class="gp-fecha">{{ $valor !== '' ? \Illuminate\Support\Carbon::parse(substr($valor, 0, 10))->format('d/m/Y') : '' }}</td>
                             @elseif ($tipo === 'numero')
-                                <td class="gp-numero">{{ $valor !== '' ? rtrim(rtrim(number_format((float) $valor, 2, '.', ','), '0'), '.') : '' }}</td>
+                                {{-- IMPORTES (IMP_*) SIEMPRE CON DOS DECIMALES; LOS DEMAS NUMEROS SIN CEROS DE SOBRA --}}
+                                <td class="gp-numero">{{ $valor === '' ? '' : (str_starts_with($columna, 'IMP_') ? number_format((float) $valor, 2, '.', ',') : rtrim(rtrim(number_format((float) $valor, 2, '.', ','), '0'), '.')) }}</td>
                             @else
                                 <td>{{ $valor }}</td>
                             @endif
                         @endforeach
                         @if ($conAcciones)
-                            <td class="gp-col-accion">
+                            <td class="gp-col-accion gp-col-fija">
+                                {{-- ACCIONES DE LA DEFINICION: ABREN OTRA PANTALLA EN LA VENTANA MODAL --}}
+                                @php($primera = array_key_first($columnas))
+                                @foreach ($def['acciones'] ?? [] as $accion)
+                                    <button type="button" class="gr-ico {{ $accion[2] }}" title="{{ $accion[3] ?? $accion[0] }}"
+                                        data-modal-url="{{ $this->urlAccion($accion[4], $fila) }}" data-modal-titulo="{{ $accion[3] ?? $accion[0] }}"
+                                        data-modal-subtitulo="{{ $etiquetas[$primera][trim((string) $fila->{$primera})] ?? trim((string) $fila->{$primera}) }}">
+                                        <i class="fa-solid {{ $accion[1] }}"></i>
+                                    </button>
+                                @endforeach
                                 @if ($this->conHijos())
                                     @php([$textoHijos, $iconoHijos] = $def['jerarquia']['boton'])
                                     <a class="gr-ico gr-teal" title="{{ $textoHijos }}" href="{{ $this->urlHijos(trim((string) $fila->ID)) }}"><i class="fa-solid {{ $iconoHijos }}"></i></a>
