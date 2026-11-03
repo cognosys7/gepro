@@ -2,7 +2,7 @@
     @if ($abierto)
         @php
             $puede = $this->puedeGrabar();
-            $tipos = ['texto' => 'text', 'area' => 'textarea', 'numero' => 'number', 'combo' => 'select'];
+            $tipos = ['texto' => 'text', 'area' => 'textarea', 'numero' => 'number', 'combo' => 'select', 'fecha' => 'date'];
             $principal = collect($def['campos'])->filter(fn ($c) => in_array($c[1], ['texto', 'area'], true))->keys()->first();
         @endphp
         <div class="fm-fondo" wire:keydown.escape="cerrar">
@@ -25,6 +25,7 @@
                         <h3><i class="fa-solid {{ $def['icono'] }}"></i> Datos</h3>
                         <div class="fm-campos">
                             @foreach ($def['campos'] as $campo => [$etiqueta, $tipo, $o])
+                                @continue(! empty($o['oculto']))
                                 @include('livewire.partes.campo', ['c' => [
                                     'nombre' => $campo,
                                     'etiqueta' => $etiqueta.(! empty($o['requerido']) && ! $this->bloqueado($campo) ? ' *' : ''),

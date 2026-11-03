@@ -37,11 +37,38 @@ class CatalogoTabla extends Component
     #[Url(as: 'n', except: 10)]
     public int $porPagina = 10;
 
-    public function mount(string $pagina): void
+    /** Catalogos jerarquicos: id del registro padre cuyos hijos se listan (null = raiz) */
+    #[Locked]
+    public ?string $padre = null;
+
+    /** Nivel de la lista (1 = raiz) */
+    #[Locked]
+    public int $nivel = 1;
+
+    public function mount(string $pagina, ?string $padre = null): void
     {
-        Catalogo::definicion($pagina);
+        $def = Catalogo::definicion($pagina);
         $this->pagina = $pagina;
+        if ($padre !== null && ! empty($def['jerarquia'])) {
+            $fila = Catalogo::fila($def, $padre);
+            abort_unless($fila, 404);
+            $this->padre = (string) $padre;
+            $this->nivel = count(Catalogo::cadena($def, $fila)) + 1;
+        }
         $this->validarOrden();
+    }
+
+    /** Si las filas de esta lista pueden tener hijos (boton para verlos) */
+    public function conHijos(): bool
+    {
+        $j = $this->def()['jerarquia'] ?? null;
+
+        return $j && $this->nivel < $j['niveles'];
+    }
+
+    public function urlHijos(int|string $id): string
+    {
+        return route('catalogos.index', ['pagina' => $this->pagina, 'padre' => $id]);
     }
 
     public function def(): array
@@ -94,9 +121,10 @@ class CatalogoTabla extends Component
     }
 
     /** Baja logica con el Delete de su SP (pone el estado en '2') */
-    public function eliminar(int $id): void
+    public function eliminar(int|string $id): void
     {
-        if (! $this->puede('eliminar')) {
+        $id = trim((string) $id);
+        if (! $this->puede('eliminar') || ! preg_match('/^[A-Za-z0-9_-]{1,30}$/', $id)) {
             return;
         }
         $def = $this->def();
@@ -115,9 +143,17 @@ class CatalogoTabla extends Component
         $columnas = Catalogo::columnasGrilla($def);
         $texto = trim($this->buscar);
 
+        //JERARQUIA: LA RAIZ O LOS HIJOS DEL PADRE; FILTRO FIJO DEL CATALOGO (COMO SU SelGrd)
+        $contexto = Catalogo::contexto($def, Catalogo::fila($def, $this->padre));
+        $filtro = [];
+        foreach (array_merge($def['filtro'] ?? [], $contexto['filtro']) as $columna => $valor) {
+            $filtro['T.'.$columna] = $valor;
+        }
+
         $filas = DB::table($def['tabla'].' as T')
             //COMO SelGrd DE SU SP: estado <> '2' (TAMPOCO MUESTRA LOS QUE TIENEN ESTADO NULL)
             ->where('T.'.$def['estado'], '<>', '2')
+            ->when($filtro, fn ($q) => $q->where($filtro))
             ->when($texto !== '', function ($q) use ($texto, $columnas) {
                 $patron = '%'.str_replace(['[', '%', '_'], ['[[]', '[%]', '[_]'], $texto).'%';
                 $q->where(function ($q) use ($patron, $columnas) {
@@ -129,7 +165,8 @@ class CatalogoTabla extends Component
                 });
             })
             ->orderBy('T.'.$this->orden, $this->direccion)
-            ->orderBy('T.'.$def['id'])
+            //DESEMPATE POR LA CLAVE (SI NO ES YA LA COLUMNA DEL ORDEN: SQL SERVER NO ACEPTA REPETIRLA)
+            ->when($this->orden !== $def['id'], fn ($q) => $q->orderBy('T.'.$def['id']))
             ->select(array_merge(['T.'.$def['id'].' as ID'], array_map(fn ($c) => 'T.'.$c, array_keys($columnas))))
             ->paginate($this->porPagina);
 

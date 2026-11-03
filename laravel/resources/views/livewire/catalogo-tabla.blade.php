@@ -19,7 +19,7 @@
         @endif
     </div>
 
-    @php($conAcciones = ! empty($def['editar']) || $this->puede('eliminar'))
+    @php($conAcciones = ! empty($def['editar']) || $this->puede('eliminar') || $this->conHijos())
     <div class="gp-tabla-caja">
         <table class="gp-tabla">
             <thead>
@@ -49,6 +49,8 @@
                                 <td>@if ($valor !== '')<span @class(['gp-estado', 'gp-estado-activo' => $valor === '1'])>{{ $etiquetas[$columna][$valor] ?? $valor }}</span>@endif</td>
                             @elseif ($tipo === 'combo')
                                 <td>{{ $etiquetas[$columna][$valor] ?? $valor }}</td>
+                            @elseif ($tipo === 'fecha')
+                                <td class="gp-fecha">{{ $valor !== '' ? \Illuminate\Support\Carbon::parse(substr($valor, 0, 10))->format('d/m/Y') : '' }}</td>
                             @elseif ($tipo === 'numero')
                                 <td class="gp-numero">{{ $valor !== '' ? rtrim(rtrim(number_format((float) $valor, 2, '.', ','), '0'), '.') : '' }}</td>
                             @else
@@ -57,14 +59,18 @@
                         @endforeach
                         @if ($conAcciones)
                             <td class="gp-col-accion">
+                                @if ($this->conHijos())
+                                    @php([$textoHijos, $iconoHijos] = $def['jerarquia']['boton'])
+                                    <a class="gr-ico gr-teal" title="{{ $textoHijos }}" href="{{ $this->urlHijos(trim((string) $fila->ID)) }}"><i class="fa-solid {{ $iconoHijos }}"></i></a>
+                                @endif
                                 @if ($this->puede('editar'))
-                                    <button type="button" class="gr-ico gr-ambar" title="Editar" wire:click="$dispatch('catalogo-editar', { id: {{ (int) $fila->ID }} })"><i class="fa-solid fa-pen"></i></button>
+                                    <button type="button" class="gr-ico gr-ambar" title="Editar" wire:click="$dispatch('catalogo-editar', { id: {{ \Illuminate\Support\Js::from(trim((string) $fila->ID)) }} })"><i class="fa-solid fa-pen"></i></button>
                                 @elseif (! empty($def['editar']))
                                     {{-- PERFIL DE SOLO CONSULTA: VE EL FORMULARIO SIN GRABAR --}}
-                                    <button type="button" class="gr-ico gr-azul" title="Ver" wire:click="$dispatch('catalogo-editar', { id: {{ (int) $fila->ID }} })"><i class="fa-solid fa-eye"></i></button>
+                                    <button type="button" class="gr-ico gr-azul" title="Ver" wire:click="$dispatch('catalogo-editar', { id: {{ \Illuminate\Support\Js::from(trim((string) $fila->ID)) }} })"><i class="fa-solid fa-eye"></i></button>
                                 @endif
                                 @if ($this->puede('eliminar'))
-                                    <button type="button" class="gr-ico gr-rojo" title="Eliminar" wire:click="eliminar({{ (int) $fila->ID }})"
+                                    <button type="button" class="gr-ico gr-rojo" title="Eliminar" wire:click="eliminar({{ \Illuminate\Support\Js::from(trim((string) $fila->ID)) }})"
                                         wire:confirm="¿Eliminar este registro? Dejará de mostrarse en las listas."><i class="fa-solid fa-trash-can"></i></button>
                                 @endif
                             </td>

@@ -28,14 +28,35 @@ class CatalogoFormulario extends Component
     public bool $abierto = false;
 
     #[Locked]
-    public ?int $idRegistro = null;
+    public ?string $idRegistro = null;
 
     public array $datos = [];
 
-    public function mount(string $pagina): void
+    /** Catalogos jerarquicos: registro padre bajo el que se registra (null = raiz) */
+    #[Locked]
+    public ?string $padre = null;
+
+    public function mount(string $pagina, ?string $padre = null): void
     {
         Catalogo::definicion($pagina);
         $this->pagina = $pagina;
+        $this->padre = $padre;
+    }
+
+    /** Valores que fija la jerarquia al registrar (tabla, padre, nivel...) */
+    private function valoresJerarquia(): array
+    {
+        $def = $this->def();
+
+        return Catalogo::contexto($def, Catalogo::fila($def, $this->padre))['valores'];
+    }
+
+    /** Columnas que maneja la jerarquia: no se editan */
+    private function columnasJerarquia(): array
+    {
+        $j = $this->def()['jerarquia'] ?? null;
+
+        return $j ? array_keys(array_merge($j['raiz']['valores'] ?? [], $j['hijo']['valores'] ?? [])) : [];
     }
 
     public function def(): array
@@ -55,8 +76,9 @@ class CatalogoFormulario extends Component
     {
         $c = $this->def()['campos'][$campo] ?? null;
 
-        return ! $this->puedeGrabar() || ! $c || (! empty($c[2]['solo_lectura']) && $this->idRegistro !== null)
-            || ! in_array($campo, $this->def()['parametros'], true);
+        return ! $this->puedeGrabar() || ! $c || ! empty($c[2]['oculto']) || (! empty($c[2]['solo_lectura']) && $this->idRegistro !== null)
+            || ! in_array($campo, $this->def()['parametros'], true)
+            || in_array($campo, $this->columnasJerarquia(), true);
     }
 
     #[On('catalogo-nuevo')]
@@ -69,13 +91,21 @@ class CatalogoFormulario extends Component
         $this->idRegistro = null;
         $this->datos = array_fill_keys(array_keys($this->def()['campos']), '');
         $this->datos[$this->def()['estado']] = '1';
+        //SE MUESTRAN LOS VALORES QUE PONE LA JERARQUIA (P. EJ. EL RUBRO SUPERIOR)
+        foreach ($this->valoresJerarquia() as $columna => $valor) {
+            if (array_key_exists($columna, $this->datos)) {
+                $this->datos[$columna] = $valor;
+            }
+        }
         $this->abierto = true;
     }
 
     #[On('catalogo-editar')]
-    public function editar(int $id): void
+    public function editar(int|string $id): void
     {
-        if (empty($this->def()['editar'])) {
+        //LA CLAVE PUEDE SER UN NUMERO O UN CODIGO (UBIGEO)
+        $id = trim((string) $id);
+        if (empty($this->def()['editar']) || ! preg_match('/^[A-Za-z0-9_-]{1,30}$/', $id)) {
             return;
         }
         $fila = $this->leer($id);
@@ -90,7 +120,7 @@ class CatalogoFormulario extends Component
         $this->abierto = true;
     }
 
-    private function leer(int $id): ?object
+    private function leer(string $id): ?object
     {
         $def = $this->def();
 
@@ -102,8 +132,11 @@ class CatalogoFormulario extends Component
         $datos = [];
         foreach ($campos as $campo) {
             $valor = $fila->{$campo} ?? null;
-            if ($valor !== null && is_numeric($valor) && ($this->def()['campos'][$campo][1] ?? '') === 'numero') {
+            $tipo = $this->def()['campos'][$campo][1] ?? '';
+            if ($valor !== null && is_numeric($valor) && $tipo === 'numero') {
                 $valor = rtrim(rtrim(number_format((float) $valor, 4, '.', ''), '0'), '.');
+            } elseif ($valor !== null && $tipo === 'fecha') {
+                $valor = substr((string) $valor, 0, 10);
             }
             $datos[$campo] = $valor === null ? '' : trim((string) $valor);
         }
@@ -138,6 +171,14 @@ class CatalogoFormulario extends Component
             $editable = isset($def['campos'][$p]) && ! $this->bloqueado($p);
             $parametros[$p] = $editable ? trim((string) ($this->datos[$p] ?? '')) : ($base[$p] ?? '');
         }
+        //AL REGISTRAR, LA JERARQUIA FIJA SUS COLUMNAS (AL EDITAR SE CONSERVAN LAS DE LA BASE)
+        if ($this->idRegistro === null) {
+            foreach ($this->valoresJerarquia() as $columna => $valor) {
+                if (in_array($columna, $def['parametros'], true)) {
+                    $parametros[$columna] = $valor;
+                }
+            }
+        }
 
         //VALIDACION SEGUN LA DEFINICION (SOLO LOS CAMPOS EDITABLES)
         $reglas = [];
@@ -149,6 +190,8 @@ class CatalogoFormulario extends Component
             $r = [! empty($o['requerido']) ? 'required' : 'nullable'];
             if ($tipo === 'numero') {
                 $r[] = 'numeric';
+            } elseif ($tipo === 'fecha') {
+                $r[] = 'date_format:Y-m-d';
             } elseif ($tipo === 'combo') {
                 $r[] = Rule::in(array_map('strval', array_keys(Catalogo::opciones($def['campos'][$campo], $base[$campo] ?? null))));
             } else {
@@ -156,6 +199,10 @@ class CatalogoFormulario extends Component
                 if (! empty($o['max'])) {
                     $r[] = 'max:'.$o['max'];
                 }
+            }
+            //CODIGO QUE NO SE PUEDE REPETIR (P. EJ. EL UBIGEO): SE VALIDA AL REGISTRAR
+            if (! empty($o['unico']) && $this->idRegistro === null) {
+                $r[] = Rule::unique('sqlsrv.'.$def['tabla'], $campo);
             }
             $reglas['datos.'.$campo] = $r;
             $nombres['datos.'.$campo] = mb_strtolower($etiqueta, 'UTF-8');
