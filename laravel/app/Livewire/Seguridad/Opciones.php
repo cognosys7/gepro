@@ -4,7 +4,6 @@ namespace App\Livewire\Seguridad;
 
 use App\Support\ArbolOpciones;
 use App\Support\Procedimiento;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Locked;
@@ -15,14 +14,17 @@ use RuntimeException;
 /**
  * Opciones del menu de cada sistema (antes OpcionVista con paListarOpcionFlexigrid). Se registran,
  * editan, eliminan y ordenan con seguridad.paInsertaDatosOpcion, paActualizaDatosOpcion,
- * paEliminaDatosOpcion y paActualizaOrdenOpcion. La lista va en el orden del menu (App\Support\ArbolOpciones).
+ * paEliminaDatosOpcion y paActualizaOrdenOpcion. Se ven por sistema (una pestaña por modulo) y como el
+ * menu: cada opcion principal en un grupo con sus secundarias, en el orden de App\Support\ArbolOpciones.
  */
 class Opciones extends Component
 {
-    use Grilla;
-
+    /** Modulo cuyas opciones se ven (pestaña); por defecto el de GEPRO */
     #[Url(as: 'm', except: '')]
     public string $filtroModulo = '';
+
+    #[Url(as: 'q', except: '')]
+    public string $buscar = '';
 
     public bool $abierto = false;
 
@@ -35,20 +37,25 @@ class Opciones extends Component
 
     public array $datos = [];
 
-    public function columnas(): array
+    /** Elige la pestaña del sistema */
+    public function verModulo(string $modulo): void
     {
-        return [
-            'sistema' => ['Software', 's.sisnombre', true],
-            'opcion' => ['Opción', 'o.opcdescripcion', true],
-        ];
+        if (array_key_exists($modulo, $this->modulos())) {
+            $this->filtroModulo = $modulo;
+            $this->buscar = '';
+        }
     }
 
-    public function updatedFiltroModulo(): void
+    /** Modulo de la pestaña: el elegido si existe; si no, el de GEPRO o el primero */
+    private function moduloActual(array $modulos): string
     {
-        if ($this->filtroModulo !== '' && ! array_key_exists($this->filtroModulo, $this->modulos())) {
-            $this->filtroModulo = '';
+        if (array_key_exists($this->filtroModulo, $modulos)) {
+            return $this->filtroModulo;
         }
-        $this->resetPage();
+        $gepro = (string) DB::table('seguridad.tsmodulo as m')->join('seguridad.tssistema as s', 's.IdSistema', '=', 'm.modsistema')
+            ->where('s.sisabreviatura', config('gepro.sistema'))->where('m.modestado', 1)->value('m.idmodulo');
+
+        return array_key_exists($gepro, $modulos) ? $gepro : (string) array_key_first($modulos);
     }
 
     /** Modulos de los sistemas activos: idmodulo => "Sistema · Modulo" */
@@ -99,8 +106,21 @@ class Opciones extends Component
         $this->resetErrorBag();
         $this->idOpcion = null;
         $this->moduloOriginal = null;
-        $this->datos = ['nivel' => '1', 'modulo' => $this->filtroModulo, 'padre' => '', 'nombre' => '', 'enlace' => '', 'destino' => '1', 'lightbox' => '0'];
+        $this->datos = ['nivel' => '1', 'modulo' => $this->moduloActual($this->modulos()), 'padre' => '', 'nombre' => '', 'enlace' => '', 'destino' => '1', 'lightbox' => '0'];
         $this->abierto = true;
+    }
+
+    /** Nueva opcion secundaria dentro de esa opcion principal (boton del grupo) */
+    public function nuevaSecundaria(int $padre): void
+    {
+        $fila = $this->fila($padre);
+        if (! $fila || (int) $fila->opcnivel !== 1) {
+            return;
+        }
+        $this->nuevo();
+        $this->datos['modulo'] = (string) $fila->opcmodulo;
+        $this->datos['nivel'] = '2';
+        $this->datos['padre'] = (string) $padre;
     }
 
     public function editar(int $id): void
@@ -239,38 +259,80 @@ class Opciones extends Component
     public function render()
     {
         $modulos = $this->modulos();
-        if ($this->filtroModulo !== '' && ! array_key_exists($this->filtroModulo, $modulos)) {
-            $this->filtroModulo = '';
-        }
-        $opciones = DB::table('seguridad.tsopcion as o')
-            ->join('seguridad.tsmodulo as m', 'm.idmodulo', '=', 'o.opcmodulo')
-            ->join('seguridad.tssistema as s', 's.IdSistema', '=', 'm.modsistema')
-            ->where('s.sisestado', 1)->where('m.modestado', 1)->where('o.opcestado', 1)
-            ->when($this->filtroModulo !== '', fn ($q) => $q->where('o.opcmodulo', (int) $this->filtroModulo))
-            ->orderBy('s.sisnombre')->orderBy('m.modnombre')
-            ->get(['o.idopcion', 'o.opcmodulo', 'o.opcnivel', 'o.opcpadre', 'o.opcorden', 'o.opcdescripcion', 'o.opcenlace', 'o.opcdestino', 's.sisnombre']);
-        $filas = ArbolOpciones::ordenar($opciones);
+        $this->filtroModulo = $this->moduloActual($modulos);
 
-        //LA BUSQUEDA MANTIENE LA OPCION PRINCIPAL DE LAS SECUNDARIAS QUE COINCIDEN
+        //OPCIONES ACTIVAS POR MODULO (PARA LAS PESTAÑAS)
+        $cuentas = DB::table('seguridad.tsopcion')->where('opcestado', 1)->whereIn('opcmodulo', array_keys($modulos))
+            ->groupBy('opcmodulo')->selectRaw('opcmodulo, COUNT(*) AS n')->pluck('n', 'opcmodulo')->map(fn ($n) => (int) $n)->all();
+
+        $opciones = DB::table('seguridad.tsopcion as o')
+            ->where('o.opcestado', 1)->where('o.opcmodulo', (int) $this->filtroModulo)
+            ->select('o.idopcion', 'o.opcmodulo', 'o.opcnivel', 'o.opcpadre', 'o.opcorden', 'o.opcdescripcion', 'o.opcenlace', 'o.opcdestino')
+            //PERFILES ACTIVOS CON ACCESO A LA OPCION
+            ->selectRaw('(SELECT COUNT(*) FROM seguridad.tsacceso a INNER JOIN seguridad.tsperfil pf ON pf.idperfil = a.accperfil AND pf.pefestado = 1 WHERE a.accopcion = o.idopcion AND a.accestado = 1) AS perfiles')
+            ->get();
+        $grupos = $this->agrupar(ArbolOpciones::ordenar($opciones));
+
+        //BUSQUEDA: SI COINCIDE LA PRINCIPAL SE VE TODO SU GRUPO; SI NO, SOLO LAS SECUNDARIAS QUE COINCIDEN
         $texto = mb_strtolower(trim($this->buscar), 'UTF-8');
         if ($texto !== '') {
-            $mostrar = [];
-            foreach ($filas as $f) {
-                $enTexto = str_contains(mb_strtolower(trim($f->opcdescripcion).' '.trim($f->sisnombre), 'UTF-8'), $texto);
-                if ($enTexto) {
-                    $mostrar[(int) $f->idopcion] = true;
-                    $mostrar[(int) $f->opcpadre] = true;
+            $coincide = fn ($f) => $f && str_contains(mb_strtolower(trim((string) $f->opcdescripcion), 'UTF-8'), $texto);
+            foreach ($grupos as $i => $g) {
+                if (! $coincide($g['principal'])) {
+                    $grupos[$i]['hijas'] = array_values(array_filter($g['hijas'], $coincide));
+                    if (! $grupos[$i]['hijas']) {
+                        unset($grupos[$i]);
+                    }
                 }
             }
-            $filas = array_values(array_filter($filas, fn ($f) => isset($mostrar[(int) $f->idopcion])));
+            $grupos = array_values($grupos);
         }
-        $pagina = max(1, (int) $this->getPage());
-        $paginadas = new LengthAwarePaginator(array_slice($filas, ($pagina - 1) * $this->porPagina, $this->porPagina), count($filas), $this->porPagina, $pagina);
 
         return view('livewire.seguridad.opciones', [
-            'filas' => $paginadas,
+            'grupos' => $grupos,
+            'total' => count($opciones),
             'modulos' => $modulos,
+            'cuentas' => $cuentas,
             'principales' => $this->abierto ? $this->principales() : [],
         ]);
+    }
+
+    /**
+     * Grupos del menu: [principal (o null: secundarias sin principal activa), hijas]. Recibe las filas
+     * ya ordenadas (cada principal seguida de sus secundarias; las sueltas al final).
+     *
+     * @return list<array{principal: ?object, hijas: list<object>}>
+     */
+    private function agrupar(array $filas): array
+    {
+        $grupos = [];
+        $sueltas = [];
+        $actual = null;
+        foreach ($filas as $f) {
+            if ((int) $f->opcnivel === 1) {
+                $grupos[] = ['principal' => $f, 'hijas' => []];
+                $actual = array_key_last($grupos);
+            } elseif ($actual !== null && (int) $f->opcpadre === (int) $grupos[$actual]['principal']->idopcion) {
+                $grupos[$actual]['hijas'][] = $f;
+            } else {
+                $sueltas[] = $f;
+            }
+        }
+        if ($sueltas) {
+            $grupos[] = ['principal' => null, 'hijas' => $sueltas];
+        }
+
+        return $grupos;
+    }
+
+    /** Lo que abre la opcion, para mostrarlo corto: la Pagina del enlace o el enlace mismo */
+    public static function destino(?string $enlace): string
+    {
+        $enlace = trim(html_entity_decode((string) $enlace, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        if (preg_match('/[?&]Pagina=([^&]+)/', $enlace, $m)) {
+            return $m[1];
+        }
+
+        return $enlace;
     }
 }

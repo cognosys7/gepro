@@ -80,7 +80,12 @@ class SeguridadTest extends TestCase
     {
         $this->actingAs($this->admin());
         Livewire::test(Perfiles::class, ['pagina' => 'Perfil'])->assertViewHas('filas', fn ($f) => $f->total() === $this->cuenta('paCuentaPerfilFlexigrid'));
-        Livewire::test(Opciones::class)->assertViewHas('filas', fn ($f) => $f->total() === $this->cuenta('paCuentaOpcionFlexigrid'));
+        //OPCIONES: CADA PESTAÑA SUMA LAS DE SU SISTEMA; ENTRE TODAS, LAS DEL SISTEMA ACTUAL
+        $opciones = 0;
+        foreach (array_keys(Livewire::test(Opciones::class)->viewData('modulos')) as $modulo) {
+            $opciones += Livewire::test(Opciones::class)->call('verModulo', (string) $modulo)->viewData('total');
+        }
+        $this->assertSame($this->cuenta('paCuentaOpcionFlexigrid'), $opciones);
         Livewire::test(Sistemas::class)->assertViewHas('filas', fn ($f) => $f->total() === $this->cuenta('paCuentaSistemasFlexigrid'));
         Livewire::test(Usuarios::class)->assertViewHas('filas', fn ($f) => $f->total() === $this->cuenta('paCuentaUsuariosFlexigrid'));
     }
@@ -139,13 +144,17 @@ class SeguridadTest extends TestCase
             Livewire::test(Opciones::class)->call('nuevo')->set('datos.modulo', $modulo)->set('datos.nivel', '2')->set('datos.padre', (string) $grupo)
                 ->set('datos.nombre', 'OPCION LARAVEL '.$letra)->set('datos.enlace', 'Antirefresh.php?Pagina=PRUEBA_'.$letra)->call('guardar')->assertHasNoErrors();
         }
+        //"SECUNDARIA" EN EL GRUPO: EL FORMULARIO YA TRAE EL SISTEMA Y LA PRINCIPAL
+        Livewire::test(Opciones::class)->call('nuevaSecundaria', $grupo)->assertSet('abierto', true)
+            ->assertSet('datos.nivel', '2')->assertSet('datos.padre', (string) $grupo)->assertSet('datos.modulo', $modulo);
         $a = DB::table('seguridad.tsopcion')->where('opcestado', 1)->where('opcdescripcion', 'OPCION LARAVEL A')->first();
         $b = DB::table('seguridad.tsopcion')->where('opcestado', 1)->where('opcdescripcion', 'OPCION LARAVEL B')->first();
         $this->assertSame([$grupo, $grupo, 2], [(int) $a->opcpadre, (int) $b->opcpadre, (int) $b->opcnivel]);
         $this->assertLessThan((int) $b->opcorden, (int) $a->opcorden);
 
         //EN LA LISTA VAN DEBAJO DE SU PRINCIPAL; BAJAR A LA PRIMERA LA PONE DESPUES DE LA SEGUNDA
-        $orden = fn () => collect(Livewire::test(Opciones::class)->set('filtroModulo', $modulo)->set('porPagina', 100)->set('buscar', 'LARAVEL')->viewData('filas')->items())->pluck('idopcion')->map(fn ($i) => (int) $i)->all();
+        $orden = fn () => collect(Livewire::test(Opciones::class)->call('verModulo', $modulo)->set('buscar', 'LARAVEL')->viewData('grupos'))
+            ->flatMap(fn ($g) => array_merge($g['principal'] ? [$g['principal']] : [], $g['hijas']))->pluck('idopcion')->map(fn ($i) => (int) $i)->all();
         $this->assertSame([$grupo, (int) $a->idopcion, (int) $b->idopcion], $orden());
         Livewire::test(Opciones::class)->call('mover', (int) $a->idopcion, false);
         $this->assertSame([$grupo, (int) $b->idopcion, (int) $a->idopcion], $orden());

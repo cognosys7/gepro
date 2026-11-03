@@ -1,41 +1,90 @@
-<div class="gp-grilla">
-    @include('livewire.seguridad.partes.barra', ['placeholder' => 'Buscar opción...', 'nuevo' => true, 'filtros' => [['filtroModulo', 'Sistema', $modulos]]])
-    <div class="gp-tabla-caja">
-        <table class="gp-tabla">
-            <thead>
-                <tr>
-                    <th>Software</th>
-                    <th>Opción</th>
-                    <th>Enlace</th>
-                    <th>Abrir</th>
-                    <th class="gp-col-accion gp-col-fija">Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($filas as $fila)
-                    <tr wire:key="opc-{{ $fila->idopcion }}">
-                        <td>{{ trim((string) $fila->sisnombre) }}</td>
-                        <td @class(['gp-opcion-principal' => (int) $fila->opcnivel === 1]) style="padding-left: {{ 10 + ((int) $fila->opcnivel - 1) * 22 }}px">
-                            @if ((int) $fila->opcnivel > 1)<i class="fa-solid fa-turn-up fa-rotate-90 gp-texto-suave"></i>@endif
-                            {{ trim((string) $fila->opcdescripcion) }}
-                        </td>
-                        <td class="gp-texto-suave">{{ \Illuminate\Support\Str::limit(trim(html_entity_decode((string) $fila->opcenlace)), 60) }}</td>
-                        <td>{{ (int) $fila->opcdestino === 2 ? 'Otra página' : 'Misma página' }}</td>
-                        <td class="gp-col-accion gp-col-fija">
-                            <button type="button" class="gr-ico gr-gris" title="Subir" wire:click="mover({{ (int) $fila->idopcion }}, true)" @disabled($fila->primera)><i class="fa-solid fa-arrow-up"></i></button>
-                            <button type="button" class="gr-ico gr-gris" title="Bajar" wire:click="mover({{ (int) $fila->idopcion }}, false)" @disabled($fila->ultima)><i class="fa-solid fa-arrow-down"></i></button>
-                            <button type="button" class="gr-ico gr-ambar" title="Editar" wire:click="editar({{ (int) $fila->idopcion }})"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" class="gr-ico gr-rojo" title="Eliminar" wire:click="eliminar({{ (int) $fila->idopcion }})"
-                                wire:confirm="¿Eliminar la opción {{ trim((string) $fila->opcdescripcion) }}? Dejará de verse en el menú."><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                @empty
-                    <tr><td colspan="5" class="gp-vacio"><i class="fa-regular fa-folder-open"></i> {{ $buscar !== '' ? 'No hay opciones que coincidan con la búsqueda.' : 'No hay opciones.' }}</td></tr>
-                @endforelse
-            </tbody>
-        </table>
+<div class="op" x-data>
+    {{-- UNA PESTAÑA POR SISTEMA --}}
+    <div class="op-pestanas" role="tablist" aria-label="Sistema">
+        @foreach ($modulos as $id => $nombre)
+            <button type="button" role="tab" @class(['op-pestana', 'op-pestana-activa' => (string) $id === $filtroModulo])
+                aria-selected="{{ (string) $id === $filtroModulo ? 'true' : 'false' }}" wire:click="verModulo('{{ $id }}')">
+                <i class="fa-solid fa-cube"></i> {{ \Illuminate\Support\Str::before($nombre, ' · ') }}
+                <span class="op-contador">{{ $cuentas[$id] ?? 0 }}</span>
+            </button>
+        @endforeach
     </div>
-    @include('livewire.seguridad.partes.paginas')
+
+    <div class="gp-grilla-barra">
+        <div class="gp-grilla-buscar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input type="search" wire:model.live.debounce.400ms="buscar" placeholder="Buscar opción..." aria-label="Buscar">
+        </div>
+        <button type="button" class="gp-boton-sec" x-on:click="$dispatch('op-todas', true)"><i class="fa-solid fa-angles-down"></i> Expandir</button>
+        <button type="button" class="gp-boton-sec" x-on:click="$dispatch('op-todas', false)"><i class="fa-solid fa-angles-up"></i> Contraer</button>
+        <span class="gp-grilla-total" wire:loading.remove>{{ count(array_filter($grupos, fn ($g) => $g['principal'])) }} principales · {{ $total }} opciones</span>
+        <span class="gp-grilla-total" wire:loading><i class="fa-solid fa-spinner fa-spin"></i> Cargando…</span>
+        <button type="button" class="gp-boton-nuevo" wire:click="nuevo"><i class="fa-solid fa-plus"></i> Nueva opción principal</button>
+    </div>
+
+    <div class="op-grupos">
+        @forelse ($grupos as $g)
+            @php($p = $g['principal'])
+            {{-- LA CLAVE LLEVA LA BUSQUEDA: AL BUSCAR, LOS GRUPOS VUELVEN A ABRIRSE --}}
+            <section class="op-grupo" wire:key="grp-{{ $p?->idopcion ?? 'sueltas' }}-{{ md5($buscar) }}"
+                x-data="{ abierto: true }" x-on:op-todas.window="abierto = $event.detail" :class="{ 'op-cerrado': ! abierto }">
+                <header class="op-grupo-cabecera">
+                    <button type="button" class="op-plegar" x-on:click="abierto = ! abierto" :aria-expanded="abierto" title="Mostrar u ocultar sus opciones">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <span class="op-grupo-icono"><i class="fa-solid {{ $p ? 'fa-folder-open' : 'fa-triangle-exclamation' }}"></i></span>
+                    <div class="op-grupo-titulo">
+                        @if ($p)
+                            <strong>{{ trim((string) $p->opcdescripcion) }}</strong>
+                            <small>
+                                {{ count($g['hijas']) }} {{ count($g['hijas']) === 1 ? 'opción' : 'opciones' }}
+                                @if (($d = \App\Livewire\Seguridad\Opciones::destino($p->opcenlace)) !== '')
+                                    · abre <code>{{ $d }}</code>
+                                @endif
+                            </small>
+                        @else
+                            <strong>Sin opción principal</strong>
+                            <small>Su opción principal ya no existe: edítelas para moverlas a otra.</small>
+                        @endif
+                    </div>
+                    @if ($p)
+                        @include('livewire.seguridad.partes.opcion-perfiles', ['o' => $p])
+                        <button type="button" class="gp-boton-sec op-agregar" wire:click="nuevaSecundaria({{ (int) $p->idopcion }})" title="Agregar una opción dentro de {{ trim((string) $p->opcdescripcion) }}">
+                            <i class="fa-solid fa-plus"></i> Secundaria
+                        </button>
+                        @include('livewire.seguridad.partes.opcion-acciones', ['o' => $p])
+                    @endif
+                </header>
+                <ul class="op-hijas" x-show="abierto">
+                    @forelse ($g['hijas'] as $h)
+                        @php($d = \App\Livewire\Seguridad\Opciones::destino($h->opcenlace))
+                        <li class="op-hija" wire:key="opc-{{ $h->idopcion }}">
+                            <span class="op-hija-nombre">{{ trim((string) $h->opcdescripcion) }}</span>
+                            <span class="op-destino" title="{{ trim(html_entity_decode((string) $h->opcenlace)) }}">
+                                @if ($d !== '')
+                                    <code>{{ \Illuminate\Support\Str::limit($d, 45) }}</code>
+                                @else
+                                    <em>Sin enlace</em>
+                                @endif
+                                @if ((int) $h->opcdestino === 2)
+                                    <i class="fa-solid fa-arrow-up-right-from-square" title="Se abre en otra página"></i>
+                                @endif
+                            </span>
+                            @include('livewire.seguridad.partes.opcion-perfiles', ['o' => $h])
+                            @include('livewire.seguridad.partes.opcion-acciones', ['o' => $h])
+                        </li>
+                    @empty
+                        <li class="op-hija op-hija-vacia">
+                            Sin opciones secundarias.
+                            <button type="button" class="op-enlace" wire:click="nuevaSecundaria({{ (int) $p->idopcion }})">Agregar la primera</button>
+                        </li>
+                    @endforelse
+                </ul>
+            </section>
+        @empty
+            <div class="gp-vacio"><i class="fa-regular fa-folder-open"></i> {{ $buscar !== '' ? 'No hay opciones que coincidan con la búsqueda.' : 'Este sistema no tiene opciones.' }}</div>
+        @endforelse
+    </div>
 
     @if ($abierto)
         @php($secundaria = ($datos['nivel'] ?? '1') === '2')
