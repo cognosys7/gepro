@@ -108,7 +108,7 @@
                                     $_SESSION['PerfilIntranet'] = 1;
 //                                    header("Location:".INTRANET."/Vista/AntiRefresh.php?Pagina=Dashboard");                                    
                                     // forzar ingreso al modulo PRINCIPAL, no intranet
-                                    header("Location:../../essalud/Vista/AntiRefresh.php?Pagina=Dashboard");
+                                    header("Location:../../gepro/Vista/AntiRefresh.php?Pagina=Dashboard");
                                     exit;
                                 }
                                 else
@@ -116,7 +116,7 @@
                                     
                                     $_SESSION['PerfilIntranet'] = 0;
 //                                    header("Location:".INTRANET."/Vista/AntiRefresh.php?Pagina=Dashboard");
-                                       header("Location:../../essalud/Vista/AntiRefresh.php?Pagina=Dashboard");
+                                       header("Location:../../gepro/Vista/AntiRefresh.php?Pagina=Dashboard");
                                     exit;
                                 }
                                 exit;
