@@ -31,7 +31,7 @@ class PDF extends FPDF {
         //Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         //Número de página
-        $sPagina = utf8_decode('Página ');
+        $sPagina = mb_convert_encoding('Página ', 'ISO-8859-1', 'UTF-8');
         $sFecha = ' fecha:' . date('d-m-Y');
         $sHora = ' hora: ' . date('H:i:s');
         $this->Cell(0, 10, $sPagina . $this->PageNo() . '/{nb}' . $sFecha . $sHora, 0, 0, 'C');
@@ -41,7 +41,7 @@ class PDF extends FPDF {
         $w = $this->GetStringWidth($sTitulo) + 6;
         $nAnchoHoja = $this->CurOrientation == 'L' ? 290 : 210;
         $this->SetX(($nAnchoHoja - $w) / 2);
-        $this->Write(14, utf8_decode($sTitulo));
+        $this->Write(14, mb_convert_encoding($sTitulo, 'ISO-8859-1', 'UTF-8'));
         //$this->ln();
     }
 
@@ -50,8 +50,8 @@ class PDF extends FPDF {
         $this->SetFont('');
         $this->SetFillColor(238, 238, 238);
         foreach ($lstDato as $key => $oDato) {
-            $this->Cell(30, 7, utf8_decode($key), $borde, 0, 'L', $fondo);
-            $this->Cell(140, 7, utf8_decode($oDato), $borde, 0, 'L', 0);
+            $this->Cell(30, 7, mb_convert_encoding($key, 'ISO-8859-1', 'UTF-8'), $borde, 0, 'L', $fondo);
+            $this->Cell(140, 7, mb_convert_encoding($oDato, 'ISO-8859-1', 'UTF-8'), $borde, 0, 'L', 0);
             $this->ln();
         }
     }
@@ -74,10 +74,10 @@ class PDF extends FPDF {
             $y = $this->GetY();
 
             if($borde)$this->Rect($x, $y, 85, $nAltura, 'DF');
-            $this->MultiCell(85, 5, utf8_decode($key), 0, 'L', 0);
+            $this->MultiCell(85, 5, mb_convert_encoding($key, 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
             $this->SetXY($x + 85, $y);
             if($borde)$this->Rect($x + 85, $y, 85, $nAltura, 'D');
-            $this->MultiCell(85, 5, utf8_decode($Dato), 0, 'L', 0);
+            $this->MultiCell(85, 5, mb_convert_encoding($Dato, 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         }
     }
 
@@ -111,7 +111,7 @@ class PDF extends FPDF {
             $x = $this->GetX();
             $y = $this->GetY();
             $this->Rect($x, $y, $w[$i], $nAltura, 'DF');
-            $this->MultiCell($w[$i], 5, utf8_decode($caption[$i]), 0, 'J', 0);
+            $this->MultiCell($w[$i], 5, mb_convert_encoding($caption[$i], 'ISO-8859-1', 'UTF-8'), 0, 'J', 0);
             $this->SetXY($x + $w[$i], $y);
         }
         $this->Ln($nAltura);
@@ -152,7 +152,7 @@ class PDF extends FPDF {
                 $this->Rect($x, $y, $w[$i], $nAltura, $sRelleno);
                 //$this->MultiCell($w[$i],6,utf8_decode($obj->$header[$i]),'LR',0,'L',$fill);
 
-                $this->MultiCell($w[$i], 4, utf8_decode($obj->$header[$i]), 0, isset($lAlign[$i])?$lAlign[$i]:'', 0);
+                $this->MultiCell($w[$i], 4, mb_convert_encoding($obj->$header[$i], 'ISO-8859-1', 'UTF-8'), 0, isset($lAlign[$i])?$lAlign[$i]:'', 0);
                 $this->SetXY($x + $w[$i], $y);
             }
             $this->Ln($nAltura);
@@ -194,7 +194,7 @@ class PDF extends FPDF {
                 $x = $this->GetX();
                 $y = $this->GetY();
                 $this->Rect($x, $y, $w[$i], $nAltura, 'DF');
-                $this->MultiCell($w[$i], 5, utf8_decode($caption[$i]), 0, 'J', 0);
+                $this->MultiCell($w[$i], 5, mb_convert_encoding($caption[$i], 'ISO-8859-1', 'UTF-8'), 0, 'J', 0);
                 $this->SetXY($x + $w[$i], $y);
             }
             $this->Ln($nAltura);
@@ -212,7 +212,7 @@ class PDF extends FPDF {
 		$x = $this->GetX();
 		$y = $this->GetY();
 		$this->Rect($x, $y, $w[$i], $h, 'DF');
-		$this->MultiCell($w[$i], 5, utf8_decode($data[$i]), 0, isset($lAlign[$i])?$lAlign[$i]:'', 0);
+		$this->MultiCell($w[$i], 5, mb_convert_encoding($data[$i], 'ISO-8859-1', 'UTF-8'), 0, isset($lAlign[$i])?$lAlign[$i]:'', 0);
 		$this->SetXY($x + $w[$i], $y);
 	}
 	$this->Ln($h);
@@ -243,7 +243,7 @@ class PDF extends FPDF {
             $x = $this->GetX();
             $y = $this->GetY();
             $this->Rect($x, $y, $w[$i], 2 * $nAltura, $sBordeRelleno);
-            $this->MultiCell($w[$i], $nAltura, utf8_decode($caption[$i]), 0, $sAlineacion, 0);
+            $this->MultiCell($w[$i], $nAltura, mb_convert_encoding($caption[$i], 'ISO-8859-1', 'UTF-8'), 0, $sAlineacion, 0);
             $this->SetXY($x + $w[$i], $y);
         }
 

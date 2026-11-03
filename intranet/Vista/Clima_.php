@@ -93,7 +93,7 @@ if (!file_exists($sArchivo)) {
     $datax = array("success" => true
             ,'MAX'=>$clima1_1
             ,'MIN'=>$clima2_1
-            ,'DES'=>  utf8_encode($clima3_1)
+            ,'DES'=>  mb_convert_encoding($clima3_1, 'UTF-8', 'ISO-8859-1')
             ,'IMG'=>  $cod_img
             );
     $data = json_encode($datax);

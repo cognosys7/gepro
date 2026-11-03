@@ -104,7 +104,7 @@ if (($listaDirectorio == true) || ($listaDirectorio > 0))
     }
 }
 
-$pdf->write(6, utf8_decode("FUENTE: DIRECTORIO INSTITUCIONAL "));
+$pdf->write(6, mb_convert_encoding("FUENTE: DIRECTORIO INSTITUCIONAL ", 'ISO-8859-1', 'UTF-8'));
 
 $pdf->Close();
 $nombreArchivo = 'DIRECTORIO_'.date('d-m-Y'). '.pdf';

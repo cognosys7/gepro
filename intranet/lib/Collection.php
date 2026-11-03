@@ -32,7 +32,7 @@ class Collection{
     
     public function Clear() {
         foreach ($this->mList as $lItem) {
-            if (method_exists($lItem,"Free"))
+            if (is_object($lItem) && method_exists($lItem,"Free"))
                 //$lItem->Free();
             unset($lItem);
         }

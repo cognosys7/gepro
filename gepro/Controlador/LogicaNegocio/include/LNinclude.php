@@ -224,7 +224,7 @@ function VIS_SelCampos ($Clase,$campos,$filtro){
     
 //    var_dump($Resultado);var_dump($campos);var_dump($filtro); //die;
     $Objeto->$SelCampos($Resultado, $procedure_parametrosMS);
-    if (count($Resultado)>0){
+    if (is_array($Resultado) && count($Resultado)>0){
         
 //        foreach ($Resultado as $Etiqueta => $valor) {
 //            $setResultado = array($Etiqueta => $valor) ;
@@ -234,7 +234,8 @@ function VIS_SelCampos ($Clase,$campos,$filtro){
         
         return $Resultado;
     } else {
-        return null;
+        // PHP 8: los llamadores hacen count($data); null lanzaria TypeError
+        return array();
     }
         
 }
@@ -255,7 +256,7 @@ function VIS_SelCampos_SQL ($Clase,$campos,$filtro,$SQL){
     
 //    var_dump($Resultado);var_dump($campos);var_dump($filtro); //die;
     $Objeto->$SelCampos($Resultado, $procedure_parametrosMS);
-    if (count($Resultado)>0){
+    if (is_array($Resultado) && count($Resultado)>0){
         
 //        foreach ($Resultado as $Etiqueta => $valor) {
 //            $setResultado = array($Etiqueta => $valor) ;
@@ -265,7 +266,8 @@ function VIS_SelCampos_SQL ($Clase,$campos,$filtro,$SQL){
         
         return $Resultado;
     } else {
-        return null;
+        // PHP 8: los llamadores hacen count($data); null lanzaria TypeError
+        return array();
     }
         
 }

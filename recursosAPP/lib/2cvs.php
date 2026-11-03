@@ -11,7 +11,7 @@ function array2csv(array &$array) {
     $lFilaC = array();
         $lColumnas = $array[0]->GetPropertyList();
         foreach ($lColumnas as $key => $value) {
-            $lFilaC[] = utf8_decode(strtoupper(($key)));
+            $lFilaC[] = mb_convert_encoding(strtoupper(($key)), 'ISO-8859-1', 'UTF-8');
         }
     fputcsv($df, $lFilaC);
     
@@ -20,7 +20,7 @@ function array2csv(array &$array) {
         $lFila = array();
         $lColumnas = $oFila->GetPropertyList();
         foreach ($lColumnas as $key => $value) {
-            $lFila[] = utf8_decode($value);
+            $lFila[] = mb_convert_encoding($value, 'ISO-8859-1', 'UTF-8');
         }
 
         fputcsv($df, $lFila);

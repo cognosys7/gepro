@@ -59,6 +59,8 @@ class UsuarioDAO extends DAO {
     }
         
     public function VerificaCumpleUsuarios(&$lDato, $lParametro, $aClearOnFailure = true) {
+        // PHP 8: la constante esta comentada en UsuarioData.php (el SP no existe); sin ella, lista vacia
+        if (!defined('SELECT_CUMPLE_USUARIOS')) { return false; }
         $this->mObject = new DynamicModel();
         $this->mList = &$lDato;
         $this->mQuery = SELECT_CUMPLE_USUARIOS;
@@ -68,6 +70,8 @@ class UsuarioDAO extends DAO {
     }
     
     public function VerificaCumpleUsuarios2(&$lDato, $lParametro, $aClearOnFailure = true) {
+        // PHP 8: la constante esta comentada en UsuarioData.php (el SP no existe); sin ella, lista vacia
+        if (!defined('SELECT_CUMPLE_USUARIOS2')) { return false; }
         $this->mObject = new DynamicModel();
         $this->mList = &$lDato;
         $this->mQuery = SELECT_CUMPLE_USUARIOS2;

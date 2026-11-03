@@ -112,7 +112,7 @@ $lFormato['DrawColor']['B'] = 0;
 
 //COMENTARIOJ-INI
 $pdf->SetFont('Helvetica', 'B', 8);
-$pdf->MultiCell(170, 4, utf8_decode('ACTAS DE CONSTATACIÓN'), 1, 'L', 0);
+$pdf->MultiCell(170, 4, mb_convert_encoding('ACTAS DE CONSTATACIÓN', 'ISO-8859-1', 'UTF-8'), 1, 'L', 0);
 $pdf->MiTabla(
         array(170)
         ,array('CONSTATACION')
@@ -123,7 +123,7 @@ $pdf->MiTabla(
 $pdf->ln(5);
 
 $pdf->SetFont('Helvetica', 'B', 8);
-$pdf->MultiCell(170, 4, utf8_decode('ACTAS DE VERIFICACIÓN'), 1, 'L', 0);
+$pdf->MultiCell(170, 4, mb_convert_encoding('ACTAS DE VERIFICACIÓN', 'ISO-8859-1', 'UTF-8'), 1, 'L', 0);
 $pdf->MiTabla(
         array(170)
         ,array('VERIFICACION')
@@ -134,7 +134,7 @@ $pdf->MiTabla(
 $pdf->ln(5);
 
 $pdf->SetFont('Helvetica', 'B', 8);
-$pdf->MultiCell(170, 4, utf8_decode('ACTA DE CONFORMIDAD'), 1, 'L', 0);
+$pdf->MultiCell(170, 4, mb_convert_encoding('ACTA DE CONFORMIDAD', 'ISO-8859-1', 'UTF-8'), 1, 'L', 0);
 $pdf->MiTabla(
         array(170)
         ,array('CONFORMIDAD')
@@ -146,7 +146,7 @@ $pdf->ln(5);
 
 //Acciones por Observación
 $pdf->SetFont('Helvetica', 'B', 8);
-$pdf->MultiCell(170, 4, utf8_decode('CRONOLOGÍA DE DOCUMENTACIÓN'), 1, 'L', 0);
+$pdf->MultiCell(170, 4, mb_convert_encoding('CRONOLOGÍA DE DOCUMENTACIÓN', 'ISO-8859-1', 'UTF-8'), 1, 'L', 0);
 $pdf->MiTabla(
         array(170)
         ,array('Documento')

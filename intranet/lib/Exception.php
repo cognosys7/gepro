@@ -85,6 +85,10 @@ function HandleException($aException) {
 function UncaughtExceptionHandler($aException) {
     $lFilename = PATH_LOG."/Error_".date("dH",time()).".log";
 
+    // En PHP 8 los errores fatales (Error) tambien llegan aqui; sin esto no quedarian en ningun log
+    error_log("PHP Fatal error:  Uncaught " . get_class($aException) . ": " . $aException->getMessage()
+        . " in " . $aException->getFile() . ":" . $aException->getLine());
+
 	if (DISPLAY_UNCAUGHT_EXCEPTIONS)
 		$GLOBALS["gExceptionMessage"] .= $aException->getMessage()."\r\n";
 
@@ -114,5 +118,5 @@ function ErrorHandler($aErrorNumber, $aErrorMessage, $aErrorFile, $aErrorLine, $
 //// handle all errors
 ////error_reporting(E_ALL & ~E_NOTICE |E_STRICT);
 //error_reporting(E_ALL & ~E_NOTICE);
-error_reporting(E_ALL & ~E_STRICT);
+error_reporting(E_ALL);
 ?>
