@@ -18,6 +18,10 @@
 |   oculto: solo en la grilla (el formulario del sistema actual no lo muestra; se conserva).
 | - filtro: condiciones fijas de la grilla, como las de su SelGrd.
 | - jerarquia (Tablas maestras, Entregables, Concepto de gestion social): ver App\Support\Catalogo.
+| - segun: ['campo' => X, 'casos' => [valor => [columna => etiqueta ('' = la suya)]], 'calcular' => [valores]]:
+|   los campos de algun caso solo se muestran en el valor elegido de X (con esa etiqueta), y el calculo
+|   automatico solo corre en los valores de 'calcular'. Combo con 'una_vez' => [valores]: cada valor
+|   lo puede tener un solo registro del mismo "de" (p. ej. el plazo contractual de un contrato).
 | - nuevo / editar / eliminar: lo que permite el sistema actual (botones y columnas de su grilla).
 */
 
@@ -895,5 +899,46 @@ return [
         'nuevo' => false,
     ],
 
+    //AMPLIACION DE PLAZO DEL CONTRATO: LOS CAMPOS Y SUS NOMBRES CAMBIAN SEGUN EL TIPO (filtrar_TIP_AMPLIACION()
+    //DE LA VISTA ACTUAL) Y EL PLAZO CONTRACTUAL SE REGISTRA UNA SOLA VEZ POR CONTRATO
+    'PROY_CONT_AMPLIACION' => [
+        'titulo' => 'Ampliación de plazo', 'icono' => 'fa-clock-rotate-left', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_CONT_AMPLIACION', 'id' => 'IDE_CONT_AMPLIACION', 'sp' => 'dbo.SP_PROY_CONT_AMPLIACION', 'estado' => 'EST_CONT_AMPLIACION',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_PROYECTO_ACTIVIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['NUM_ORDEN', 'IDE_PROYECTO_ACTIVIDAD', 'TIP_AMPLIACION', 'NUM_AMPLIACION', 'FEC_INICIO_AMP', 'CAN_DIAS_CALENDARIO',
+            'FEC_TERMINO_AMP', 'COD_RESOLUCION', 'EST_CONT_AMPLIACION'],
+        'campos' => [
+            'NUM_ORDEN' => ['Orden', 'numero', ['grilla' => true]],
+            'TIP_AMPLIACION' => ['Tipo de ampliación', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '103', 'una_vez' => ['3']]],
+            'NUM_AMPLIACION' => ['Nro. ampl. / susp.', 'numero', ['grilla' => true]],
+            'FEC_INICIO_AMP' => ['Inicio', 'fecha', ['grilla' => true, 'seccion' => 'Plazo']],
+            'CAN_DIAS_CALENDARIO' => ['Días calendario', 'numero', ['grilla' => true, 'seccion' => 'Plazo']],
+            'FEC_TERMINO_AMP' => ['Término', 'fecha', ['grilla' => true, 'seccion' => 'Plazo', 'auto' => true]],
+            'COD_RESOLUCION' => ['Nro. documento', 'texto', ['max' => 100, 'grilla' => true]],
+            'EST_CONT_AMPLIACION' => $estado,
+        ],
+        //'' = CON SU NOMBRE DE SIEMPRE; LOS CAMPOS QUE NO ESTAN EN EL TIPO ELEGIDO NO SE MUESTRAN
+        'segun' => ['campo' => 'TIP_AMPLIACION', 'calcular' => ['3', '8', '9'], 'casos' => [
+            '1' => ['NUM_ORDEN' => '', 'FEC_TERMINO_AMP' => 'Fecha de término'],
+            '2' => ['NUM_ORDEN' => '', 'FEC_TERMINO_AMP' => 'Fecha de término'],
+            '3' => ['NUM_ORDEN' => '', 'FEC_INICIO_AMP' => 'Inicio contractual', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término contractual'],
+            '4' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. ampliación', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término vigente', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '5' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. suspensión', 'FEC_INICIO_AMP' => 'Inicio suspensión', 'CAN_DIAS_CALENDARIO' => '',
+                'FEC_TERMINO_AMP' => 'Término suspensión', 'COD_RESOLUCION' => 'Acta de suspensión'],
+            '6' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. reducción', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término vigente', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '7' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. ampliación', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término vigente', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '8' => ['NUM_ORDEN' => '', 'FEC_INICIO_AMP' => 'Inicio recepción', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término recepción', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '9' => ['NUM_ORDEN' => '', 'FEC_INICIO_AMP' => 'Inicio liquidación', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término liquidación', 'COD_RESOLUCION' => 'Nro. resolución'],
+        ]],
+        'calculo' => App\Calculos\AmpliacionPlazo::class,
+        'calculo_texto' => 'Calcular el término automáticamente',
+        //COMO SU GRILLA: POR ORDEN Y FECHA DE TERMINO
+        'orden' => [['NUM_ORDEN', 'asc'], ['FEC_TERMINO_AMP', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos de la ampliación', ['archivos' => 'PROY_CONT_AMPLIACION']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
 
 ];

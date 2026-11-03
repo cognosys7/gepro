@@ -21,6 +21,7 @@ use RuntimeException;
  * - los campos de solo lectura se toman siempre de la base; los 'calculado' los llena el SP;
  * - en las pantallas que dependen de otro registro ('de'), su columna toma el id de ese registro;
  * - 'calculo' => clase con calcular(datos, de): recalcula montos al escribir (p. ej. control mensual);
+ * - 'segun': campos que se muestran (y su etiqueta) segun el valor de otro campo (p. ej. el tipo de ampliacion);
  * - el perfil "CONSULTA TOTAL" o un catalogo sin edicion abren el formulario solo para ver.
  */
 class CatalogoFormulario extends Component
@@ -101,11 +102,76 @@ class CatalogoFormulario extends Component
         return ! empty($this->def()[$accion]) && app(Seguridad::class)->puedeGrabar();
     }
 
+    /** Caso de 'segun' del valor elegido (null = la definicion no tiene 'segun') */
+    private function casoSegun(): ?array
+    {
+        $segun = $this->def()['segun'] ?? null;
+
+        return $segun ? ($segun['casos'][trim((string) ($this->datos[$segun['campo']] ?? ''))] ?? []) : null;
+    }
+
+    /** Si el campo se muestra con el valor elegido en el campo de 'segun' */
+    public function visible(string $campo): bool
+    {
+        $segun = $this->def()['segun'] ?? null;
+        if (! $segun) {
+            return true;
+        }
+        $variables = array_merge(...array_map('array_keys', array_values($segun['casos'])));
+
+        return ! in_array($campo, $variables, true) || array_key_exists($campo, $this->casoSegun());
+    }
+
+    public function etiqueta(string $campo): string
+    {
+        $etiqueta = $this->casoSegun()[$campo] ?? '';
+
+        return $etiqueta !== '' ? $etiqueta : $this->def()['campos'][$campo][0];
+    }
+
+    /** Si el calculo automatico corre con lo elegido ('segun' => ['calcular' => [...]]) */
+    public function calculoAplica(): bool
+    {
+        $def = $this->def();
+        if (empty($def['calculo'])) {
+            return false;
+        }
+        $segun = $def['segun'] ?? null;
+
+        return ! isset($segun['calcular']) || in_array(trim((string) ($this->datos[$segun['campo']] ?? '')), $segun['calcular'], true);
+    }
+
+    private function autoActivo(): bool
+    {
+        return $this->autoCalcular && $this->calculoAplica();
+    }
+
+    /**
+     * Opciones del combo; 'una_vez' quita los valores que ya tiene otro registro del mismo "de"
+     * (p. ej. el plazo contractual, como PROY_CONT_AMPLIACION_Datos_Contrato del sistema actual)
+     */
+    private function opcionesCampo(string $campo, ?string $incluir): array
+    {
+        $def = $this->def();
+        $c = $def['campos'][$campo];
+        $opciones = Catalogo::opciones($c, $incluir, $this->filaDe());
+        if (! empty($c[2]['una_vez']) && ! empty($def['de']['columna']) && $this->de !== null) {
+            $usados = DB::table($def['tabla'])->where($def['de']['columna'], $this->de)
+                ->where($def['estado'], '<>', Catalogo::eliminado($def))
+                ->when($this->idRegistro !== null, fn ($q) => $q->where($def['id'], '<>', $this->idRegistro))
+                ->whereIn($campo, array_map('strval', $c[2]['una_vez']))
+                ->pluck($campo)->map(fn ($v) => trim((string) $v))->all();
+            $opciones = array_diff_key($opciones, array_flip($usados));
+        }
+
+        return $opciones;
+    }
+
     public function bloqueado(string $campo): bool
     {
         $c = $this->def()['campos'][$campo] ?? null;
         //CALCULADOS POR EL CALCULO AUTOMATICO: SE EDITAN SOLO SI ESTA DESACTIVADO
-        if ($c && ! empty($c[2]['auto']) && $this->autoCalcular) {
+        if ($c && ! empty($c[2]['auto']) && $this->autoActivo()) {
             return true;
         }
 
@@ -194,13 +260,17 @@ class CatalogoFormulario extends Component
     private function calcular(): void
     {
         $clase = $this->def()['calculo'] ?? null;
-        if ($clase && $this->autoCalcular) {
+        if ($clase && $this->autoActivo()) {
             $this->datos = array_merge($this->datos, app($clase)->calcular($this->datos, $this->filaDe()));
         }
     }
 
-    public function updatedDatos(): void
+    public function updatedDatos($valor, $clave): void
     {
+        //AL CAMBIAR EL CAMPO DE 'segun', EL CALCULO SE ACTIVA SOLO SI CORRE CON ESE VALOR (COMO LA CASILLA ACTUAL)
+        if (isset($this->def()['segun']) && $clave === $this->def()['segun']['campo']) {
+            $this->autoCalcular = $this->calculoAplica();
+        }
         $this->calcular();
     }
 
@@ -263,13 +333,13 @@ class CatalogoFormulario extends Component
             if ($this->bloqueado($campo) && ! in_array($campo, $autoCalculados, true)) {
                 continue;
             }
-            $r = [! empty($o['requerido']) ? 'required' : 'nullable'];
+            $r = [! empty($o['requerido']) && $this->visible($campo) ? 'required' : 'nullable'];
             if ($tipo === 'numero') {
                 $r[] = 'numeric';
             } elseif ($tipo === 'fecha') {
                 $r[] = 'date_format:Y-m-d';
             } elseif ($tipo === 'combo') {
-                $r[] = Rule::in(array_map('strval', array_keys(Catalogo::opciones($def['campos'][$campo], $base[$campo] ?? null, $this->filaDe()))));
+                $r[] = Rule::in(array_map('strval', array_keys($this->opcionesCampo($campo, $base[$campo] ?? null))));
             } else {
                 $r[] = 'string';
                 if (! empty($o['max'])) {
@@ -315,10 +385,9 @@ class CatalogoFormulario extends Component
         $def = $this->def();
         $combos = [];
         if ($this->abierto) {
-            $de = $this->filaDe();
             foreach ($def['campos'] as $campo => $c) {
                 if ($c[1] === 'combo') {
-                    $combos[$campo] = Catalogo::opciones($c, $this->datos[$campo] ?? null, $de);
+                    $combos[$campo] = $this->opcionesCampo($campo, $this->datos[$campo] ?? null);
                 }
             }
         }
