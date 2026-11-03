@@ -106,7 +106,9 @@ class ProyectosTabla extends Component
 
     public function puede(string $accion): bool
     {
-        return in_array($this->opcion, self::EDICION[$accion] ?? [], true);
+        //ADEMAS DE LA OPCION DEL MENU, EL PERFIL "CONSULTA TOTAL" NO GRABA NI ELIMINA
+        return in_array($this->opcion, self::EDICION[$accion] ?? [], true)
+            && app(\App\Services\Seguridad::class)->puedeGrabar();
     }
 
     #[On('proyecto-guardado')]
@@ -170,6 +172,10 @@ class ProyectosTabla extends Component
             return config('gepro.enlaces.ficha_tecnica').(int) $fila->IDE_PROYECTO.'.php';
         }
         [, , , $pagina, $parametros] = self::ACCIONES[$accion];
+        //CONTRATOS DEL PROYECTO: YA ESTAN EN LARAVEL (ProyectoContratosTabla)
+        if ($pagina === 'PROYECTO_ACTIVIDAD') {
+            return route('proyectos.contratos', ['proyecto' => (int) $fila->IDE_PROYECTO, 'opcion' => $this->opcion, 'tipo' => (int) $parametros['Pfiltro']]);
+        }
         $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2, 'vmSinCabecera' => 1];
         foreach ($parametros as $clave => $valor) {
             $consulta[$clave] = str_replace(['{id}', '{opcion}'], [(int) $fila->IDE_PROYECTO, $this->opcion], (string) $valor);

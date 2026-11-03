@@ -9,6 +9,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Tests\TestCase;
+use Tests\UsuariosDePrueba;
 
 /**
  * Registrar, editar y eliminar proyectos con dbo.SP_PROYECTO. Cada prueba corre dentro de una
@@ -17,15 +18,17 @@ use Tests\TestCase;
 class ProyectoFormularioTest extends TestCase
 {
     use DatabaseTransactions;
+    use UsuariosDePrueba;
 
     protected $connectionsToTransact = ['sqlsrv'];
 
     private function usuario(): object
     {
-        $id = DB::table('seguridad.tsusuario')->where('usuestado', 1)->orderBy('idusuario')->value('idusuario');
-        $u = (new LegadoUserProvider())->retrieveById($id);
-        $u ??= collect(DB::table('seguridad.tsusuario')->where('usuestado', 1)->pluck('idusuario'))
-            ->map(fn ($i) => (new LegadoUserProvider())->retrieveById($i))->filter()->first();
+        //USUARIO CON PERFIL EN GEPRO QUE PUEDE GRABAR (tests/UsuariosDePrueba.php)
+        $u = $this->usuarioGepro();
+        if (! $u) {
+            $this->markTestSkipped('No hay usuarios con perfil en GEPRO que puedan grabar.');
+        }
 
         return $u;
     }

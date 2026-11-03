@@ -609,3 +609,36 @@ a { color: var(--azul); }
 }
 .fm-enlace:hover { border-color: #9fd0f0; background: #e3f1fb; }
 .fm-nota { margin: 0; padding: 14px 16px; color: var(--texto-suave); }
+
+/*Pantallas de Laravel dentro de la ventana modal (layouts/embebido)*/
+body.gp-embebido { background: #fff; }
+.gp-embebido-cabecera { padding: 14px 20px 4px; }
+.gp-embebido-cabecera > div { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.gp-embebido-cabecera strong { font-family: Consolas, "Courier New", monospace; font-size: 14px; }
+.gp-embebido-cabecera p { margin: 6px 0 0; color: var(--texto-suave); line-height: 1.4; }
+.gp-etiqueta-tipo { padding: 3px 10px; border-radius: 12px; background: #e3f1fb; color: var(--azul); font-size: 12px; font-weight: 700; }
+.gp-cui { padding: 3px 10px; border-radius: 12px; background: #e5f4e8; color: #1f7a3d; font-size: 12px; font-weight: 700; }
+.gp-tabla .gp-numero { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.gp-tabla .gp-fecha { white-space: nowrap; }
+.gp-estado { display: inline-block; padding: 2px 8px; border-radius: 10px; background: #eef1f4; color: #4b5b6b; font-size: 11px; font-weight: 700; white-space: nowrap; }
+
+/*Buscador de contrato en el formulario*/
+.fm-buscador-caja { position: relative; }
+.fm-buscador-caja i { position: absolute; left: 11px; top: 11px; color: #9aa7b4; }
+.fm-buscador-caja input { padding-left: 32px !important; }
+.fm-resultados { margin: 6px 0 0; padding: 0; list-style: none; border: 1px solid var(--borde); border-radius: 6px; max-height: 260px; overflow-y: auto; }
+.fm-resultados li + li { border-top: 1px solid #edf1f5; }
+.fm-resultados button {
+    display: grid; grid-template-columns: auto auto 1fr auto; gap: 4px 12px; align-items: baseline; width: 100%;
+    padding: 9px 12px; border: 0; background: #fff; font: inherit; text-align: left; cursor: pointer;
+}
+.fm-resultados button:hover { background: #eaf4fb; }
+.fm-res-codigo { font-family: Consolas, "Courier New", monospace; color: var(--texto-suave); }
+.fm-res-desc { color: var(--texto); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fm-res-monto { color: #1f7a3d; font-weight: 700; white-space: nowrap; }
+.fm-nota-campo { margin: 6px 0 0; color: var(--texto-suave); font-size: 12px; }
+
+/*Formulario de catalogos (menos campos: panel mas angosto)*/
+.fm-panel.fm-panel-angosto { max-width: 760px; }
+.gp-tabla th.gp-numero { text-align: right; }
+.gp-estado.gp-estado-activo { background: #e5f4e8; color: #1f7a3d; }
