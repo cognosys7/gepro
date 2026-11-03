@@ -605,4 +605,103 @@ return [
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
+    //13. ACTOS PREPARATORIOS: PROCESOS DE SELECCION (PROCESO) CON SUS ITEMS Y SU CRONOGRAMA
+    'PROCESO' => [
+        'titulo' => 'Actos preparatorios (procesos de selección)', 'icono' => 'fa-file-signature',
+        'tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'sp' => 'dbo.SP_PROCESO', 'estado' => 'EST_PROCESO',
+        //LA CLAVE ES EL CODIGO DE LA CONVOCATORIA EN EL SEACE: LA ESCRIBE EL USUARIO Y EL SP LA RECIBE EN @pCodigo
+        'codigo' => 'IDE_CONVOCATORIA',
+        'parametros' => ['IDE_CONVOCATORIA', 'IDE_TIPO_PROC', 'IDE_PLAN', 'IDE_ENTIDAD_EJECUTORA', 'IDE_CENCOSTO', 'COD_PAC', 'DES_DEPTO_EJECUTORA', 'DES_PROV_EJECUTORA',
+            'DES_DIST_EJECUTORA', 'NUM_ANO_EJE', 'NUM_PROC_ESPECIFICO', 'DES_OBJETO', 'TIP_OBJETO', 'IMP_VAL_REFERENCIAL', 'DES_URL_PROCESO', 'EST_PROCESO'],
+        'campos' => [
+            'IDE_CONVOCATORIA' => ['Código del proceso', 'texto', ['requerido' => true, 'max' => 9, 'digitos' => true, 'grilla' => true, 'buscar' => true, 'solo_lectura' => true, 'unico' => true]],
+            'IDE_ENTIDAD_EJECUTORA' => ['Unidad ejecutora', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_ENTIDAD', 'IDE_ENTIDAD', 'DES_ENTIDAD', 'EST_ENTIDAD']]],
+            'DES_OBJETO' => ['Objeto de contratación', 'area', ['requerido' => true, 'max' => 500, 'grilla' => true]],
+            'IMP_VAL_REFERENCIAL' => ['Valor referencial (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+            'NUM_ITEMS' => ['Ítems', 'numero', ['grilla' => true, 'expresion' => "(SELECT COUNT(*) FROM dbo.PROC_ITEM I WHERE I.IDE_CONVOCATORIA = T.IDE_CONVOCATORIA AND I.EST_PROCESO_ITEM <> '2')"]],
+            'IDE_TIPO_PROC' => ['Tipo de proceso', 'combo', ['requerido' => true, 'lista' => ['dbo.PROC_TIPO', 'IDE_TIPO_PROC', 'TIPO_PROC', 'EST_PROC_TIPO']]],
+            'TIP_OBJETO' => ['Tipo de objeto', 'combo', ['requerido' => true, 'tabla' => '1']],
+            'NUM_PROC_ESPECIFICO' => ['Nº de proceso', 'texto', ['requerido' => true, 'max' => 500]],
+            'NUM_ANO_EJE' => ['Año de ejecución', 'texto', ['requerido' => true, 'max' => 4, 'digitos' => true]],
+            'COD_PAC' => ['Código PAC', 'texto', ['requerido' => true, 'max' => 50]],
+            'IDE_CENCOSTO' => ['Centro de costo', 'combo', ['lista' => ['dbo.GEN_CENTRO_COSTO', 'IDE_CENCOSTO', 'DES_CENCOSTO', 'EST_CENCOSTO']]],
+            'DES_DEPTO_EJECUTORA' => ['Departamento', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_PROV_EJECUTORA' => ['Provincia', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_DIST_EJECUTORA' => ['Distrito', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'EST_PROCESO' => $estado,
+        ],
+        //COMO SU SelGrd: POR UNIDAD EJECUTORA Y OBJETO
+        'orden' => [['(SELECT E.DES_ENTIDAD FROM dbo.GEN_ENTIDAD E WHERE E.IDE_ENTIDAD = T.IDE_ENTIDAD_EJECUTORA)', 'asc'], ['DES_OBJETO', 'asc']],
+        'acciones' => [
+            ['OSCE', 'fa-landmark-flag', 'gr-violeta', 'Ficha del proceso en el SEACE (OSCE)', ['url' => 'https://prodapp2.seace.gob.pe/seacebus-uiwd-pub/fichaSeleccion/fichaSeleccion.xhtml?idSistema=3&ongei=1&idConvocatoria={id}']],
+            ['Ítems', 'fa-list-check', 'gr-verde', 'Ítems del proceso', ['catalogo' => 'PROC_ITEM']],
+            ['Cronograma', 'fa-calendar-days', 'gr-azul', 'Cronograma del proceso', ['catalogo' => 'PROC_CRONOGRAMA']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROC_ITEM' => [
+        'titulo' => 'Ítems del proceso', 'icono' => 'fa-list-check', 'acceso' => 'PROCESO',
+        'tabla' => 'dbo.PROC_ITEM', 'id' => 'IDE_PROC_ITEM', 'sp' => 'dbo.SP_PROC_ITEM', 'estado' => 'EST_PROCESO_ITEM',
+        'de' => ['tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'columna' => 'IDE_CONVOCATORIA',
+            'titulo' => "CONCAT(CAST(X.IDE_CONVOCATORIA AS varchar(12)), ' - ', X.DES_OBJETO)"],
+        //AL REGISTRAR UN ITEM, EL SP CREA SU PROYECTO (SP_PROYECTO_ACTIVIDAD)
+        'parametros' => ['IDE_CONVOCATORIA', 'COD_ITEM', 'COD_PROYECTO', 'DES_DEPTO_ITEM', 'DES_PROV_ITEM', 'DES_DIST_ITEM', 'DES_ITEM', 'CNT_PROPUESTAS',
+            'FEC_PUBLICACION', 'FEC_BUENA_PRO_INICIAL', 'FEC_BUENA_PRO_FINAL', 'FEC_APELACION', 'FEC_ADJUDICACION', 'FEC_INICIO_CONTRATO', 'FEC_TERMINO_CONTRATO',
+            'COD_CONTRATO', 'IMP_VAL_REFERENCIAL_ITEM', 'IMP_VAL_ADJUDICADO_ITEM', 'COD_RUC_POSTOR_GANADOR', 'DES_POSTOR_GANADOR', 'EST_PROCESO_ITEM',
+            'DES_OBSERVACION', 'IDE_MODO_EJECUCION', 'IDE_UNIDAD_MEDIDA', 'CNT_ITEM'],
+        'campos' => [
+            'COD_ITEM' => ['Nº ítem', 'texto', ['requerido' => true, 'max' => 2, 'digitos' => true, 'grilla' => true]],
+            'COD_PROYECTO' => ['Código del proyecto', 'texto', ['calculado' => true, 'grilla' => true]],
+            'DES_ITEM' => ['Objeto de contratación', 'area', ['requerido' => true, 'max' => 500, 'grilla' => true]],
+            'IMP_VAL_REFERENCIAL_ITEM' => ['Valor referencial (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+            'IDE_MODO_EJECUCION' => ['Modo de ejecución', 'combo', ['requerido' => true, 'lista' => ['dbo.GEN_MODO_EJECUCION', 'IDE_MODO_EJECUCION', 'DES_MODO_EJECUCION', 'EST_MODO_EJECUCION']]],
+            'IDE_UNIDAD_MEDIDA' => ['Unidad de medida', 'combo', ['requerido' => true, 'lista' => ['dbo.PROC_UNIDAD_MEDIDA', 'IDE_UNIDAD_MEDIDA', 'UNIDAD_MEDIDA', 'EST_UNIDAD_MEDIDA']]],
+            'CNT_ITEM' => ['Cantidad', 'numero', ['requerido' => true]],
+            'CNT_PROPUESTAS' => ['Nº de propuestas', 'numero', []],
+            //EL ESTADO ES TEXTO ('2' ES ELIMINADO); CON CONTRATADO O EN EJECUCIÓN EL SP DEJA EL PROYECTO EN EJECUCION
+            'EST_PROCESO_ITEM' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'valores' => ['EN PROCESO', 'ACTIVO', 'CONTRATADO', 'EN EJECUCIÓN', 'CANCELADO']]],
+            'DES_DEPTO_ITEM' => ['Departamento', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_PROV_ITEM' => ['Provincia', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_DIST_ITEM' => ['Distrito', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'FEC_PUBLICACION' => ['Publicación', 'fecha', ['grilla' => true, 'seccion' => 'Fechas']],
+            'FEC_BUENA_PRO_INICIAL' => ['Buena pro inicial', 'fecha', ['grilla' => true, 'seccion' => 'Fechas']],
+            'FEC_BUENA_PRO_FINAL' => ['Buena pro final', 'fecha', ['seccion' => 'Fechas']],
+            'FEC_APELACION' => ['Apelación', 'fecha', ['seccion' => 'Fechas']],
+            'FEC_ADJUDICACION' => ['Adjudicación', 'fecha', ['grilla' => true, 'seccion' => 'Fechas']],
+            'FEC_INICIO_CONTRATO' => ['Inicio del contrato', 'fecha', ['seccion' => 'Fechas']],
+            'FEC_TERMINO_CONTRATO' => ['Término del contrato', 'fecha', ['seccion' => 'Fechas']],
+            'COD_CONTRATO' => ['Nº de contrato', 'texto', ['max' => 60, 'seccion' => 'Adjudicación']],
+            'IMP_VAL_ADJUDICADO_ITEM' => ['Valor adjudicado (S/)', 'numero', ['seccion' => 'Adjudicación']],
+            'COD_RUC_POSTOR_GANADOR' => ['RUC del postor ganador', 'texto', ['max' => 15, 'digitos' => true, 'seccion' => 'Adjudicación']],
+            'DES_POSTOR_GANADOR' => ['Postor ganador', 'texto', ['max' => 150, 'seccion' => 'Adjudicación']],
+            'DES_OBSERVACION' => ['Observación', 'area', ['max' => 500, 'seccion' => 'Adjudicación']],
+        ],
+        'nuevo_valores' => ['EST_PROCESO_ITEM' => 'EN PROCESO'],
+        'orden' => [['COD_ITEM', 'asc']],
+        'acciones' => [
+            ['Postores', 'fa-user-tie', 'gr-verde', 'Postores del ítem', ['legado' => ['PROC_POSTORES', ['PIDE_PROC_ITEM' => '{id}']]]],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROC_CRONOGRAMA' => [
+        'titulo' => 'Cronograma del proceso', 'icono' => 'fa-calendar-days', 'acceso' => 'PROCESO',
+        'tabla' => 'dbo.PROC_CRONOGRAMA', 'id' => 'IDE_CRONOGRAMA', 'sp' => 'dbo.SP_PROC_CRONOGRAMA', 'estado' => 'EST_PROC_CRONOGRAMA',
+        'de' => ['tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'columna' => 'IDE_CONVOCATORIA',
+            'titulo' => "CONCAT(CAST(X.IDE_CONVOCATORIA AS varchar(12)), ' - ', X.DES_OBJETO)"],
+        'parametros' => ['IDE_CONVOCATORIA', 'NUM_CONVOCATORIA', 'IDE_ORDEN', 'FEC_PUBLICACION', 'DES_ACTIVIDAD', 'FEC_INICIO', 'FEC_TERMINO', 'EST_PROC_CRONOGRAMA'],
+        'campos' => [
+            'IDE_ORDEN' => ['Nº de orden', 'numero', ['requerido' => true, 'grilla' => true]],
+            'DES_ACTIVIDAD' => ['Actividad', 'texto', ['requerido' => true, 'max' => 40, 'grilla' => true]],
+            'FEC_PUBLICACION' => ['Publicación', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'FEC_INICIO' => ['Inicio', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'FEC_TERMINO' => ['Finalización', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'EST_PROC_CRONOGRAMA' => $estado,
+        ],
+        'orden' => [['IDE_ORDEN', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+
 ];

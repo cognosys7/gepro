@@ -64,6 +64,10 @@
                                 {{-- ACCIONES DE LA DEFINICION: ABREN OTRA PANTALLA EN LA VENTANA MODAL --}}
                                 @php($primera = array_key_first($columnas))
                                 @foreach ($def['acciones'] ?? [] as $accion)
+                                    @if (isset($accion[4]['url']))
+                                    <a class="gr-ico {{ $accion[2] }}" title="{{ $accion[3] ?? $accion[0] }}" href="{{ $this->urlAccion($accion[4], $fila) }}" target="_blank" rel="noopener"><i class="fa-solid {{ $accion[1] }}"></i></a>
+                                    @continue
+                                    @endif
                                     <button type="button" class="gr-ico {{ $accion[2] }}" title="{{ $accion[3] ?? $accion[0] }}"
                                         data-modal-url="{{ $this->urlAccion($accion[4], $fila) }}" data-modal-titulo="{{ $accion[3] ?? $accion[0] }}"
                                         data-modal-subtitulo="{{ $etiquetas[$primera][trim((string) $fila->{$primera})] ?? trim((string) $fila->{$primera}) }}">

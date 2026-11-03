@@ -106,6 +106,12 @@ class Catalogo
         $o = $campo[2];
         $conIncluir = $incluir !== null && $incluir !== '';
         $excluir = array_map('strval', $o['excluir'] ?? []);
+        //VALORES FIJOS (LA COLUMNA GUARDA EL TEXTO, P. EJ. EL ESTADO DEL ITEM DE UN PROCESO)
+        if (isset($o['valores'])) {
+            $valores = array_combine($o['valores'], $o['valores']);
+
+            return $conIncluir && ! isset($valores[$incluir]) ? $valores + [$incluir => $incluir] : $valores;
+        }
         if (isset($o['tabla'])) {
             if ($o['tabla'] === '99') {
                 $excluir[] = '2';
@@ -141,6 +147,9 @@ class Catalogo
     private static function etiquetasSinNormalizar(array $campo): array
     {
         $o = $campo[2];
+        if (isset($o['valores'])) {
+            return array_combine($o['valores'], $o['valores']);
+        }
         if (isset($o['tabla'])) {
             return DB::table('dbo.GEN_TABLAS')->where('COD_TABLA', $o['tabla'])
                 ->pluck('DES_ITEM', 'COD_ITEM')->mapWithKeys(fn ($d, $k) => [trim((string) $k) => trim((string) $d)])->all();

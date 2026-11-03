@@ -86,6 +86,10 @@ class CatalogoTabla extends Component
     public function urlAccion(array $accion, object $fila): string
     {
         $id = trim((string) $fila->ID);
+        //ENLACE EXTERNO (P. EJ. LA FICHA DEL PROCESO EN EL SEACE): SE ABRE EN OTRA PESTAÑA
+        if (isset($accion['url'])) {
+            return str_replace('{id}', rawurlencode($id), $accion['url']);
+        }
         if (isset($accion['catalogo'])) {
             return route('catalogos.index', ['pagina' => $accion['catalogo'], 'de' => $id]);
         }
@@ -204,6 +208,9 @@ class CatalogoTabla extends Component
                     foreach ($columnas as $columna => $c) {
                         if (in_array($c[1], ['texto', 'area'], true) && Catalogo::esColumna($c)) {
                             $q->orWhere('T.'.$columna, 'like', $patron);
+                        } elseif (! empty($c[2]['buscar'])) {
+                            //CODIGOS NUMERICOS QUE TAMBIEN SE BUSCAN (P. EJ. EL CODIGO DEL PROCESO)
+                            $q->orWhereRaw('CAST('.$this->expresion($columna, $c).' AS varchar(40)) LIKE ?', [$patron]);
                         }
                     }
                 });

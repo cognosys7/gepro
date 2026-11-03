@@ -273,6 +273,10 @@ class CatalogoFormulario extends Component
                 if (! empty($o['max'])) {
                     $r[] = 'max:'.$o['max'];
                 }
+                //CODIGOS QUE SOLO LLEVAN DIGITOS (P. EJ. EL CODIGO DEL PROCESO O EL RUC)
+                if (! empty($o['digitos'])) {
+                    $r[] = 'regex:/^[0-9]+$/';
+                }
             }
             //CODIGO QUE NO SE PUEDE REPETIR (P. EJ. EL UBIGEO): SE VALIDA AL REGISTRAR
             if (! empty($o['unico']) && $this->idRegistro === null) {
@@ -287,7 +291,9 @@ class CatalogoFormulario extends Component
         $parametros['pUsuario'] = (int) Auth::id();
         try {
             if ($this->idRegistro === null) {
-                Procedimiento::grabar($def['sp'], 'Insert', $parametros);
+                //CLAVE QUE ESCRIBE EL USUARIO (P. EJ. EL CODIGO DEL PROCESO): EL SP LA RECIBE EN @pCodigo
+                $codigo = ! empty($def['codigo']) ? ['pCodigo' => $parametros[$def['codigo']]] : [];
+                Procedimiento::grabar($def['sp'], 'Insert', $codigo + $parametros);
                 $mensaje = 'Registro creado.';
             } else {
                 Procedimiento::grabar($def['sp'], 'Update', ['pCodigo' => $this->idRegistro] + $parametros);
