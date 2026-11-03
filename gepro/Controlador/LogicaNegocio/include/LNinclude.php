@@ -56,8 +56,11 @@ function cboReadonly($Ancho = '51')
 
 
 
+//LOS AVISOS DEL SISTEMA FINANCIERO SPRING (AMSAC) YA NO SE MUESTRAN: GEPRO NO SE INTEGRA CON SPRING.
+//LAS FUNCIONES SE MANTIENEN PORQUE LAS LLAMAN LAS VISTAS; LOS TEXTOS ORIGINALES QUEDAN DEBAJO
 function SPRING_msgDatosActualizados($Tipo = '')
 {
+    return '';
     if($Tipo == '') {
         return ' <span style="color: #990000; font-weight:bold;">Los Datos Bloquedados son Actualizados desde el Sistema Financiero SPRING.</span>';
     } elseif($Tipo == 'AdicionarRegistro') {
@@ -69,6 +72,7 @@ function SPRING_msgDatosActualizados($Tipo = '')
 
 function SPRING_msgListaActualizada($Tipo = '')
 {
+    return '';
     if($Tipo == '') {
         return ' <span style="color: #990000; font-weight:bold;">La Lista es Actualizada desde el Sistema Financiero SPRING.</span>';
     } elseif($Tipo == 'AdicionarRegistro') {

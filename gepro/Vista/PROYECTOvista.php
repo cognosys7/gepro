@@ -120,7 +120,7 @@ function muestraVista() {
                                                                 /* Lista de campo a mostrar en cada columna */
                                                                 colModel: [
                                                                     {display: 'Ide', name: 'ID', width: GetColumnSize(0), sortable: true, align: 'center', hide: true},
-                                                                    {display: 'Código SPRING', name: 'COD_INTERNO', width: GetColumnSize(8), sortable: true, align: 'center', hide: false},
+                                                                    {display: 'Código', name: 'COD_INTERNO', width: GetColumnSize(8), sortable: true, align: 'center', hide: false},
                                                                     {display: 'Código Único', name: 'COD_UNICO', width: GetColumnSize(8), sortable: true, align: 'center', hide: false},
                                                                     {display: 'Descripción Larga', name: 'DES_LARGA_PROYECTO', width: GetColumnSize(28), sortable: true, align: 'left', hide: false},
                                                                     {display: 'Monto Aprobado', name: 'IMP_APROBADO_LOC', width: GetColumnSize(8), sortable: true, align: 'center', hide: true},
@@ -158,7 +158,7 @@ function muestraVista() {
                                                                 searchitems: [
                                                                     {display: 'Descripción Larga', name: 'DES_LARGA_PROYECTO'},
                                                                     {display: 'Código Único', name: 'COD_UNICO'},
-                                                                    {display: 'Código SPRING', name: 'COD_INTERNO'},
+                                                                    {display: 'Código', name: 'COD_INTERNO'},
                                                                     {display: 'Fecha Inicio', name: 'FEC_INICIO_PROY'},
                                                                     {display: 'Fecha Término', name: 'FEC_TERMINO_PROY'}
                                                                 ],

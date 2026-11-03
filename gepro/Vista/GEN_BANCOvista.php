@@ -337,7 +337,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="COD_INTERNO">Código Interno: <span class="error"></span></label>
             <div class="controls">
-                <input readonly name="COD_INTERNO" id="COD_INTERNO" value="<?php echo $COD_INTERNO; ?>" onChange="conMayusculas(this)" maxlength="3" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Codigo Interno. Actualizado desde el SPRING" style='width:14.5%;' />					
+                <input readonly name="COD_INTERNO" id="COD_INTERNO" value="<?php echo $COD_INTERNO; ?>" onChange="conMayusculas(this)" maxlength="3" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Codigo Interno" style='width:14.5%;' />					
             </div>
         </div>								
 
@@ -345,7 +345,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="COD_RUC">R.U.C.: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="COD_RUC" id="COD_RUC" value="<?php echo $COD_RUC; ?>" onChange="conMayusculas(this)" maxlength="15" type="text" class="alphanumeric required show-popover" data-trigger="hover" data-content="R.U.C. Actualizado desde el SPRING" style='width:14.5%;' />					
+                <input readonly  name="COD_RUC" id="COD_RUC" value="<?php echo $COD_RUC; ?>" onChange="conMayusculas(this)" maxlength="15" type="text" class="alphanumeric required show-popover" data-trigger="hover" data-content="R.U.C" style='width:14.5%;' />					
             </div>
         </div>								
 
@@ -353,7 +353,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="DES_BANCO">Entidad Financiera: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="DES_BANCO" id="DES_BANCO" value="<?php echo $DES_BANCO; ?>" onChange="conMayusculas(this)" maxlength="120" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Entidad Financiera. Actualizado desde el SPRING"/>					
+                <input readonly  name="DES_BANCO" id="DES_BANCO" value="<?php echo $DES_BANCO; ?>" onChange="conMayusculas(this)" maxlength="120" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Entidad Financiera"/>					
             </div>
         </div>								
 

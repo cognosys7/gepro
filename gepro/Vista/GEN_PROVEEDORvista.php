@@ -340,7 +340,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="COD_PROVEEDOR">Código: <span class="error"></span></label>
             <div class="controls">
-                <input readonly  name="COD_PROVEEDOR" id="COD_PROVEEDOR" value="<?php echo $COD_PROVEEDOR; ?>" onChange="conMayusculas(this)" maxlength="10" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Código. Actualizado desde el SPRING" style='width:14.5%;' />					
+                <input readonly  name="COD_PROVEEDOR" id="COD_PROVEEDOR" value="<?php echo $COD_PROVEEDOR; ?>" onChange="conMayusculas(this)" maxlength="10" type="text" class="alphanumeric show-popover" data-trigger="hover" data-content="Código" style='width:14.5%;' />					
             </div>
         </div>								
 
@@ -348,7 +348,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="COD_RUC">R.U.C. / D.N.I.: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="COD_RUC" id="COD_RUC" value="<?php echo $COD_RUC; ?>" onChange="conMayusculas(this)" maxlength="12" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="R.U.C. / D.N.I. Actualizado desde el SPRING" style='width:14.5%;' />					
+                <input readonly  name="COD_RUC" id="COD_RUC" value="<?php echo $COD_RUC; ?>" onChange="conMayusculas(this)" maxlength="12" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="R.U.C. / D.N.I" style='width:14.5%;' />					
             </div>
         </div>								
 
@@ -356,7 +356,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="DES_PROVEEDOR">Proveedor: <span class="error">*</span></label>
             <div class="controls">
-                <input readonly  name="DES_PROVEEDOR" id="DES_PROVEEDOR" value="<?php echo $DES_PROVEEDOR; ?>" onChange="conMayusculas(this)" maxlength="200" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Proveedor. Actualizado desde el SPRING"/>					
+                <input readonly  name="DES_PROVEEDOR" id="DES_PROVEEDOR" value="<?php echo $DES_PROVEEDOR; ?>" onChange="conMayusculas(this)" maxlength="200" type="text" class="alphanumeric required show-popover"  data-trigger="hover" data-content="Proveedor"/>					
             </div>
         </div>								
 
@@ -364,7 +364,7 @@ function GeneraForm() {
         <div class="control-group">
             <label class="control-label" for="DES_DIRECCION">Dirección: <span class="error"></span></label>
             <div class="controls">
-                <textarea readonly name="DES_DIRECCION" id="DES_DIRECCION" rows="2" onChange="conMayusculas(this)" maxlength="200" class="xlarge  show-popover"  data-trigger="hover" data-content="Dirección. Actualizado desde el SPRING" ><?php echo $DES_DIRECCION; ?></textarea>				
+                <textarea readonly name="DES_DIRECCION" id="DES_DIRECCION" rows="2" onChange="conMayusculas(this)" maxlength="200" class="xlarge  show-popover"  data-trigger="hover" data-content="Dirección" ><?php echo $DES_DIRECCION; ?></textarea>				
             </div>
         </div>						
 
