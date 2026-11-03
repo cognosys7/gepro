@@ -1,0 +1,65 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Filter Input</title>
+		<script type="text/javascript" src="../../jquery/jquery.js"></script>
+        <script type="text/javascript" src="../jquery.maskedinput.min.js"></script>
+        <script>
+		jQuery(function($){
+		   $("#date").mask("99/99/9999");
+		   $("#phone").mask("(999) 999-9999");
+		   //$("#phone").mask("(999) 999-9999? x99999");
+		   //$("#phone").mask("#hhhhhh");
+		   $("#tin").mask("99-9999999");
+		   $("#ssn").mask("999-99-9999");
+		   //$("#product").mask("99/99/9999",{placeholder:" "});
+		   $("#product").mask("99/99/9999",{completed:function(){alert("You typed the following: "+this.val());}});
+		   $.mask.definitions['~']='[+-]';
+   		   $("#eyescript").mask("~9.99 ~9.99 999");
+		   
+		});
+		</script>
+	</head>
+	<body>
+    <table>
+		<tbody>
+            <tr>
+            <td>Date</td>
+            <td><input type="text" tabindex="1" id="date"></td>
+            <td>99/99/9999</td>
+            </tr>
+            <tr>
+            <td>Phone</td>
+            <td><input type="text" tabindex="3" id="phone"></td>
+            <td>(999) 999-9999</td>
+            </tr>
+            <tr>
+            <td>Phone + Ext</td>
+            <td><input type="text" tabindex="4" id="phoneext"></td>
+            <td>(999) 999-9999? x99999</td>
+            </tr>
+            <tr>
+            <td>Tax ID</td>
+            <td><input type="text" tabindex="5" id="tin"></td>
+            <td>99-9999999</td>
+            </tr>
+            <tr>
+            <td>SSN</td>
+            <td><input type="text" tabindex="6" id="ssn"></td>
+            <td>999-99-9999</td>
+            </tr>
+            <tr>
+            <td>Product Key</td>
+            <td><input type="text" tabindex="7" id="product"></td>
+            <td>a*-999-a999</td>
+            </tr>
+            <tr>
+            <td>Eye Script</td>
+            <td><input type="text" tabindex="8" id="eyescript"></td>
+            <td>~9.99 ~9.99 999</td>
+            </tr>
+         </tbody>
+         </table>
+	</body>
+</html>

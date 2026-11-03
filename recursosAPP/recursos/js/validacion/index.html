@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Documento sin título</title>
+<script src="../jquery/jquery.js"></script>
+<script src="jquery.validate.js"></script>
+<script src="reglas.js"></script>
+<style>
+div.error {
+    color: #FF0000;
+}
+/*input.error, textarea.error { border: 1px dotted red; }*/
+input.error, textarea.error { margin-left: 0%;border: 2px solid red; }
+.error{
+    margin-left: 1%;
+	color:red;
+    font-size:11px;
+    font-weight: bold;}
+
+</style>
+</head>
+<body>
+<form id="formulario" name="formulario" method="post">
+<div class="error" style="display:none;">
+  <span></span>.<br clear="all"/>
+</div>
+<input type="text" name="Nombre" class="required"/>
+<input type="submit" name="Grabar" value="Grabar" />
+</form>
+</body>
+</html>

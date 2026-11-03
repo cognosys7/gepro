@@ -1,0 +1,10 @@
+http://localhost/gepro/gepro/Vista/mainpage.php
+http://localhost/gepro/SisSeguridad/Vista/mainpage.php?&&Op=5301
+
+Estudios: PUSHAQUILCA
+Obra: ESQUILACHE / ALADINO
+
+
+http://localhost/ge3p/SisSeguridad/Vista/mainpage.php?&&Op=5301
+
+

@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Filter Input</title>
+		<script type="text/javascript" src="../../jquery/jquery.js"></script>
+        <script type="text/javascript" src="../jquery.maskMoney.min.js"></script>
+        <script>
+		$(function() {
+			$("#demo1").maskMoney();
+			$("#demo2").maskMoney({thousands:'', decimal:'.', allowZero:true, suffix: ' S/.'});
+			$("#demo3").maskMoney({prefix:'S/. ', allowNegative: true, thousands:'.', decimal:',', affixesStay: false});
+		})
+		</script>
+	</head>
+	<body>
+    <input type="text" id="demo1" />
+    <input type="text" id="demo2" />
+    <input type="text" id="demo3" />
+</html>

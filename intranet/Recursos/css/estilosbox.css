@@ -1,0 +1,94 @@
+* { 
+    margin: 0; 
+    padding: 0;
+    outline: 0;
+}
+#bg 
+{
+    background-image:url('../images/20w.png');
+    background-color:#f1f2f1;
+    background-repeat:repeat;
+    margin-top: 0px; margin-bottom: 0px;
+    font: 12px "Open Sans",Helvetica,Arial,sans-serif;
+    color: #666666;
+}
+
+body
+{
+    color: #777777;
+}
+
+a.l1:link 
+{
+	color: #FB9233;
+	text-decoration:none;
+}
+
+a.l1:visited 
+{
+	color: #FB9233;
+	text-decoration:none;
+}
+
+a.l1:hover 
+{
+	color: #93C600;
+}
+
+a.l1:active 
+{
+	color: #FB9233;
+	text-decoration:none;
+}
+
+#wrap 
+{
+        background-color: #ffffff;
+        width: 90%;
+        margin: 0px auto;
+        text-align: left;
+	-webkit-box-shadow: 0px 0px 8px #c7c7c7;
+	-moz-box-shadow: 0px 0px 8px #c7c7c7;
+	box-shadow: 0px 0px 8px #c7c7c7;
+}
+
+#wrapOtros 
+{
+        background-color: #ffffff;
+        width: 90%;
+        margin: 0px auto;
+}
+
+select{	font: 95%/1.5em Tahoma, Sans-serif;width: 30%;}
+
+#content 
+{
+	width: 100%;
+	padding: 1px 0 5px 0;
+}
+
+.formulario
+{
+	margin: 1%;
+    width: 98.5%;
+}
+
+.formulario label { width: 22%;}
+
+fieldset
+{
+	border: 0px;
+	padding:2px 2px;
+	margin: 1%;
+	width: 94%;
+}
+
+legend,caption
+{
+	color: #E20A19;
+	font-family:Tahoma; 
+	font-weight:bold;
+	border:0px;
+	height:20px; 
+	padding: 1px 1px;
+}

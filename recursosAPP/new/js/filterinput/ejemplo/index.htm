@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>Filter Input</title>
+		<script type="text/javascript" src="../../jquery/jquery.js"></script>
+        <script type="text/javascript" src="../jquery.filter_input.js"></script>
+        <script>
+			$(document).ready(function() {
+			$('#text_field2').filter_input({regex:'[A-Z0-9]'});
+			// only lowercase alphabets are allowed
+			$('#text_input').filter_input({regex:'[a-z]'}); 
+			
+			// only numbers are allowed
+			$('#text_input2').filter_input({regex:'[0-9]'}); 
+			
+			// only URL safe characters are allowed
+			$('#text_input3').filter_input({regex:'[A-Za-z0-9+#./]'}); 
+			
+			});
+			
+		</script>
+	</head>
+	<body>
+		[a-z] <input id="text_input" type="text">
+        [0-9]<input id="text_input2" type="text">
+        [A-Za-z0-9+#./]<input id="text_input3" type="text">
+	</body>
+</html>

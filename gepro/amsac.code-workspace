@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../intranet"
+		},
+		{
+			"path": "../recursosAPP"
+		},
+		{
+			"path": "../sisSeguridad"
+		}
+	],
+	"settings": {}
+}

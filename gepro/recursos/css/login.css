@@ -1,0 +1,61 @@
+body
+{
+    color:#1D1D1B;
+    font: 14px "Open Sans", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    /*line-height:1;*/
+    width:100%;
+}
+
+#Contenedor {
+    width: 100%;
+    position:absolute; 
+    left:0; 
+    top:0; 
+}
+
+#LoginSuperior
+{
+    width: 100%;
+    height: 98px;
+    text-align: right;
+    background-color: #DADADA;
+}
+
+.ContenidoLoguin
+{
+    background: #D35027 url("../../recursos/images/img-slide.jpg") no-repeat center center fixed;
+    background-size: cover;
+    -moz-background-size: cover;
+    -webkit-background-size: cover;
+    -o-background-size: cover;
+    margin-top: -18px; 
+    height:100vh;
+    width: 100%;
+    left: 0px; 
+    right: 0px;
+
+}
+
+#Pie 
+{
+    position: fixed;
+    bottom: 0;
+    height: 7%;
+    width: 100%;
+    text-align: center;
+    background-color: #706F6F;
+}
+
+#marcoPie
+{
+    margin-right: 25%;
+    margin-left: 25%;
+    padding: 16px;
+}
+
+@media (min-height: 1276px)
+{
+    
+}

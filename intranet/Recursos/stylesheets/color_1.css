@@ -1,0 +1,43 @@
+.colr {color:#E7D51D;}
+#progress-bar{background: #e7d51d;}
+#slidecaption{color: #e7d51d;}
+#navigation ul li a:hover, 
+#navigation ul li a.active{color: #F8E203;}
+#nav ul li a.active{color: #e7d51d;}
+#nav ul li a:hover{color: #e7d51d;}
+.headingmain h1{color: #e7d51d;}
+#wrapper .rightblog a:hover{color: #e7d51d;}
+.pagination-sec ul li a:hover, 
+.pagination-sec ul li a.active {color: #E7D51D;}
+#sortby h4{color: #e7d51d;}
+#wrapper .mediumbox h3 a:hover, 
+#wrapper .smallbox h3 a:hover, 
+#wrapper .smallboxother h3 a:hover{color: #e7d51d;}
+#imagecaption h2{color: #e7d51d;}
+.jspDrag{background: #e7d51d;}
+ul.news-list li:hover .date h5{color: #E7D51D;}
+ul.news-list li:hover .date h2{color: #E7D51D;}
+ul.news-list li:hover .desc h4 a{color: #E7D51D;}
+#leftpanel, #leftpanel2{background: #E7D51D; border-bottom:#E7D51D solid 2px;}
+#bottompanel li a#tray-button span, 
+#bottompanel2 li a#tray-button2 span{background-color: #E7D51D;}
+#bottompanel li a#tray-button:hover span, 
+#bottompanel li a#tray-button span.active, 
+#bottompanel2 li a#tray-button2:hover span, 
+#bottompanel2 li a#tray-button2 span.active{background-color: #E7D51D;}
+#bottompanel li a#play-button span, 
+#bottompanel2 li a#play-button2 span{background-color: #E7D51D;}
+#bottompanel li a#play-button:hover span,
+#bottompanel2 li a#play-button2:hover span{background-color: #E7D51D;}
+#bottompanel li a#play-button span.active,
+#bottompanel2 li a#play-button2 span.active{background-color: #E7D51D;}
+#bottompanel li a#play-button:hover span.active,
+#bottompanel2 li a#play-button2:hover span.active{background-color: #E7D51D;}
+#bottompanel li a#showcaption span,
+#bottompanel2 li a#showcaption2 span{background-color: #E7D51D;}
+#bottompanel li a#showcaption:hover span,
+#bottompanel li a#showcaption span.active,
+#bottompanel2 li a#showcaption2:hover span,
+#bottompanel2 li a#showcaption2 span.active{background-color: #E7D51D;}
+#searchbar button{background-color: #E7D51D;}
+#leftslide{background-color: #E7D51D;}

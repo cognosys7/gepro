@@ -1,0 +1,43 @@
+.colr 													{color:#dc5038;}
+#progress-bar											{background: #dc5038;}
+#slidecaption											{color: #dc5038;}
+#navigation ul li a:hover, 
+#navigation ul li a.active 								{color: #dc5038;}
+#nav ul li a.active										{color: #dc5038;}
+#nav ul li a:hover										{color: #dc5038;}
+.headingmain h1											{color: #dc5038;}
+#wrapper .rightblog a:hover								{color: #dc5038;}
+.pagination-sec ul li a:hover, 
+.pagination-sec ul li a.active 								{color: #dc5038;}
+#sortby h4												{color: #dc5038;}
+#wrapper .mediumbox h3 a:hover, 
+#wrapper .smallbox h3 a:hover, 
+#wrapper .smallboxother h3 a:hover						{color: #dc5038;}
+#imagecaption h2										{color: #dc5038;}
+.jspDrag												{background: #dc5038;}
+ul.news-list li:hover .date h5							{color: #dc5038;}
+ul.news-list li:hover .date h2							{color: #dc5038;}
+ul.news-list li:hover .desc h4 a						{color: #dc5038;}
+#leftpanel, #leftpanel2									{background: #dc5038; border-bottom:#dc5038 solid 2px;}
+#bottompanel li a#tray-button span, 
+#bottompanel2 li a#tray-button2 span 					{background-color: #dc5038;}
+#bottompanel li a#tray-button:hover span, 
+#bottompanel li a#tray-button span.active, 
+#bottompanel2 li a#tray-button2:hover span, 
+#bottompanel2 li a#tray-button2 span.active 			{background-color: #dc5038;}
+#bottompanel li a#play-button span, 
+#bottompanel2 li a#play-button2 span					{background-color: #dc5038;}
+#bottompanel li a#play-button:hover span,
+#bottompanel2 li a#play-button2:hover span				{background-color: #dc5038;}
+#bottompanel li a#play-button span.active,
+#bottompanel2 li a#play-button2 span.active 			{background-color: #dc5038;}
+#bottompanel li a#play-button:hover span.active,
+#bottompanel2 li a#play-button2:hover span.active		{background-color: #dc5038;}
+#bottompanel li a#showcaption span,
+#bottompanel2 li a#showcaption2 span					{background-color: #dc5038;}
+#bottompanel li a#showcaption:hover span,
+#bottompanel li a#showcaption span.active,
+#bottompanel2 li a#showcaption2:hover span,
+#bottompanel2 li a#showcaption2 span.active				{background-color: #dc5038;}
+#searchbar button										{background-color: #dc5038;}
+#leftslide												{background-color: #dc5038;}

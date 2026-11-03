@@ -1,0 +1,2 @@
+http://jquery.bassistance.de/validate/demo/marketo/
+http://bassistance.de/jquery-plugins/jquery-plugin-validation/

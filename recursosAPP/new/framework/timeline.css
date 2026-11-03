@@ -1,0 +1,195 @@
+/* Timeline ------------------------------------------ */
+.timeline {
+    position: relative;
+    list-style: none;
+    padding-left: 0;
+}
+.timeline:before {
+    content: "";
+    background-color: #40a9bc;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 4px;
+    margin-left: -2px;
+    z-index: 1;
+}
+
+.timeline > li {
+    position: relative;
+    width: 50%;
+    margin-bottom: 40px;
+    padding-right: 20px;
+    float: left;
+    clear: both;
+}
+
+.tl-content {
+    display: inline-block;
+    margin-top: 7px;
+    padding: 8px;
+    background-color: #fafafa;
+    border: 1px solid #e2dfe6;
+    color: #888;
+    float: right;
+    box-shadow: -1px 0px 2px #eee;
+    text-align: justify;
+}
+.tl-content:after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    background-color: #40a9bc;
+    border-radius: 100%;
+    border: 2px solid #fff;
+    position: absolute;
+    top: 13px;
+    left: 100%;
+    margin-left: -9px;
+    z-index: 9;
+}
+.tl-content p {
+    margin-bottom: 0;
+}
+.tl-content img {
+    margin-right: 10px;
+    float: left;
+}
+.tl-date {
+    padding-bottom: 7px;
+    color: #444;
+}
+.tl-numb-day {
+    float: left;
+    font-size: 40px;
+    line-height: 33px;
+    margin-right: 5px;
+    font-weight: bold;
+}
+.tl-text-day {
+    display: block;
+    font-weight: bold;
+    margin-right: 5px;
+}
+.tl-month {
+    display: block;
+    color: #888;
+}
+.tl-date-small .tl-numb-day {
+    float: none;
+    font-size: 14px;
+    line-height: 15px;
+}
+.tl-date-small .tl-text-day,
+.tl-date-small .tl-month {
+    display: inline-block;
+}
+.tl-date-small .tl-text-day {
+    float: left;
+    font-weight: normal;
+}
+.tl-date-small .tl-text-day:after {
+    content: ", ";
+}
+
+.tl-icon {
+    position: absolute;
+    left: 100%;
+    margin-left: 15px;
+    font-size: 28px;
+    color: #40a9bc;
+}
+.tl-time {
+    position: absolute;
+    left: 100%;
+    margin-left: 15px;
+    margin-top: 35px;
+    color: #777;
+    font-size: 11px;
+}
+.tl-title {
+    position: absolute;
+    left: 100%;
+    width: 85%;
+    margin-left: 50px;
+    margin-top: 12px;
+    color: #40a9bc;
+    font-weight: bold;
+    font-size: 15px;
+}
+.tl-arrow, .tl-arrow:after {
+    position: absolute;
+    display: block;
+    width: 0;
+    height: 0;
+    border-color: transparent;
+    border-style: solid;
+}
+.tl-arrow {
+    border-width: 8px;
+    top: 23px;
+    right: 13px;
+    margin-top: -8px;
+    border-right-width: 0;
+    border-left-color: #ddd;
+}
+.tl-arrow:after {
+    content: "";
+    right: -6px;
+    border-right-width: 0;
+    border-left-color: #fff;
+    bottom: -7px;
+    border-width: 7px;
+}
+
+.timeline > li:nth-child(even) {
+    padding-right: 0;
+    padding-left: 20px;
+    float: right;
+}
+.timeline > li:nth-child(even) .tl-content {
+    float: left;
+    box-shadow: 1px 0px 2px #eee;
+}
+.timeline > li:nth-child(even) .tl-content:after {
+    left: 0;
+    margin-left: -9px;
+}
+.timeline > li:nth-child(even) .tl-icon {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 15px;
+}
+.timeline > li:nth-child(even) .tl-time {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 15px;
+}
+.timeline > li:nth-child(even) .tl-title {
+    left: auto;
+    right: 100%;
+    margin-left: 0;
+    margin-right: 50px;
+    text-align: right;
+}
+.timeline > li:nth-child(even) .tl-arrow {
+    left: 13px;
+    right: auto;
+    margin-top: -8px;
+    border-left-width: 0;
+    border-right-width: 8px;
+    border-right-color: #ddd;
+}
+.timeline > li:nth-child(even) .tl-arrow:after {
+    left: 1px;
+    right: auto;
+    border-left-width: 0;
+    border-right-width: 7px;
+    border-right-color: #fff;
+}
+.timeline > li.clearfix {
+    float: none;
+}

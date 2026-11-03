@@ -1,0 +1,145 @@
+/*
+adicionar imagenes a los botones del flexigrid
+*/
+.flexigrid div.fbutton .reenviar
+{
+    background: url(images/responder.gif) no-repeat center left;
+}
+.flexigrid div.fbutton .responder
+{
+    background: url(images/reenviar.gif) no-repeat center left;
+}
+.flexigrid div.fbutton .seleccionar
+{
+    background: url(images/ico_sel.png) no-repeat center left;
+}
+.flexigrid div.fbutton .vistaprevia
+{
+    background: url(images/ico_pre.jpg) no-repeat center left;
+}
+.flexigrid div.fbutton .editar
+{
+    background: url(images/ico_upd.png) no-repeat center left;
+}
+.flexigrid div.fbutton .eliminar
+{
+    background: url(images/ico_del.png) no-repeat center left;
+}
+.flexigrid div.fbutton .nuevo
+{
+    background: url(images/ico_ins.png) no-repeat center left;
+}
+.flexigrid div.fbutton .inicio
+{
+    background: url(images/home.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .search
+{
+    background: url(images/search.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .salir
+{
+    background: url(images/exit.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .return
+{
+    background: url(images/return.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .permisos
+{
+    background: url(images/permisos.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .claves
+{
+    background: url(images/key.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .excel
+{
+    background: url(images/xls.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .subir
+{
+    background: url(images/up.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .bajar
+{
+    background: url(images/down.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .next
+{
+    background: url(images/next16.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .actividades
+{
+    background: url(images/activity_16.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .estados
+{
+    background: url(images/status_16.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .images
+{
+    background: url(images/image_16.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .pdf
+{
+    background: url(images/pdf16.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .images
+{
+    background: url(images/images16.png) no-repeat center left;
+}
+
+
+/*****************************************************
+Estilo de P�gina
+*****************************************************/
+/*Fila de titulo*/
+
+/*Fila de encabezados*/
+
+/*Fila de paginado*/
+
+/*fila de busqueda*/
+
+/*
+Soluciona problema de visualizaci�n del select  cantidad de items a mostrar del flexigrid
+por heredar de estilo.css
+idem para el input text
+*/
+.flexigrid div.sDiv select{
+    width: auto !important;
+}
+.flexigrid div.sDiv input[type="text"] {
+    width: auto !important;
+}
+.flexigrid div.pDiv select{
+    width: auto !important;
+}
+.flexigrid div.pDiv input[type="text"] {
+    width: auto !important;
+}
+
+.flexigrid div.pDiv {
+    background:url("images/wbg.gif") repeat-x scroll center top #FAFAFA;
+    width: 100%;
+}
+
+.flexigrid div.vGrip {
+    background:url("images/wbg.gif") repeat-x scroll center top #FAFAFA;
+    
+}

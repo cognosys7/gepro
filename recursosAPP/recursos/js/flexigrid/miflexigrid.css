@@ -1,0 +1,123 @@
+/*
+adicionar imagenes a los botones del flexigrid
+*/
+.flexigrid div.fbutton .integrante
+{
+    background: url(images/ico_int.png) no-repeat center left;
+}
+.flexigrid div.fbutton .seleccionar
+{
+    background: url(images/ico_sel.png) no-repeat center left;
+}
+.flexigrid div.fbutton .vistaprevia
+{
+    background: url(images/ico_pre.jpg) no-repeat center left;
+}
+.flexigrid div.fbutton .editar
+{
+    background: url(images/ico_upd.png) no-repeat center left;
+}
+.flexigrid div.fbutton .eliminar
+{
+    background: url(images/ico_del.png) no-repeat center left;
+}
+.flexigrid div.fbutton .constancia
+{
+    background: url(images/ico_con.png) no-repeat center left;
+}
+.flexigrid div.fbutton .ficha
+{
+    background: url(images/ico_fic.png) no-repeat center left;
+}
+.flexigrid div.fbutton .nuevo
+{
+    background: url(images/ico_ins.gif) no-repeat center left;
+    border-top: 1px solid #96d1f8;
+    background: #65a9d7;
+    background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+    background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+    padding: 5px 10px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+    -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+    -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+    box-shadow: rgba(0,0,0,1) 0 1px 0;
+    text-shadow: rgba(0,0,0,.4) 0 1px 0;
+    color: white;
+    font-size: 14px;
+    font-family: Georgia, serif;
+    text-decoration: none;
+    vertical-align: middle;
+}
+.flexigrid div.fbutton .nuevo:hover {
+    border-top-color: #28597a;
+    background: #28597a;
+    color: #ccc;
+}
+.flexigrid div.fbutton .nuevo:active {
+    border-top-color: #1b435e;
+    background: #1b435e;
+}
+/*****************************************************
+Estilo de Página
+*****************************************************/
+/*Fila de titulo*/
+.flexigrid div.tDiv {
+    background:url("images/bg.gif") repeat-x scroll center top #FAFAFA;
+    border-color:#CCCCCC #CCCCCC -moz-use-text-color;
+    border-style:solid solid none;
+    border-width:1px 1px 0;
+    overflow:hidden;
+    position:relative;
+}
+/*Fila de encabezados*/
+.flexigrid div.hDiv {
+    background:url("images/fhbg.gif") repeat-x scroll center bottom #FAFAFA;
+    border-color:#CCCCCC #CCCCCC -moz-use-text-color;
+    border-style:solid solid none;
+    border-width:1px 1px 0;
+    overflow:hidden;
+    position:relative;
+}
+/*Fila de paginado*/
+.flexigrid div.pDiv {
+    background:url("images/wbg.gif") repeat-x scroll 0 -1px transparent;
+    border-color:-moz-use-text-color #CCCCCC #CCCCCC;
+    border-right:1px solid #CCCCCC;
+    border-style:none solid solid;
+    border-width:0 1px 1px;
+    overflow:hidden;
+    position:relative;
+    white-space:nowrap;
+}
+/*fila de busqueda*/
+.flexigrid div.sDiv {
+    background:url("images/bg.gif") repeat-x scroll center top #FAFAFA;
+    border-color:-moz-use-text-color #CCCCCC #CCCCCC;
+    border-right:1px solid #CCCCCC;
+    border-style:none solid solid;
+    border-width:0 1px 1px;
+    display:none;
+    overflow:hidden;
+    position:relative;
+}
+
+
+/*
+Soluciona problema de visualización del select  cantidad de items a mostrar del flexigrid
+por heredar de estilo.css
+idem para el input text
+*/
+.flexigrid div.sDiv select{
+    width: auto !important;
+}
+.flexigrid div.sDiv input[type="text"] {
+    width: auto !important;
+}
+.flexigrid div.pDiv select{
+    width: auto !important;
+}
+.flexigrid div.pDiv input[type="text"] {
+    width: auto !important;
+}
