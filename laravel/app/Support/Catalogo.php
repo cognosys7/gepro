@@ -19,8 +19,13 @@ class Catalogo
     public static function definicion(string $pagina): array
     {
         abort_unless(self::existe($pagina), 404);
+        $def = config('catalogos.'.$pagina);
+        //'base': LA MISMA PANTALLA DE OTRO CATALOGO CON OTRO FILTRO (P. EJ. EL PROCESO DE UN CONTRATO)
+        if (! empty($def['base'])) {
+            $def = array_merge(config('catalogos.'.$def['base']), $def);
+        }
 
-        return config('catalogos.'.$pagina);
+        return $def;
     }
 
     /** Valor del estado que significa "eliminado" (baja logica del SP): '2' salvo que se indique otro */

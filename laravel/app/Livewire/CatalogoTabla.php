@@ -96,6 +96,10 @@ class CatalogoTabla extends Component
 
             return preg_match('#^https?://#i', $url) ? $url : '';
         }
+        //ARCHIVOS ADJUNTOS DEL REGISTRO (GEN_ARCHIVO): 'archivos' => IDE_TABLA
+        if (isset($accion['archivos'])) {
+            return route('archivos.index', ['tabla' => $accion['archivos'], 'registro' => $id]);
+        }
         if (isset($accion['catalogo'])) {
             return route('catalogos.index', ['pagina' => $accion['catalogo'], 'de' => $id]);
         }

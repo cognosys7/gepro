@@ -79,7 +79,7 @@ class ProyectoContratosTabla extends Component
         'ampliacion' => ['Ampliación de plazo', 'fa-clock-rotate-left', 'gr-ambar', 'PROY_CONT_AMPLIACION', ['PIDE' => '{id}', 'PIDE_PROYECTO' => '{proyecto}']],
         'riesgo' => ['Riesgos', 'fa-triangle-exclamation', 'gr-rojo', 'PROY_RIESGO_PROBLEMA', ['PIDE_PROYECTO_ACTIVIDAD' => '{id}', 'PIDE_PROYECTO' => '{proyecto}'], 'si' => 'intervencion'],
         'interesados' => ['Interesados', 'fa-users', 'gr-violeta', 'CONT_INTERESADOS', ['PIDE' => '{id}', 'PIDE_PROYECTO' => '{proyecto}', 'PINTERVENCION' => '{intervencion}']],
-        'adquisicion' => ['Proceso de adquisición', 'fa-cart-shopping', 'gr-azul', 'PROCESO', ['Opcion' => 1, 'PIDE' => '{proceso}'], 'si' => 'adquisicion'],
+        'adquisicion' => ['Proceso de adquisición', 'fa-cart-shopping', 'gr-azul', 'PROCESO_CONTRATO', [], 'si' => 'adquisicion'],
         'documentos' => ['Documentos', 'fa-folder-open', 'gr-teal', 'CONT_DOCUMENTACION', ['Opcion' => 1, 'PIDE' => '{id}', 'PIDE2' => '{proyecto}'], 'si' => 'intervencion'],
         'entregables' => ['Calidad de entregables', 'fa-thumbs-up', 'gr-verde', 'CONT_CALIDAD', ['PIDE' => '{id}', 'PIDE_PROYECTO' => '{proyecto}'], 'si' => 'intervencion'],
         'migrar' => ['Migrar control de etapas', 'fa-file-import', 'gr-verde', 'migrar_CONT_ETAPA_CONTROL', ['PIDE' => '{id}', 'Tabla' => 'migrar_CONT_ETAPA_CONTROL']],

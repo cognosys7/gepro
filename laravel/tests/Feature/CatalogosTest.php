@@ -6,6 +6,7 @@ use App\Auth\LegadoUserProvider;
 use App\Livewire\CatalogoFormulario;
 use App\Livewire\CatalogoTabla;
 use App\Services\Seguridad;
+use App\Support\Catalogo;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
@@ -30,7 +31,8 @@ class CatalogosTest extends TestCase
 
     public function test_la_configuracion_coincide_con_la_base(): void
     {
-        foreach (config('catalogos') as $pagina => $def) {
+        foreach (array_keys(config('catalogos')) as $pagina) {
+            $def = Catalogo::definicion($pagina);
             [$esquema, $tabla] = explode('.', $def['tabla']);
             $columnas = DB::table('INFORMATION_SCHEMA.COLUMNS')->where('TABLE_SCHEMA', $esquema)->where('TABLE_NAME', $tabla)->pluck('COLUMN_NAME')->all();
             $this->assertNotEmpty($columnas, "$pagina: no existe la tabla");

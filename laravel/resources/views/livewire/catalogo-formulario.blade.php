@@ -50,7 +50,7 @@
                                             'maxlength' => $o['max'] ?? null,
                                             'step' => $tipo === 'numero' ? 'any' : null,
                                             'clase' => $tipo === 'area' ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),
-                                            'live' => $conCalculo && $tipo === 'numero' ? true : null,
+                                            'live' => $conCalculo && in_array($tipo, ['numero', 'combo'], true) ? true : null,
                                             'auto' => ! empty($o['auto']) && $this->autoCalcular ? true : null,
                                         ], fn ($v) => $v !== null),
                                     ]])

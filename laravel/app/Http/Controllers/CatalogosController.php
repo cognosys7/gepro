@@ -21,7 +21,10 @@ class CatalogosController extends Controller
         //MENU; SE ABREN EN LA VENTANA MODAL Y EL ACCESO SE VALIDA CON LA PAGINA DE ORIGEN ('acceso')
         $perfil = $request->attributes->get('perfilGepro');
         if (! empty($def['de'])) {
-            abort_unless($seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], $def['acceso']), 403, 'Su perfil no tiene acceso a esta opción.');
+            //'acceso' PUEDE SER UNA PAGINA O VARIAS (BASTA CON UNA; P. EJ. LOS ITEMS DEL PROCESO SE ABREN DESDE
+            //ACTOS PREPARATORIOS Y DESDE LOS CONTRATOS DEL PROYECTO)
+            $acceso = array_filter((array) $def['acceso'], fn ($p) => $seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], $p));
+            abort_unless($acceso, 403, 'Su perfil no tiene acceso a esta opción.');
             $de = (string) $request->query('de', '');
             abort_unless(preg_match('/^[0-9]{1,12}$/', $de), 404);
             $filaDe = Catalogo::filaDe($def, $de);

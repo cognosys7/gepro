@@ -575,7 +575,7 @@ return [
         'calculo' => App\Calculos\ControlMensual::class,
         'orden' => [['NUM_ANIO', 'asc'], ['NUM_MES', 'asc']],
         'acciones' => [
-            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos', ['legado' => ['GEN_ARCHIVO', ['PIDE' => '{id}', 'Tabla' => 'PROY_CONT_COMP_CONTROL_DET']]]],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos', ['archivos' => 'PROY_CONT_COMP_CONTROL_DET']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
@@ -641,7 +641,7 @@ return [
     ],
 
     'PROC_ITEM' => [
-        'titulo' => 'Ítems del proceso', 'icono' => 'fa-list-check', 'acceso' => 'PROCESO',
+        'titulo' => 'Ítems del proceso', 'icono' => 'fa-list-check', 'acceso' => ['PROCESO', 'PROYECTO'],
         'tabla' => 'dbo.PROC_ITEM', 'id' => 'IDE_PROC_ITEM', 'sp' => 'dbo.SP_PROC_ITEM', 'estado' => 'EST_PROCESO_ITEM',
         'de' => ['tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'columna' => 'IDE_CONVOCATORIA',
             'titulo' => "CONCAT(CAST(X.IDE_CONVOCATORIA AS varchar(12)), ' - ', X.DES_OBJETO)"],
@@ -686,7 +686,7 @@ return [
     ],
 
     'PROC_CRONOGRAMA' => [
-        'titulo' => 'Cronograma del proceso', 'icono' => 'fa-calendar-days', 'acceso' => 'PROCESO',
+        'titulo' => 'Cronograma del proceso', 'icono' => 'fa-calendar-days', 'acceso' => ['PROCESO', 'PROYECTO'],
         'tabla' => 'dbo.PROC_CRONOGRAMA', 'id' => 'IDE_CRONOGRAMA', 'sp' => 'dbo.SP_PROC_CRONOGRAMA', 'estado' => 'EST_PROC_CRONOGRAMA',
         'de' => ['tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'columna' => 'IDE_CONVOCATORIA',
             'titulo' => "CONCAT(CAST(X.IDE_CONVOCATORIA AS varchar(12)), ' - ', X.DES_OBJETO)"],
@@ -731,9 +731,9 @@ return [
             'EST_CONTRATO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '84']],
         ],
         'acciones' => [
-            ['Carta fianza', 'fa-money-check-dollar', 'gr-verde', 'Carta fianza y conceptos del contrato', ['legado' => ['CONTRATO_CONCEPTO', ['PIDE' => '{id}']]]],
+            ['Carta fianza', 'fa-money-check-dollar', 'gr-verde', 'Carta fianza y conceptos del contrato', ['catalogo' => 'CONTRATO_CONCEPTO']],
             ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['legado' => ['BIDM_GASTO_CONSOLIDA', ['PIDE' => '{id}']]]],
-            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del contrato', ['legado' => ['GEN_ARCHIVO', ['PIDE' => '{id}', 'Tabla' => 'CONTRATO']]]],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del contrato', ['archivos' => 'CONTRATO']],
         ],
         //EL CONTRATO SE REGISTRA DESDE LA GRILLA DE CONTRATOS DEL PROYECTO
         'nuevo' => false, 'editar' => true, 'eliminar' => true,
@@ -766,7 +766,7 @@ return [
         'calculo_texto' => 'Calcular la prioridad automáticamente',
         'orden' => [['IDE_RIESGO_PROB', 'desc']],
         'acciones' => [
-            ['Recurso', 'fa-briefcase', 'gr-azul', 'Recursos del riesgo', ['legado' => ['PROY_RIESGO_RECURSO', ['PIDE_RIESGO_PROB' => '{id}', 'PIDE_PROYECTO_ACTIVIDAD' => '{de}']]]],
+            ['Recurso', 'fa-briefcase', 'gr-azul', 'Recursos del riesgo', ['catalogo' => 'PROY_RIESGO_RECURSO']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
@@ -842,6 +842,57 @@ return [
             'EST_LECCION' => $estado,
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+
+    'PROY_RIESGO_RECURSO' => [
+        'titulo' => 'Recursos del riesgo', 'icono' => 'fa-briefcase', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_RIESGO_RECURSO', 'id' => 'IDE_RECURSO_RIESGO', 'sp' => 'dbo.SP_PROY_RIESGO_RECURSO', 'estado' => 'EST_RECURSO_RIESGO',
+        'de' => ['tabla' => 'dbo.PROY_RIESGO_PROBLEMA', 'id' => 'IDE_RIESGO_PROB', 'columna' => 'IDE_RIESGO_PROB',
+            'titulo' => "CONCAT(X.DES_NOMBRE, ' · ', X.DES_DETALLE)"],
+        'parametros' => ['IDE_RIESGO_PROB', 'IDE_RECURSO', 'EST_RECURSO_RIESGO'],
+        'campos' => [
+            'IDE_RECURSO' => ['Nombre del recurso', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO']]],
+            'EST_RECURSO_RIESGO' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONTRATO_CONCEPTO' => [
+        'titulo' => 'Cartas fianza del contrato', 'icono' => 'fa-money-check-dollar', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONTRATO_CONCEPTO', 'id' => 'IDE_CONT_CONCEPTO', 'sp' => 'dbo.SP_CONTRATO_CONCEPTO', 'estado' => 'EST_CONT_CONCEPTO',
+        'de' => ['tabla' => 'dbo.CONTRATO', 'id' => 'IDE_CONTRATO', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(X.COD_CONTRATO_ENTIDAD, ' · ', X.DES_CONTRATO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_BANCO', 'TIP_CONCEPTO', 'TIP_DOCUMENTO', 'COD_TIPO_DOCUMENTO', 'IMG_DOCUMENTO', 'IMP_CONCEPTO', 'FEC_EMISION',
+            'FEC_INICIO', 'FEC_TERMINO', 'DES_OBSERVACION', 'EST_CONT_CONCEPTO'],
+        'campos' => [
+            'TIP_CONCEPTO' => ['Tipo de concepto', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '66', 'solo' => ['1', '2', '3', '4']]],
+            'COD_TIPO_DOCUMENTO' => ['Número', 'texto', ['requerido' => true, 'max' => 30, 'grilla' => true]],
+            'TIP_DOCUMENTO' => ['Tipo de documento', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '67']],
+            'IDE_BANCO' => ['Banco', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_BANCO', 'IDE_BANCO', 'DES_BANCO', 'EST_BANCO']]],
+            'IMP_CONCEPTO' => ['Monto (S/)', 'numero', ['grilla' => true]],
+            'FEC_EMISION' => ['Emisión', 'fecha', []],
+            'FEC_INICIO' => ['Inicio', 'fecha', ['grilla' => true]],
+            'FEC_TERMINO' => ['Término', 'fecha', ['grilla' => true]],
+            'DES_OBSERVACION' => ['Observación', 'area', ['max' => 1000]],
+            'EST_CONT_CONCEPTO' => $estado,
+        ],
+        //COMO SU SelGrd: LAS MAS RECIENTES PRIMERO
+        'orden' => [['FEC_INICIO', 'desc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos de la carta fianza', ['archivos' => 'CONTRATO_CONCEPTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //PROCESO DE ADQUISICION DE UN CONTRATO: EL DE SU ITEM (PROYECTO_ACTIVIDAD.IDE_PROCESO_ITEM -> PROC_ITEM)
+    'PROCESO_CONTRATO' => [
+        'base' => 'PROCESO', 'titulo' => 'Proceso de adquisición', 'acceso' => 'PROYECTO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD',
+            'enlace' => '{T}.IDE_CONVOCATORIA IN (SELECT I.IDE_CONVOCATORIA FROM dbo.PROC_ITEM I JOIN dbo.PROYECTO_ACTIVIDAD A ON A.IDE_PROCESO_ITEM = I.IDE_PROC_ITEM WHERE A.IDE_PROYECTO_ACTIVIDAD = ?)',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        //EL PROCESO SE REGISTRA EN ACTOS PREPARATORIOS
+        'nuevo' => false,
     ],
 
 

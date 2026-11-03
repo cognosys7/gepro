@@ -5,8 +5,8 @@
     $id = 'fm-'.$nombre;
     $bloqueado = $this->bloqueado($nombre);
     $error = $errors->first('datos.'.$nombre);
-    //'live': EL VALOR SE ENVIA AL SALIR DEL CAMPO (P. EJ. PARA RECALCULAR MONTOS)
-    $modelo = ! empty($extra['live']) ? 'wire:model.live.blur' : 'wire:model';
+    //'live': EL VALOR SE ENVIA AL SALIR DEL CAMPO (P. EJ. PARA RECALCULAR MONTOS); LAS LISTAS, AL ELEGIR
+    $modelo = empty($extra['live']) ? 'wire:model' : ($c['tipo'] === 'select' ? 'wire:model.live' : 'wire:model.live.blur');
 @endphp
 <div @class(['fm-campo', $extra['clase'] ?? '', 'fm-con-error' => $error, 'fm-auto' => ! empty($extra['auto'])])>
     <label for="{{ $id }}">
