@@ -45,7 +45,7 @@
                 @forelse ($filas as $fila)
                     <tr wire:key="cat-{{ $fila->ID }}">
                         @foreach ($columnas as $columna => [, $tipo])
-                            @php($valor = trim((string) $fila->{$columna}))
+                            @php($valor = $tipo === 'combo' ? \App\Support\Catalogo::clave($columnas[$columna], $fila->{$columna}) : trim((string) $fila->{$columna}))
                             @if ($tipo === 'combo' && $columna === $def['estado'])
                                 <td>@if ($valor !== '')<span @class(['gp-estado', 'gp-estado-activo' => $valor === '1'])>{{ $etiquetas[$columna][$valor] ?? $valor }}</span>@endif</td>
                             @elseif ($tipo === 'combo')

@@ -249,6 +249,8 @@ class CatalogoFormulario extends Component
                 $valor = rtrim(rtrim(number_format((float) $valor, 4, '.', ''), '0'), '.');
             } elseif ($valor !== null && $tipo === 'fecha') {
                 $valor = substr((string) $valor, 0, 10);
+            } elseif ($valor !== null && $tipo === 'combo') {
+                $valor = Catalogo::clave($this->def()['campos'][$campo], $valor);
             }
             $datos[$campo] = $valor === null ? '' : trim((string) $valor);
         }

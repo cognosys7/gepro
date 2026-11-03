@@ -90,9 +90,16 @@ class Catalogo
     }
 
     /**
-     * 'clave_numerica': la columna es numerica pero GEN_TABLAS guarda el codigo con ceros ('07'):
-     * las claves se comparan sin ceros a la izquierda ('7')
+     * 'clave_numerica': la columna es numerica pero GEN_TABLAS guarda el codigo con ceros ('07'), o la
+     * columna guarda la clave con decimales ('1.000'): las claves se comparan como enteros ('7', '1')
      */
+    public static function clave(array $campo, mixed $valor): string
+    {
+        $valor = trim((string) $valor);
+
+        return ! empty($campo[2]['clave_numerica']) && is_numeric($valor) ? (string) (int) $valor : $valor;
+    }
+
     private static function normalizar(array $campo, array $opciones): array
     {
         if (empty($campo[2]['clave_numerica'])) {

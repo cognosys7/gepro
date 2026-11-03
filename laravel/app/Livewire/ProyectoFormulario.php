@@ -44,8 +44,8 @@ class ProyectoFormulario extends Component
         'DES_OPORTUNIDAD_MEJORA', 'TIP_PROYECTO', 'TIP_GRUPO_PROYECTO', 'NUM_BENEFICIARIOS', 'EST_PROYECTO'];
 
     /**
-     * Seccion III del formulario: pantallas del sistema actual relacionadas al proyecto
-     * (AbrirObjEsp, AbrirAccGes... de gepro/recursos/js/PROYECTO.js), con su titulo e icono.
+     * Seccion III del formulario: pantallas relacionadas al proyecto (AbrirObjEsp, AbrirAccGes... de
+     * gepro/recursos/js/PROYECTO.js), con su titulo e icono; las que estan en config/catalogos.php se abren en Laravel.
      */
     public const RELACIONADAS = [
         'PROY_SOCIAL_OBJETIVO_ESP' => ['Objetivos específicos de gestión social', 'fa-flag'],
@@ -136,6 +136,10 @@ class ProyectoFormulario extends Component
     {
         if ($this->idProyecto === null || ! array_key_exists($pagina, self::RELACIONADAS)) {
             return null;
+        }
+        //LAS QUE YA ESTAN EN LARAVEL (config/catalogos.php)
+        if (\App\Support\Catalogo::existe($pagina)) {
+            return route('catalogos.index', ['pagina' => $pagina, 'de' => $this->idProyecto]);
         }
 
         return app(Seguridad::class)->urlLegado('mainpage.php?'.http_build_query([

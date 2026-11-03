@@ -941,4 +941,127 @@ return [
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
+    //PANTALLAS RELACIONADAS DEL PROYECTO (SECCION III DEL FORMULARIO DEL PROYECTO); SUS GRILLAS ORDENAN POR ID
+    'PROY_SOCIAL_OBJETIVO_ESP' => [
+        'titulo' => 'Objetivos específicos de gestión social', 'icono' => 'fa-flag', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_SOCIAL_OBJETIVO_ESP', 'id' => 'IDE_OBJETIVO_ESP', 'sp' => 'dbo.SP_PROY_SOCIAL_OBJETIVO_ESP', 'estado' => 'EST_OBJETIVO_ESP',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_OBJETIVO', 'DES_OBJETIVO_ESPECIFICO', 'DES_META', 'DES_INDICADOR', 'DES_ACTIVIDAD', 'EST_OBJETIVO_ESP'],
+        'campos' => [
+            'FEC_OBJETIVO' => ['Fecha', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'DES_OBJETIVO_ESPECIFICO' => ['Objetivo específico', 'area', ['requerido' => true, 'max' => 200, 'grilla' => true]],
+            'DES_META' => ['Metas', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'DES_INDICADOR' => ['Indicadores (calidad, cantidad y tiempo)', 'area', ['requerido' => true, 'max' => 2000, 'grilla' => true]],
+            'DES_ACTIVIDAD' => ['Actividades', 'area', ['requerido' => true, 'max' => 2000]],
+            'EST_OBJETIVO_ESP' => $estado,
+        ],
+        'orden' => [['IDE_OBJETIVO_ESP', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_ACCION_GESTION' => [
+        'titulo' => 'Principales acciones de gestión', 'icono' => 'fa-square-check', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_ACCION_GESTION', 'id' => 'IDE_PROY_ACCION_GESTION', 'sp' => 'dbo.SP_PROY_ACCION_GESTION', 'estado' => 'EST_ACCION',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_ACCION', 'TIP_COMPONENTE', 'DES_ACCION', 'EST_ACCION'],
+        'campos' => [
+            'FEC_ACCION' => ['Fecha de la acción', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'TIP_COMPONENTE' => ['Componente', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_ACCION' => ['Acción de gestión', 'area', ['requerido' => true, 'max' => 4000, 'grilla' => true]],
+            'EST_ACCION' => $estado,
+        ],
+        'orden' => [['IDE_PROY_ACCION_GESTION', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_ACCION_CORRECTIVA' => [
+        'titulo' => 'Desviaciones y acciones correctivas', 'icono' => 'fa-wrench', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_ACCION_CORRECTIVA', 'id' => 'IDE_PROY_ACCION_CORRECTIVA', 'sp' => 'dbo.SP_PROY_ACCION_CORRECTIVA', 'estado' => 'EST_ACCION',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_ACCION', 'DES_DESVIACION_IDENTIFICADA', 'DES_ACCION_CORRECTIVA', 'EST_ACCION', 'TIP_COMPONENTE'],
+        'campos' => [
+            'FEC_ACCION' => ['Fecha de la acción', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'TIP_COMPONENTE' => ['Componente', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_DESVIACION_IDENTIFICADA' => ['Desviación identificada', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'DES_ACCION_CORRECTIVA' => ['Acción correctiva', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'EST_ACCION' => $estado,
+        ],
+        'orden' => [['IDE_PROY_ACCION_CORRECTIVA', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //LAS CLAVES DE PROBABILIDAD, IMPACTO Y VALORACION SE GUARDAN CON DECIMALES ('1.000'): 'clave_numerica'
+    'PROY_OPORTUNIDAD_RIESGO' => [
+        'titulo' => 'Oportunidades de mejora y análisis de riesgo', 'icono' => 'fa-triangle-exclamation', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_OPORTUNIDAD_RIESGO', 'id' => 'IDE_PROY_OPORTUNIDAD', 'sp' => 'dbo.SP_PROY_OPORTUNIDAD_RIESGO', 'estado' => 'EST_RIESGO',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_RIESGO', 'DES_RIESGO', 'NUM_PROBABILIDAD', 'NUM_IMPACTO', 'NUM_VALORACION', 'DES_ACCION', 'EST_RIESGO', 'TIP_COMPONENTE'],
+        'campos' => [
+            'FEC_RIESGO' => ['Fecha del riesgo', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'TIP_COMPONENTE' => ['Componente', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_RIESGO' => ['Riesgo identificado', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'NUM_PROBABILIDAD' => ['% Probabilidad', 'combo', ['requerido' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'clave_numerica' => true,
+                'lista' => ['dbo.GEN_PROBABILIDAD_RIESGO', 'IDE_PROBABILIDAD', 'DES_PROBABILIDAD', 'EST_PROBABILIDAD']]],
+            'NUM_IMPACTO' => ['Impacto', 'combo', ['requerido' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'clave_numerica' => true,
+                'lista' => ['dbo.GEN_IMPACTO_RIESGO', 'IDE_IMPACTO', 'DES_IMPACTO', 'EST_IMPACTO']]],
+            //PROBABILIDAD X IMPACTO (App\Calculos\ValoracionOportunidad)
+            'NUM_VALORACION' => ['Valoración (P x I)', 'combo', ['requerido' => true, 'auto' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'clave_numerica' => true,
+                'lista' => ['dbo.GEN_PRIORIDAD_RIESGO', 'IDE_PRIORIDAD', 'DES_PRIORIDAD', 'EST_PRIORIDAD'], 'excluir' => [11]]],
+            'DES_ACCION' => ['Acción en proceso', 'area', ['max' => 1000, 'grilla' => true, 'seccion' => 'Evaluación']],
+            'EST_RIESGO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'seccion' => 'Evaluación']],
+        ],
+        'calculo' => App\Calculos\ValoracionOportunidad::class,
+        'calculo_texto' => 'Calcular la valoración automáticamente',
+        'orden' => [['IDE_PROY_OPORTUNIDAD', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_COSTO_COMPONENTE' => [
+        'titulo' => 'Costos del proyecto por componente', 'icono' => 'fa-money-bill-wave', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COSTO_COMPONENTE', 'id' => 'IDE_PROY_COSTO_COMPONENTE', 'sp' => 'dbo.SP_PROY_COSTO_COMPONENTE', 'estado' => 'EST_CAMBIO',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_CAMBIO', 'PCT_AVANCE_FISICO', 'IMP_CTO_PLAN_CIERRE', 'IMP_CTO_PERFIL', 'IMP_CTO_EXPEDIENTE', 'IMP_CTO_OBRA',
+            'IMP_CTO_SUPERVISION', 'IMP_CTO_GESTION_PROY', 'IMP_CTO_CAPACITACION', 'IMP_CTO_POST_CIERRE', 'TIP_COMPONENTE_ACT', 'DES_ACTUALIZACION', 'EST_CAMBIO'],
+        'campos' => [
+            'PCT_AVANCE_FISICO' => ['% Avance físico', 'numero', ['grilla' => true]],
+            'FEC_CAMBIO' => ['Fecha de actualización', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'IMP_CTO_PLAN_CIERRE' => ['Plan de cierre', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_PERFIL' => ['Perfil', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_EXPEDIENTE' => ['Expediente técnico', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_OBRA' => ['Ejecución de obra', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_SUPERVISION' => ['Supervisión', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_GESTION_PROY' => ['Gestión de proyecto', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_CAPACITACION' => ['Capacitación', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_POST_CIERRE' => ['Post cierre', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'TIP_COMPONENTE_ACT' => ['Componente actualizado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_ACTUALIZACION' => ['Descripción del cambio', 'area', ['max' => 1000, 'grilla' => true]],
+            'EST_CAMBIO' => $estado,
+        ],
+        'orden' => [['IDE_PROY_COSTO_COMPONENTE', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_SEGUIMIENTO' => [
+        'titulo' => 'Seguimiento del proyecto', 'icono' => 'fa-eye', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_SEGUIMIENTO', 'id' => 'IDE_SEGUIMIENTO', 'sp' => 'dbo.SP_PROY_SEGUIMIENTO', 'estado' => 'EST_SEGUIMIENTO',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_SEGUIMIENTO', 'DES_SEGUIMIENTO', 'EST_SEGUIMIENTO'],
+        'campos' => [
+            'FEC_SEGUIMIENTO' => ['Fecha del seguimiento', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'DES_SEGUIMIENTO' => ['Descripción del seguimiento', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'EST_SEGUIMIENTO' => $estado,
+        ],
+        'orden' => [['IDE_SEGUIMIENTO', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del seguimiento', ['archivos' => 'PROY_SEGUIMIENTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
 ];

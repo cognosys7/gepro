@@ -20,16 +20,20 @@ class PrioridadRiesgo
 
     public const ALTA = '5';
 
+    /** Campos de probabilidad, impacto y prioridad (las subclases usan los de su tabla) */
+    protected const CAMPOS = ['IDE_PROBABILIDAD', 'IDE_IMPACTO', 'IDE_PRIORIDAD'];
+
     public function calcular(array $datos, ?object $de): array
     {
-        $probabilidad = self::PROBABILIDAD[(int) ($datos['IDE_PROBABILIDAD'] ?? 0)] ?? null;
-        $impacto = self::IMPACTO[(int) ($datos['IDE_IMPACTO'] ?? 0)] ?? null;
+        [$campoProbabilidad, $campoImpacto, $campoPrioridad] = static::CAMPOS;
+        $probabilidad = self::PROBABILIDAD[(int) ($datos[$campoProbabilidad] ?? 0)] ?? null;
+        $impacto = self::IMPACTO[(int) ($datos[$campoImpacto] ?? 0)] ?? null;
         if ($probabilidad === null || $impacto === null) {
-            return ['IDE_PRIORIDAD' => ''];
+            return [$campoPrioridad => ''];
         }
         $valor = $probabilidad * $impacto;
 
-        return ['IDE_PRIORIDAD' => match (true) {
+        return [$campoPrioridad => match (true) {
             $valor <= 1.6 => self::BAJA,
             $valor >= 6 => self::ALTA,
             default => self::MODERADA,
