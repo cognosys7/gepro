@@ -29,7 +29,13 @@ return [
     // Paginas ya migradas: Pagina del sistema actual => nombre de la ruta de Laravel.
     // El menu las abre en Laravel; las demas siguen en el sistema actual.
     'paginas_migradas' => [
-        // 'PROYECTO' => 'proyectos.index',
+        'PROYECTO' => 'proyectos.index',
+    ],
+
+    // Enlaces externos que usan las grillas (los mismos del sistema actual; apuntan a servidores de AMSAC)
+    'enlaces' => [
+        'sigam' => env('GEPRO_SIGAM_URL', 'http://198.150.0.125/sigam/planes/{codigo}.php'),
+        'ficha_tecnica' => env('GEPRO_FICHA_URL', 'https://app.powerbi.com/view?r=eyJrIjoiZDk2MzU1Y2QtNjAxNi00NGFhLWE5MWMtMTViNDUzMTBiNzc0IiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9&pageName=ReportSection1f49f22bde5b59240410'),
     ],
 
 ];

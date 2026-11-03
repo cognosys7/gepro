@@ -30,6 +30,8 @@ class AccesoGepro
             return redirect()->route('login')->withErrors(['usuario' => 'Su usuario no tiene un perfil activo en GEPRO.']);
         }
 
+        //PERFIL Y MODULO PARA LOS CONTROLADORES: $request->attributes->get('perfilGepro')
+        $request->attributes->set('perfilGepro', $perfil);
         View::share('usuarioGepro', $usuario);
         View::share('menuGepro', $this->seguridad->menu($perfil['perfil'], $perfil['modulo']));
 

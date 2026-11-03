@@ -84,6 +84,26 @@ class PuenteSesionLegado
         $_SESSION = [];
     }
 
+    /**
+     * Marca en la sesion del sistema actual la opcion del menu en la que esta el usuario (Op = grupo,
+     * Oc = opcion) y su perfil, como hacen su AntiRefresh.php y ValidaSession(): sus paginas validan
+     * el acceso con Oc y CodPerfil, y las ventanas emergentes que abre Laravel las necesitan.
+     */
+    public static function marcarOpcion(int $op, int $oc, int $perfil, int $sistema): void
+    {
+        if (! self::iniciar(self::idCookie(), false)) {
+            return;
+        }
+        if (! empty($_SESSION['usuario'])) {
+            $_SESSION['Op'] = $op;
+            $_SESSION['Oc'] = $oc;
+            $_SESSION['CodPerfil'] = $perfil;
+            $_SESSION['CodSistema'] = $sistema;
+        }
+        session_write_close();
+        $_SESSION = [];
+    }
+
     /** Persona jefe de la unidad organica (como paVerificaUsuarioLoguin), 0 si no tiene */
     private static function jefe(int $idUnidad): int
     {

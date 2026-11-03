@@ -88,32 +88,88 @@ class Seguridad
         return $armar(0, 1);
     }
 
+    /** Enlace guardado en tsopcion; algunos tienen entidades HTML ("&amp;Opcion=110") */
+    private function enlace(object $o): string
+    {
+        return trim(html_entity_decode((string) $o->OpcEnlace, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+    }
+
     /**
      * URL de una opcion: si su pagina ya esta en Laravel (config gepro.paginas_migradas) la ruta de
-     * Laravel; si no, la del sistema actual. Los enlaces guardados son relativos a gepro/Vista/
-     * ("Antirefresh.php?Pagina=X", "../../SisSeguridad/...") y las paginas del sistema llevan &Op=.
+     * Laravel, con los demas parametros del enlace (Opcion=110 -> ?opcion=110); si no, la del sistema
+     * actual. Los enlaces guardados son relativos a gepro/Vista/ ("Antirefresh.php?Pagina=X",
+     * "../../SisSeguridad/...") y, como en su menu (ConfigPages.php), las opciones de primer nivel
+     * llevan &Op=<opcion> y las de los niveles siguientes &Op=<grupo>&Oc=<opcion>: cada pagina del
+     * sistema actual valida el acceso con Oc.
      */
     public function url(object $o): ?string
     {
-        //ALGUNOS ENLACES ESTAN GUARDADOS CON ENTIDADES HTML ("&amp;Opcion=110")
-        $enlace = trim(html_entity_decode((string) $o->OpcEnlace, ENT_QUOTES | ENT_HTML5, 'UTF-8'));
+        $enlace = $this->enlace($o);
         if ($enlace === '') {
             return null;
         }
         if (preg_match('/[?&]Pagina=([A-Za-z0-9_]+)/', $enlace, $m)) {
             $ruta = config('gepro.paginas_migradas.'.$m[1]);
             if ($ruta) {
-                return route($ruta);
+                parse_str((string) parse_url($enlace, PHP_URL_QUERY), $parametros);
+                unset($parametros['Pagina']);
+
+                return route($ruta, array_change_key_case($parametros, CASE_LOWER));
             }
         }
         if ((int) $o->OpcTipoEnlace === 1) {
-            $enlace .= '&Op='.(int) $o->IdOpcion;
+            $enlace .= (int) $o->OpcNivel === 1
+                ? '&Op='.(int) $o->IdOpcion
+                : '&Op='.(int) $o->OpcPadre.'&Oc='.(int) $o->IdOpcion;
         }
         if (preg_match('#^https?://#i', $enlace)) {
             return $enlace;
         }
 
         return $this->urlLegado($enlace);
+    }
+
+    /**
+     * Opcion del menu del perfil que abre la pagina indicada con esos parametros
+     * (p. ej. PROYECTO con Opcion=211 -> "2.1 Etapa del Contrato"), o null si el perfil no tiene acceso.
+     * Devuelve id, padre y nombre.
+     */
+    public function opcionDePagina(int $perfil, int $modulo, string $pagina, array $parametros = []): ?array
+    {
+        $opciones = DB::table('seguridad.tsopcion as o')
+            ->join('seguridad.tsacceso as a', function ($j) use ($perfil) {
+                $j->on('a.AccOpcion', '=', 'o.IdOpcion')->where('a.AccPerfil', $perfil)->where('a.accestado', 1);
+            })
+            ->where('o.OpcModulo', $modulo)
+            ->where('o.OpcEstado', 1)
+            ->where('o.OpcEnlace', 'like', '%Pagina='.$pagina.'%')
+            ->get(['o.IdOpcion', 'o.OpcPadre', 'o.OpcNivel', 'o.OpcDescripcion', 'o.OpcEnlace']);
+
+        foreach ($opciones as $o) {
+            parse_str((string) parse_url($this->enlace($o), PHP_URL_QUERY), $enlace);
+            if (($enlace['Pagina'] ?? '') !== $pagina) {
+                continue;
+            }
+            foreach ($parametros as $clave => $valor) {
+                if ((string) ($enlace[$clave] ?? '') !== (string) $valor) {
+                    continue 2;
+                }
+            }
+
+            return [
+                'id' => (int) $o->IdOpcion,
+                'padre' => (int) $o->OpcNivel === 1 ? (int) $o->IdOpcion : (int) $o->OpcPadre,
+                'nombre' => trim((string) $o->OpcDescripcion),
+            ];
+        }
+
+        return null;
+    }
+
+    /** Nombre de una opcion del menu (para las migas) */
+    public function nombreOpcion(int $id): string
+    {
+        return trim((string) DB::table('seguridad.tsopcion')->where('IdOpcion', $id)->value('OpcDescripcion'));
     }
 
     /** Resuelve un enlace relativo a gepro/Vista/ del sistema actual ("../../SisSeguridad/x" -> /SisSeguridad/x) */
