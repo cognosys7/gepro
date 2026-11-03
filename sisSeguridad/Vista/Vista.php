@@ -27,7 +27,7 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
         <html> 
             <head>
                 <meta charset="utf-8">
-                <title><?php echo GE3P;?></title>
+                <title><?php echo COGNOSYS;?></title>
                 <meta name="description" content="">
                 <meta name="viewport" content="width=device-width">
                 <link rel="shortcut icon" href="../institucion.ico" />

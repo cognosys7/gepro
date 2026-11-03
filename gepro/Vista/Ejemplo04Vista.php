@@ -14,7 +14,7 @@ $lCatalogoDatos = $lCollection->Get('lCatalogoDatos');
 
 <h2> Mi primer ejemplo <?php echo $lConsulta[1]?></h2>
 
-<h3> Mi primer ejemplo <?php echo utf8_encode($lConsulta[2])?></h3>
+<h3> Mi primer ejemplo <?php echo mb_convert_encoding($lConsulta[2], 'UTF-8', 'ISO-8859-1')?></h3>
 
 <h4> Mi primer ejemplo <?php echo $lConsulta[3]?></h4>
 

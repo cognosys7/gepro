@@ -7,17 +7,15 @@ date_default_timezone_set('America/Lima');
 
 define("GENERATE_LOG", false);
 
-//PRODUCCION
- /*
-define("DB_SQLSERVER_HOSTNAME", "DESKTOP-U0A4LJ6\SQLSERVER2022");
-define("DB_SQLSERVER_DATABASE", "BDGEPRO"); 
-define("DB_SQLSERVER_USERNAME", "sa");
-define("DB_SQLSERVER_PASSWORD", ""); // clave retirada: se cargará desde fuera del sitio
-*/
-define("DB_SQLSERVER_HOSTNAME", "DESKTOP-U0A4LJ6\SQLSERVER2022");
-define("DB_SQLSERVER_DATABASE", "BDGEPRO_ESSALUD"); 
-define("DB_SQLSERVER_USERNAME", "sa");
-define("DB_SQLSERVER_PASSWORD", ""); // clave retirada: se cargará desde fuera del sitio
+// Credenciales fuera del web root (config/config.example.php)
+require_once(dirname(__DIR__) . '/config/cargar_config.php');
+$lConfigDB = gepro_config();
+
+define("DB_SQLSERVER_HOSTNAME", $lConfigDB['db']['host']);
+define("DB_SQLSERVER_DATABASE", $lConfigDB['db']['database']);
+define("DB_SQLSERVER_USERNAME", $lConfigDB['db']['user']);
+define("DB_SQLSERVER_PASSWORD", $lConfigDB['db']['password']);
+unset($lConfigDB);
 
 // Driver
 define("DRIVER_MYSQL", "MySQL");
@@ -69,11 +67,11 @@ switch(DRIVER_TO_USE) {
 //Rutas
 define("ROOT_PATH",                    str_replace("\\", "/", dirname(__file__)));
 define('RAIZWEB',			$_SERVER['DOCUMENT_ROOT']);
-define("INTRANET",                     "/gepro/intranet");
-define("INTRAAPP",                     "/gepro/intrapronied/Vista/");
-define("RECURSOSPROY",                 "/gepro/intranet/Recursos/");
+define("INTRANET",                     "/intranet");
+define("INTRAAPP",                     "/intrapronied/Vista/");
+define("RECURSOSPROY",                 "/intranet/Recursos/");
 /*LLAMO A PARAMETROS DE RECURSOS GENERALES*/
-define("RECURSOSGEN",                  "/gepro/recursosAPP/");
+define("RECURSOSGEN",                  "/recursosAPP/");
 define("RECURSOSGEN_RECURSOS",         RECURSOSGEN."/recursos/");
 define("RECURSOSGEN_LIB",              RAIZWEB.RECURSOSGEN."/lib/");
 define("SEG_CONTROLADOR_DAO",          RAIZWEB.RECURSOSGEN ."/Controlador/DAO");

@@ -114,6 +114,7 @@ class SQLServerClass {
             "PWD" => $this->mPassword,
             "Database" => $this->mDatabase
             , "CharacterSet" => "UTF-8"
+            , "TrustServerCertificate" => true
         );
         $this->mConnection = @sqlsrv_connect($this->mHostname, $conn_array);
         if ($this->mConnection === false)
@@ -213,7 +214,7 @@ class SQLServerClass {
         $lIsSuccessFull = $this->DoQuery($aQuery);
 
         if (!$lIsSuccessFull)
-            throw new FatalException(DB_ERROR_DELETE . " " . mysql_error() . " " . mysql_errno());
+            throw new FatalException(DB_ERROR_DELETE . " ");
 
         return $lIsSuccessFull;
     }
