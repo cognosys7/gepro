@@ -233,13 +233,36 @@ function VentanaIconoTitulo(titulo)
 function VentanaCerrar()
 {
     if (typeof window.cerrarPopup === 'function') { window.cerrarPopup(); return; }
-    try { parent.$.colorbox.close(); } catch (e) { }
+    try { parent.$.colorbox.close(); } catch (e) { VentanaAvisarCierre(); }
+}
+
+//ABIERTA DESDE GEPRO EN LARAVEL (OTRA PAGINA, SIN colorbox Y EN DESARROLLO OTRO PUERTO): parent.$ NO
+//EXISTE O NO SE PUEDE LEER. SE AVISA CON postMessage Y LARAVEL CIERRA SU VENTANA MODAL
+function VentanaAvisarCierre()
+{
+    try { parent.postMessage('gepro:cerrar', '*'); } catch (e) { }
+}
+
+//cerrarPopup() DE CADA PAGINA (parent.$.colorbox.close()) TAMBIEN SE USA EN LOS BOTONES "Salir":
+//SI FALLA, SE AVISA A LARAVEL
+function VentanaEnvolverCerrarPopup()
+{
+    var original = window.cerrarPopup;
+    window.cerrarPopup = function () {
+        try {
+            if (typeof original === 'function') original(); else parent.$.colorbox.close();
+        } catch (e) {
+            VentanaAvisarCierre();
+        }
+    };
 }
 
 function VentanaCabeceraAutomatica()
 {
     var body = $('body');
-    if (!body.hasClass('vm-emergente') || window.parent === window || $('.vm-cabecera').length) return;
+    if (!body.hasClass('vm-emergente') || window.parent === window) return;
+    VentanaEnvolverCerrarPopup();
+    if ($('.vm-cabecera').length) return;
 
     var titulo = $.trim($('#tabs > ul > li:first a').text()).replace(/\s+/g, ' ');
     titulo = titulo.replace(/^listado\s+(de\s+las|de\s+los|de\s+la|del|de)\s+/i, '');
@@ -252,6 +275,9 @@ function VentanaCabeceraAutomatica()
         .append($('<div class="vm-titulos">').append($('<h3>').text(titulo)).append('<small></small>'))
         .append($('<button type="button" class="vm-cerrar" title="Cerrar (Esc)">&times;</button>').on('click', VentanaCerrar));
     body.prepend(cabecera);
+    //ABIERTA DESDE LARAVEL (&vmSinCabecera=1): LARAVEL YA MUESTRA SU CABECERA; ESTA QUEDA OCULTA PERO
+    //SIGUE ATENDIENDO LA TECLA ESC
+    if (/[?&]vmSinCabecera=1(&|$)/.test(location.search)) body.addClass('vm-sin-cabecera');
     $('#tabs').first().closest('.row-fluid').addClass('vm-ventana');
 
     //ESC EN LA PESTAÑA DE EDICION: VUELVE AL LISTADO CON EL Cancelar() DE LA PAGINA

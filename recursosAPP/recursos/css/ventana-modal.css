@@ -153,3 +153,8 @@ body.vm-emergente {
 .vm-cabecera .vm-titulos small:empty {
     display: none;
 }
+
+/*Abierta desde GEPRO en Laravel: la cabecera la pone Laravel*/
+body.vm-sin-cabecera .vm-cabecera {
+    display: none;
+}
