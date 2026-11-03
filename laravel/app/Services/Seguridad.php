@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Support\Catalogo;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -24,7 +26,13 @@ class Seguridad
         return $id === null ? null : (int) $id;
     }
 
-    /** ['perfil' => upsperfil, 'modulo' => pefmodulo] del usuario en GEPRO, o null si no tiene acceso */
+    /** Perfil que solo consulta: no graba ni elimina (UsuarioEvento en LNinclude.php del sistema actual) */
+    public const PERFIL_SOLO_CONSULTA = 'CONSULTA TOTAL';
+
+    /**
+     * ['perfil' => upsperfil, 'modulo' => pefmodulo, 'nombre' => pefnombre, 'soloConsulta' => bool]
+     * del usuario en GEPRO, o null si no tiene acceso
+     */
     public function perfil(int $idUsuario): ?array
     {
         if (array_key_exists($idUsuario, $this->perfiles)) {
@@ -40,10 +48,24 @@ class Seguridad
             ->where('pf.pefestado', 1)
             ->where('m.modestado', 1)
             ->where('s.sisestado', 1)
-            ->select('up.upsperfil as perfil', 'pf.pefmodulo as modulo')
+            ->select('up.upsperfil as perfil', 'pf.pefmodulo as modulo', 'pf.pefnombre as nombre')
             ->first();
 
-        return $this->perfiles[$idUsuario] = $fila ? ['perfil' => (int) $fila->perfil, 'modulo' => (int) $fila->modulo] : null;
+        return $this->perfiles[$idUsuario] = $fila ? [
+            'perfil' => (int) $fila->perfil,
+            'modulo' => (int) $fila->modulo,
+            'nombre' => trim((string) $fila->nombre),
+            'soloConsulta' => strtoupper(trim((string) $fila->nombre)) === self::PERFIL_SOLO_CONSULTA,
+        ] : null;
+    }
+
+    /** Si el usuario que ingreso puede registrar, editar y eliminar (su perfil no es de solo consulta) */
+    public function puedeGrabar(): bool
+    {
+        $id = Auth::id();
+        $perfil = $id ? $this->perfil((int) $id) : null;
+
+        return $perfil !== null && ! $perfil['soloConsulta'];
     }
 
     /**
@@ -109,6 +131,10 @@ class Seguridad
             return null;
         }
         if (preg_match('/[?&]Pagina=([A-Za-z0-9_]+)/', $enlace, $m)) {
+            //CATALOGOS (config/catalogos.php): TODOS EN LA MISMA PANTALLA DE LARAVEL
+            if (Catalogo::existe($m[1])) {
+                return route('catalogos.index', ['pagina' => $m[1]]);
+            }
             $ruta = config('gepro.paginas_migradas.'.$m[1]);
             if ($ruta) {
                 parse_str((string) parse_url($enlace, PHP_URL_QUERY), $parametros);

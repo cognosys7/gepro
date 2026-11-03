@@ -637,3 +637,8 @@ body.gp-embebido { background: #fff; }
 .fm-res-desc { color: var(--texto); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fm-res-monto { color: #1f7a3d; font-weight: 700; white-space: nowrap; }
 .fm-nota-campo { margin: 6px 0 0; color: var(--texto-suave); font-size: 12px; }
+
+/*Formulario de catalogos (menos campos: panel mas angosto)*/
+.fm-panel.fm-panel-angosto { max-width: 760px; }
+.gp-tabla th.gp-numero { text-align: right; }
+.gp-estado.gp-estado-activo { background: #e5f4e8; color: #1f7a3d; }

@@ -119,7 +119,9 @@ class ProyectoContratosTabla extends Component
 
     public function puede(string $accion): bool
     {
-        return in_array($this->opcion, self::EDICION[$accion] ?? [], true);
+        //ADEMAS DE LA OPCION DEL MENU, EL PERFIL "CONSULTA TOTAL" NO GRABA NI ELIMINA
+        return in_array($this->opcion, self::EDICION[$accion] ?? [], true)
+            && app(\App\Services\Seguridad::class)->puedeGrabar();
     }
 
     public function updatedBuscar(): void

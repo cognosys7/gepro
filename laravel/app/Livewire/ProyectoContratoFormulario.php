@@ -66,7 +66,9 @@ class ProyectoContratoFormulario extends Component
 
     private function puede(string $accion): bool
     {
-        return in_array($this->opcion, ProyectoContratosTabla::EDICION[$accion] ?? [], true);
+        //ADEMAS DE LA OPCION DEL MENU, EL PERFIL "CONSULTA TOTAL" NO GRABA NI ELIMINA
+        return in_array($this->opcion, ProyectoContratosTabla::EDICION[$accion] ?? [], true)
+            && app(\App\Services\Seguridad::class)->puedeGrabar();
     }
 
     #[On('contrato-nuevo')]

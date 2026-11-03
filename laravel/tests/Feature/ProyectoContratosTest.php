@@ -10,6 +10,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
 use Livewire\Livewire;
 use Tests\TestCase;
+use Tests\UsuariosDePrueba;
 
 /**
  * Contratos del proyecto contra BDGEPRO. Las pruebas que graban corren dentro de una transaccion
@@ -18,6 +19,7 @@ use Tests\TestCase;
 class ProyectoContratosTest extends TestCase
 {
     use DatabaseTransactions;
+    use UsuariosDePrueba;
 
     protected $connectionsToTransact = ['sqlsrv'];
 
@@ -49,8 +51,13 @@ class ProyectoContratosTest extends TestCase
 
     private function usuario(): object
     {
-        return collect(DB::table('seguridad.tsusuario')->where('usuestado', 1)->orderBy('idusuario')->pluck('idusuario'))
-            ->map(fn ($i) => (new LegadoUserProvider())->retrieveById($i))->filter()->first();
+        //USUARIO CON PERFIL EN GEPRO QUE PUEDE GRABAR (tests/UsuariosDePrueba.php)
+        $u = $this->usuarioGepro();
+        if (! $u) {
+            $this->markTestSkipped('No hay usuarios con perfil en GEPRO que puedan grabar.');
+        }
+
+        return $u;
     }
 
     public function test_mismo_total_que_el_sistema_actual(): void
@@ -64,6 +71,8 @@ class ProyectoContratosTest extends TestCase
 
     public function test_acciones_y_edicion_segun_la_opcion(): void
     {
+        //CON UN USUARIO QUE PUEDE GRABAR (EL PERFIL "CONSULTA TOTAL" NO VE "NUEVO")
+        $this->actingAs($this->usuario());
         $p = $this->proyectoConContratos();
         Livewire::test(ProyectoContratosTabla::class, ['proyecto' => (int) $p->IDE_PROYECTO, 'opcion' => 211, 'tipo' => 0])
             ->assertViewHas('acciones', fn ($a) => array_keys($a) === ['etapas', 'contrato', 'ampliacion', 'interesados', 'migrar'])
