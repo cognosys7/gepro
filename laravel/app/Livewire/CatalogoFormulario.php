@@ -78,7 +78,7 @@ class CatalogoFormulario extends Component
         $def = $this->def();
         $j = $def['jerarquia'] ?? null;
         $fijas = $j ? array_keys(array_merge($j['raiz']['valores'] ?? [], $j['hijo']['valores'] ?? [])) : [];
-        if (! empty($def['de'])) {
+        if (! empty($def['de']['columna'])) {
             $fijas[] = $def['de']['columna'];
         }
 
@@ -167,10 +167,10 @@ class CatalogoFormulario extends Component
     {
         $def = $this->def();
 
-        return DB::table($def['tabla'])->where($def['id'], $id)->where($def['estado'], '<>', Catalogo::eliminado($def))
+        return DB::table($def['tabla'].' as T')->where('T.'.$def['id'], $id)->where('T.'.$def['estado'], '<>', Catalogo::eliminado($def))
             //EN UNA PANTALLA QUE DEPENDE DE OTRO REGISTRO, SOLO SUS PROPIAS FILAS
-            ->when(! empty($def['de']), fn ($q) => $q->where($def['de']['columna'], $this->de))
-            ->first();
+            ->when(! empty($def['de']), fn ($q) => Catalogo::filtrarDe($q, $def, $this->de, 'T'))
+            ->select('T.*')->first();
     }
 
     private function valores(object $fila, array $campos): array
@@ -250,7 +250,9 @@ class CatalogoFormulario extends Component
             }
             if (! empty($def['de'])) {
                 abort_unless($this->filaDe(), 404);
-                $parametros[$def['de']['columna']] = $this->de;
+                if (! empty($def['de']['columna'])) {
+                    $parametros[$def['de']['columna']] = $this->de;
+                }
             }
         }
 

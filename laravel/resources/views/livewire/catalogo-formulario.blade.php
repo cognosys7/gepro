@@ -36,7 +36,7 @@
                                 <i class="fa-solid {{ $loop->first ? $def['icono'] : 'fa-calculator' }}"></i> {{ $nombreSeccion }}
                                 @if ($conCalculo && $puede && ! $loop->first)
                                     {{-- CALCULO AUTOMATICO: LOS MONTOS EN VERDE SE CALCULAN SOLOS --}}
-                                    <label class="fm-auto-calculo"><input type="checkbox" wire:model.live="autoCalcular"> Calcular montos automáticamente (en verde)</label>
+                                    <label class="fm-auto-calculo"><input type="checkbox" wire:model.live="autoCalcular"> {{ $def['calculo_texto'] ?? 'Calcular montos automáticamente' }} (en verde)</label>
                                 @endif
                             </h3>
                             <div class="fm-campos">

@@ -180,6 +180,21 @@ class Catalogo
             ->select('X.*')->selectRaw(($d['titulo'] ?? "''").' AS TITULO_DE')->first();
     }
 
+    /**
+     * Limita una consulta (tabla con alias) a las filas del registro "de": por su 'columna' o, si la
+     * tabla no apunta directo a el, con 'enlace' (SQL con {T} = alias y ? = id del registro "de"; p. ej.
+     * los contratos de un PROYECTO_ACTIVIDAD a traves de PROY_CONTRATO)
+     */
+    public static function filtrarDe($consulta, array $def, int|string|null $de, string $alias)
+    {
+        $d = $def['de'];
+        if (! empty($d['enlace'])) {
+            return $consulta->whereRaw(str_replace('{T}', $alias, $d['enlace']), [$de]);
+        }
+
+        return $consulta->where($alias.'.'.$d['columna'], $de);
+    }
+
     /*
      * JERARQUIA ('jerarquia' en la definicion):
      * - raiz / hijo: ['filtro' => [...], 'valores' => [...]]: condiciones de la grilla y valores que se

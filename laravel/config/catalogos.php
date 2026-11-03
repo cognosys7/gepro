@@ -704,4 +704,145 @@ return [
     ],
 
 
+    //PANTALLAS DEL CONTRATO (PROYECTO_ACTIVIDAD) Y DEL PROYECTO QUE SE ABREN DESDE SUS GRILLAS
+    'CONTRATO' => [
+        'titulo' => 'Detalle del contrato', 'icono' => 'fa-file-lines', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONTRATO', 'id' => 'IDE_CONTRATO', 'sp' => 'dbo.SP_CONTRATO', 'estado' => 'EST_CONTRATO',
+        //EL CONTRATO SE ENLAZA AL PROYECTO_ACTIVIDAD EN PROY_CONTRATO (LO CREA SP_PROYECTO_ACTIVIDAD)
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD',
+            'enlace' => '{T}.IDE_CONTRATO IN (SELECT PC.IDE_CONTRATO FROM dbo.PROY_CONTRATO PC WHERE PC.IDE_PROYECTO_ACTIVIDAD = ?)',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_PROVEEDOR', 'IDE_ADM_CONTRATO', 'COD_CONTRATO', 'COD_CONTRATO_ENTIDAD', 'COD_CONTRATO_SUP', 'DES_CONTRATO', 'TIP_CONTRATO', 'FEC_CONTRATO',
+            'FEC_INICIO_CONTRATO', 'FEC_TERMINO_CONTRATO', 'FEC_CIERRE_CONTRATO', 'IMP_IMPONIBLE', 'IMP_IMPUESTOS', 'IMP_TOTAL', 'IMG_CONTRATO', 'DES_COMENTARIO', 'EST_CONTRATO'],
+        'campos' => [
+            'COD_UNICO_ORDEN' => ['Cód. orden', 'texto', ['calculado' => true, 'grilla' => true]],
+            'COD_CONTRATO_ENTIDAD' => ['Documento interno', 'texto', ['max' => 40, 'grilla' => true]],
+            'DES_CONTRATO' => ['Definición', 'area', ['max' => 1000, 'grilla' => true]],
+            'IDE_PROVEEDOR' => ['Proveedor', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_PROVEEDOR', 'IDE_PROVEEDOR', 'DES_PROVEEDOR', 'EST_PROVEEDOR']]],
+            //LAS FECHAS NO SE EDITAN AQUI (EL SISTEMA ACTUAL LAS OCULTA EN EL FORMULARIO)
+            'FEC_INICIO_CONTRATO' => ['Inicio', 'fecha', ['oculto' => true, 'grilla' => true]],
+            'FEC_TERMINO_CONTRATO' => ['Término', 'fecha', ['oculto' => true, 'grilla' => true]],
+            'FEC_CIERRE_CONTRATO' => ['Cierre', 'fecha', ['oculto' => true, 'grilla' => true]],
+            'IMP_TOTAL' => ['Monto total (S/)', 'numero', ['grilla' => true]],
+            'COD_CONTRATO' => ['Número de contrato', 'texto', ['max' => 20]],
+            'TIP_CONTRATO' => ['Tipo', 'combo', ['tabla' => '64']],
+            'IMP_IMPONIBLE' => ['Monto imponible (S/)', 'numero', []],
+            'IMP_IMPUESTOS' => ['Monto impuesto (S/)', 'numero', []],
+            'EST_CONTRATO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '84']],
+        ],
+        'acciones' => [
+            ['Carta fianza', 'fa-money-check-dollar', 'gr-verde', 'Carta fianza y conceptos del contrato', ['legado' => ['CONTRATO_CONCEPTO', ['PIDE' => '{id}']]]],
+            ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['legado' => ['BIDM_GASTO_CONSOLIDA', ['PIDE' => '{id}']]]],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del contrato', ['legado' => ['GEN_ARCHIVO', ['PIDE' => '{id}', 'Tabla' => 'CONTRATO']]]],
+        ],
+        //EL CONTRATO SE REGISTRA DESDE LA GRILLA DE CONTRATOS DEL PROYECTO
+        'nuevo' => false, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_RIESGO_PROBLEMA' => [
+        'titulo' => 'Riesgos del contrato', 'icono' => 'fa-triangle-exclamation', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_RIESGO_PROBLEMA', 'id' => 'IDE_RIESGO_PROB', 'sp' => 'dbo.SP_PROY_RIESGO_PROBLEMA', 'estado' => 'EST_RIESGO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_PROYECTO_ACTIVIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO_ACTIVIDAD', 'IDE_PROC_ITEM', 'IDE_TIPO_RIESGO_PROB', 'TIP_RIESGO_PROB', 'DES_NOMBRE', 'DES_DETALLE', 'IDE_IMPACTO', 'IDE_PROBABILIDAD',
+            'IDE_PRIORIDAD', 'DES_CAUSA_PROBLEMA', 'DES_CONSECUENCIA_RIESGO', 'DES_SOLUCION', 'FEC_INICIO_SOLUCION', 'FEC_TERMINO_SOLUCION', 'EST_RIESGO'],
+        'campos' => [
+            'IDE_TIPO_RIESGO_PROB' => ['Tipo de riesgo', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_TIPO_RIESGO', 'IDE_TIPO_RIESGO', 'DES_TIPO_RIESGO', 'EST_TIPO_RIESGO']]],
+            'TIP_RIESGO_PROB' => ['Tipo de estrategia', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '85']],
+            'DES_NOMBRE' => ['Código del riesgo', 'texto', ['requerido' => true, 'max' => 200, 'grilla' => true]],
+            'DES_DETALLE' => ['Descripción del riesgo', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'DES_CAUSA_PROBLEMA' => ['Causa generadora', 'area', ['max' => 1000]],
+            'IDE_PROBABILIDAD' => ['Probabilidad de ocurrencia', 'combo', ['requerido' => true, 'seccion' => 'Evaluación', 'lista' => ['dbo.GEN_PROBABILIDAD_RIESGO', 'IDE_PROBABILIDAD', 'DES_PROBABILIDAD', 'EST_PROBABILIDAD']]],
+            'IDE_IMPACTO' => ['Impacto', 'combo', ['requerido' => true, 'seccion' => 'Evaluación', 'lista' => ['dbo.GEN_IMPACTO_RIESGO', 'IDE_IMPACTO', 'DES_IMPACTO', 'EST_IMPACTO']]],
+            //PROBABILIDAD X IMPACTO (App\Calculos\PrioridadRiesgo)
+            'IDE_PRIORIDAD' => ['Prioridad', 'combo', ['requerido' => true, 'auto' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'lista' => ['dbo.GEN_PRIORIDAD_RIESGO', 'IDE_PRIORIDAD', 'DES_PRIORIDAD', 'EST_PRIORIDAD'], 'excluir' => [11]]],
+            'DES_CONSECUENCIA_RIESGO' => ['Disparador del riesgo', 'area', ['max' => 1000, 'seccion' => 'Respuesta']],
+            'DES_SOLUCION' => ['Acción para dar respuesta al riesgo', 'area', ['max' => 1000, 'seccion' => 'Respuesta']],
+            'FEC_INICIO_SOLUCION' => ['Inicio de la acción', 'fecha', ['requerido' => true, 'seccion' => 'Respuesta']],
+            'FEC_TERMINO_SOLUCION' => ['Término de la acción', 'fecha', ['seccion' => 'Respuesta']],
+            'EST_RIESGO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '4', 'seccion' => 'Respuesta']],
+        ],
+        'calculo' => App\Calculos\PrioridadRiesgo::class,
+        'calculo_texto' => 'Calcular la prioridad automáticamente',
+        'orden' => [['IDE_RIESGO_PROB', 'desc']],
+        'acciones' => [
+            ['Recurso', 'fa-briefcase', 'gr-azul', 'Recursos del riesgo', ['legado' => ['PROY_RIESGO_RECURSO', ['PIDE_RIESGO_PROB' => '{id}', 'PIDE_PROYECTO_ACTIVIDAD' => '{de}']]]],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONT_INTERESADOS' => [
+        'titulo' => 'Interesados del contrato', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        //IDE_CONTRATO GUARDA EL IDE_PROYECTO_ACTIVIDAD (ASI LO GRABA EL SISTEMA ACTUAL)
+        'tabla' => 'dbo.CONT_INTERESADOS', 'id' => 'IDE_CONT_INTERESADO', 'sp' => 'dbo.SP_CONT_INTERESADOS', 'estado' => 'EST_CONT_INTERESADO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_RECURSO', 'IDE_ROL', 'IDE_PUESTO', 'DES_LOCALIZACION', 'DES_MAIL', 'DES_TELEFONO', 'DES_REQUERIMIENTOS_PRIMORDIALES',
+            'DES_EXPECTATIVAS_PRINCIPALES', 'TIP_INFLUENCIA_POTENCIAL', 'DES_FASE_MAYOR_INTERES', 'TIP_INTERNO_EXTERNO', 'TIP_CLASIFICACION', 'DES_INTERES_PROYECTO',
+            'TIP_EVALUACION_IMPACTO', 'DES_ESTRATEGIA_PRINCIPAL', 'DES_OBSERVACION', 'EST_CONT_INTERESADO'],
+        'campos' => [
+            'IDE_RECURSO' => ['Personal', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO']]],
+            'IDE_ROL' => ['Rol', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_ROLES', 'IDE_ROL', 'DES_ROL', 'EST_ROL']]],
+            'IDE_PUESTO' => ['Cargo', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_CARGO', 'IDE_CARGO', 'DES_CARGO', 'EST_CARGO']]],
+            'DES_LOCALIZACION' => ['Organización / institución', 'texto', ['requerido' => true, 'max' => 100, 'grilla' => true]],
+            'DES_MAIL' => ['Correo', 'texto', ['max' => 100]],
+            'DES_TELEFONO' => ['Teléfono', 'texto', ['max' => 50, 'grilla' => true]],
+            'TIP_INTERNO_EXTERNO' => ['Pertenencia institucional', 'combo', ['requerido' => true, 'tabla' => '70']],
+            'DES_OBSERVACION' => ['Dirección', 'area', ['max' => 1000]],
+            'DES_REQUERIMIENTOS_PRIMORDIALES' => ['Requerimientos', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true, 'seccion' => 'Interés en el proyecto']],
+            'DES_EXPECTATIVAS_PRINCIPALES' => ['Expectativas', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true, 'seccion' => 'Interés en el proyecto']],
+            'DES_ESTRATEGIA_PRINCIPAL' => ['Acción', 'area', ['max' => 1000, 'seccion' => 'Interés en el proyecto']],
+            'DES_INTERES_PROYECTO' => ['Interés del proyecto', 'area', ['max' => 1000, 'seccion' => 'Interés en el proyecto']],
+            'DES_FASE_MAYOR_INTERES' => ['Fase de mayor interés', 'area', ['max' => 1000, 'seccion' => 'Interés en el proyecto']],
+            'TIP_CLASIFICACION' => ['Tipo de interesado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '71', 'seccion' => 'Clasificación']],
+            'TIP_INFLUENCIA_POTENCIAL' => ['Tipo de influencia', 'combo', ['tabla' => '69', 'seccion' => 'Clasificación']],
+            'TIP_EVALUACION_IMPACTO' => ['Impacto de su evaluación', 'combo', ['tabla' => '72', 'seccion' => 'Clasificación']],
+            'EST_CONT_INTERESADO' => ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true, 'seccion' => 'Clasificación']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONT_DOCUMENTACION' => [
+        'titulo' => 'Documentos del contrato', 'icono' => 'fa-folder-open', 'acceso' => 'PROYECTO',
+        //IDE_CONTRATO GUARDA EL IDE_PROYECTO_ACTIVIDAD (ASI LO GRABA EL SISTEMA ACTUAL)
+        'tabla' => 'dbo.CONT_DOCUMENTACION', 'id' => 'IDE_CONT_DOCUM', 'sp' => 'dbo.SP_CONT_DOCUMENTACION', 'estado' => 'EST_DOCUMENTO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_CONOC_PROC', 'FEC_DOCUMENTO', 'DES_DOCUMENTO', 'EST_DOCUMENTO'],
+        'campos' => [
+            'IDE_CONOC_PROC' => ['Conocimiento del proceso (PMI)', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_MATRIZ_CONOCIMIENTO_PROCESO', 'IDE_CONOC_PROC', 'DES_CRUCE_CONOC_PROC', 'EST_CONOC_PROC']]],
+            'FEC_DOCUMENTO' => ['Fecha de registro', 'fecha', ['grilla' => true]],
+            'DES_DOCUMENTO' => ['Ruta del contenido (SharePoint)', 'area', ['requerido' => true, 'max' => 500, 'grilla' => true]],
+            'EST_DOCUMENTO' => $estado,
+        ],
+        'acciones' => [
+            ['Contenido', 'fa-paperclip', 'gr-teal', 'Ver el contenido', ['campo' => 'DES_DOCUMENTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_LECCION_APRENDIDA' => [
+        'titulo' => 'Lecciones aprendidas', 'icono' => 'fa-lightbulb', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_LECCION_APRENDIDA', 'id' => 'IDE_LECCION_APRENDIDA', 'sp' => 'dbo.SP_PROY_LECCION_APRENDIDA', 'estado' => 'EST_LECCION',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'IDE_FASE_COMPONENTE', 'COD_LECCION_APRENDIDA', 'TIP_LECCION', 'IDE_TIPO_RIESGO', 'DES_LECCION_APRENDIDA', 'DES_RIESGO',
+            'TIP_IMPACTO_SITUACION', 'DES_RECOMENDACION', 'DES_ACCION_PROPUESTA', 'FEC_LECCION', 'EST_LECCION'],
+        'campos' => [
+            'IDE_FASE_COMPONENTE' => ['Fase - componente', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_INTERVENCION', 'IDE_INTERVENCION', 'DES_INTERVENCION', 'EST_INTERVENCION', ['NUM_NIVEL' => 3, 'IDE_SECTOR' => 14]]]],
+            'COD_LECCION_APRENDIDA' => ['Código de lección', 'texto', ['max' => 20, 'grilla' => true]],
+            'TIP_LECCION' => ['Tipo de lección', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '80']],
+            'IDE_TIPO_RIESGO' => ['Tipo de riesgo', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_TIPO_RIESGO', 'IDE_TIPO_RIESGO', 'DES_TIPO_RIESGO', 'EST_TIPO_RIESGO']]],
+            'FEC_LECCION' => ['Fecha de la lección', 'fecha', ['requerido' => true]],
+            'DES_RIESGO' => ['Descripción de riesgos', 'area', ['max' => 2000]],
+            'DES_LECCION_APRENDIDA' => ['Causa', 'area', ['requerido' => true, 'max' => 2000, 'grilla' => true]],
+            'TIP_IMPACTO_SITUACION' => ['Tipo de impacto', 'combo', ['requerido' => true, 'tabla' => '81']],
+            'DES_RECOMENDACION' => ['Efecto', 'area', ['max' => 2000]],
+            'DES_ACCION_PROPUESTA' => ['Respuesta sugerida o realizada', 'area', ['max' => 2000]],
+            'EST_LECCION' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+
 ];

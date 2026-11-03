@@ -90,13 +90,19 @@ class CatalogoTabla extends Component
         if (isset($accion['url'])) {
             return str_replace('{id}', rawurlencode($id), $accion['url']);
         }
+        //ENLACE GUARDADO EN UNA COLUMNA (P. EJ. LA RUTA DEL DOCUMENTO EN SHAREPOINT): SOLO SI ES http(s)
+        if (isset($accion['campo'])) {
+            $url = trim((string) ($fila->{$accion['campo']} ?? ''));
+
+            return preg_match('#^https?://#i', $url) ? $url : '';
+        }
         if (isset($accion['catalogo'])) {
             return route('catalogos.index', ['pagina' => $accion['catalogo'], 'de' => $id]);
         }
         [$pagina, $parametros] = $accion['legado'];
         $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2];
         foreach ($parametros as $nombre => $valor) {
-            $consulta[$nombre] = str_replace('{id}', $id, (string) $valor);
+            $consulta[$nombre] = str_replace(['{id}', '{de}'], [$id, (string) $this->de], (string) $valor);
         }
         $consulta['vmSinCabecera'] = 1;
 
@@ -164,7 +170,7 @@ class CatalogoTabla extends Component
         }
         $def = $this->def();
         //EN UNA PANTALLA QUE DEPENDE DE OTRO REGISTRO, SOLO SE ELIMINAN SUS PROPIAS FILAS
-        if (! empty($def['de']) && ! DB::table($def['tabla'])->where($def['id'], $id)->where($def['de']['columna'], $this->de)->exists()) {
+        if (! empty($def['de']) && ! Catalogo::filtrarDe(DB::table($def['tabla'].' as T')->where('T.'.$def['id'], $id), $def, $this->de, 'T')->exists()) {
             return;
         }
         try {
@@ -194,14 +200,12 @@ class CatalogoTabla extends Component
         foreach (array_merge($def['filtro'] ?? [], $contexto['filtro']) as $columna => $valor) {
             $filtro['T.'.$columna] = $valor;
         }
-        if (! empty($def['de'])) {
-            $filtro['T.'.$def['de']['columna']] = $this->de;
-        }
 
         $consulta = DB::table($def['tabla'].' as T')
             //COMO SelGrd DE SU SP: estado <> eliminado (TAMPOCO MUESTRA LOS QUE TIENEN ESTADO NULL)
             ->where('T.'.$def['estado'], '<>', Catalogo::eliminado($def))
             ->when($filtro, fn ($q) => $q->where($filtro))
+            ->when(! empty($def['de']), fn ($q) => Catalogo::filtrarDe($q, $def, $this->de, 'T'))
             ->when($texto !== '', function ($q) use ($texto, $columnas) {
                 $patron = '%'.str_replace(['[', '%', '_'], ['[[]', '[%]', '[_]'], $texto).'%';
                 $q->where(function ($q) use ($patron, $columnas) {
@@ -228,8 +232,9 @@ class CatalogoTabla extends Component
                 str_contains($columna, '(') ? $consulta->orderByRaw($columna.' '.$direccion) : $consulta->orderBy('T.'.$columna, $direccion);
             }
         }
-        //DESEMPATE POR LA CLAVE (SI NO ES YA LA COLUMNA DEL ORDEN: SQL SERVER NO ACEPTA REPETIRLA)
-        $filas = $consulta->when($this->orden !== $def['id'], fn ($q) => $q->orderBy('T.'.$def['id']))
+        //DESEMPATE POR LA CLAVE (SI NO ES YA UNA COLUMNA DEL ORDEN: SQL SERVER NO ACEPTA REPETIRLA)
+        $porClave = $this->orden === $def['id'] || ($this->orden === '' && in_array($def['id'], array_column($def['orden'], 0), true));
+        $filas = $consulta->when(! $porClave, fn ($q) => $q->orderBy('T.'.$def['id']))
             ->paginate($this->porPagina);
 
         //DESCRIPCIONES DE LOS COMBOS (INCLUIDO EL ESTADO) PARA MOSTRARLAS EN LUGAR DE LOS CODIGOS
