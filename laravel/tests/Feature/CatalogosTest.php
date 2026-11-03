@@ -49,6 +49,7 @@ class CatalogosTest extends TestCase
             'GEN_TABLAS' => ' AND P.COD_TABLA=0 ',
             'GEN_ENTREGABLE' => ' AND T.NUM_NIVEL=1 ',
             'GEN_CONCEPTO_SOCIAL' => ' AND T.NUM_NIVEL=11 ',
+            'GEN_INTERVENCION' => ' AND DET.NUM_NIVEL=1 ',
         ];
         foreach (config('catalogos') as $pagina => $def) {
             //LAS PANTALLAS QUE DEPENDEN DE OTRO REGISTRO SE PRUEBAN EN CadenaContratoTest

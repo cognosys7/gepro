@@ -135,6 +135,10 @@ class Seguridad
             if (Catalogo::existe($m[1])) {
                 return route('catalogos.index', ['pagina' => $m[1]]);
             }
+            //TABLEROS DE POWER BI (config/tableros.php)
+            if (is_string(config('tableros.'.$m[1]))) {
+                return route('tableros.index', ['pagina' => $m[1]]);
+            }
             $ruta = config('gepro.paginas_migradas.'.$m[1]);
             if ($ruta) {
                 parse_str((string) parse_url($enlace, PHP_URL_QUERY), $parametros);

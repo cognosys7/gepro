@@ -232,6 +232,59 @@ return [
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
+    /*
+    | 2.1 Fases y componentes, 2.3 Modalidad y 2.4 Hitos claves: el menu del sistema actual las tiene pero
+    | sus pantallas no existen; las tablas y sus SP si (GEN_INTERVENCION, GEN_MODO_EJECUCION, GEN_INTERVENCION_COMP)
+    */
+    'GEN_INTERVENCION' => [
+        'titulo' => 'Fases y componentes', 'icono' => 'fa-diagram-project',
+        'tabla' => 'dbo.GEN_INTERVENCION', 'id' => 'IDE_INTERVENCION', 'sp' => 'dbo.SP_GEN_INTERVENCION', 'estado' => 'EST_INTERVENCION',
+        'parametros' => ['IDE_SECTOR', 'DES_INTERVENCION', 'NUM_NIVEL', 'IDE_INTERVENCION_SUP', 'DES_RUBRO', 'TIP_SECTOR_PIRCC', 'EST_INTERVENCION'],
+        //SECTOR DE GEPRO (14): NIVEL 1 = ENTIDAD, NIVEL 2 = FASES, NIVEL 3 = COMPONENTES (LOS QUE USAN LOS CONTRATOS)
+        'filtro' => ['IDE_SECTOR' => 14],
+        'campos' => [
+            'DES_INTERVENCION' => ['Descripción', 'texto', ['requerido' => true, 'max' => 150, 'grilla' => true]],
+            'DES_RUBRO' => ['Rubro', 'texto', ['max' => 200, 'grilla' => true]],
+            'EST_INTERVENCION' => $estado,
+        ],
+        'jerarquia' => [
+            'raiz' => ['filtro' => ['NUM_NIVEL' => 1], 'valores' => ['NUM_NIVEL' => '1', 'IDE_SECTOR' => '14']],
+            'hijo' => ['filtro' => ['IDE_INTERVENCION_SUP' => '{id}'], 'valores' => ['IDE_INTERVENCION_SUP' => '{id}', 'NUM_NIVEL' => '{NUM_NIVEL+1}', 'IDE_SECTOR' => '{IDE_SECTOR}']],
+            'padre' => ['IDE_INTERVENCION' => '{IDE_INTERVENCION_SUP}'],
+            'niveles' => 3, 'boton' => ['Ver fases / componentes', 'fa-sitemap'], 'titulo' => 'DES_INTERVENCION',
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'GEN_MODO_EJECUCION' => [
+        'titulo' => 'Modalidades de ejecución', 'icono' => 'fa-gears',
+        'tabla' => 'dbo.GEN_MODO_EJECUCION', 'id' => 'IDE_MODO_EJECUCION', 'sp' => 'dbo.SP_GEN_MODO_EJECUCION', 'estado' => 'EST_MODO_EJECUCION',
+        'parametros' => ['DES_MODO_EJECUCION', 'DES_ABREVIATURA', 'EST_MODO_EJECUCION'],
+        'campos' => [
+            'DES_MODO_EJECUCION' => ['Modalidad', 'texto', ['requerido' => true, 'max' => 150, 'grilla' => true]],
+            'DES_ABREVIATURA' => ['Abreviatura', 'texto', ['max' => 20, 'grilla' => true]],
+            'EST_MODO_EJECUCION' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'Gen_intervencion_comp' => [
+        'titulo' => 'Hitos claves por componente', 'icono' => 'fa-flag-checkered',
+        'tabla' => 'dbo.GEN_INTERVENCION_COMP', 'id' => 'IDE_INTERVENCION_COMP', 'sp' => 'dbo.SP_GEN_INTERVENCION_COMP', 'estado' => 'EST_INTERVENCION_COMP',
+        'parametros' => ['IDE_INTERVENCION', 'IDE_COMPONENTE', 'COMP_PRINCIPAL', 'IDE_MODO_EJECUCION', 'IDE_TIPO_PROC', 'EST_INTERVENCION_COMP'],
+        //QUE ETAPAS (HITOS) TIENE CADA FASE - COMPONENTE: DE AQUI SALE EL COMBO DE ETAPAS DE LOS CONTRATOS
+        'campos' => [
+            'IDE_INTERVENCION' => ['Fase - componente', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_INTERVENCION', 'IDE_INTERVENCION', 'DES_INTERVENCION', 'EST_INTERVENCION', ['IDE_SECTOR' => 14, 'NUM_NIVEL' => 3]]]],
+            'IDE_COMPONENTE' => ['Etapa (hito)', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_COMPONENTE', 'IDE_COMPONENTE', 'DES_COMPONENTE', 'EST_COMPONENTE']]],
+            'COMP_PRINCIPAL' => ['Orden principal', 'numero', ['grilla' => true]],
+            'IDE_MODO_EJECUCION' => ['Modalidad de ejecución', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_MODO_EJECUCION', 'IDE_MODO_EJECUCION', 'DES_MODO_EJECUCION', 'EST_MODO_EJECUCION']]],
+            'IDE_TIPO_PROC' => ['Tipo de proceso', 'combo', ['lista' => ['dbo.PROC_TIPO', 'IDE_TIPO_PROC', 'TIPO_PROC', 'EST_PROC_TIPO']]],
+            'EST_INTERVENCION_COMP' => $estado,
+        ],
+        'orden' => [['IDE_INTERVENCION', 'asc'], ['COMP_PRINCIPAL', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
     'GEN_COMPONENTE' => [
         'titulo' => 'Etapas del contrato', 'icono' => 'fa-layer-group',
         'tabla' => 'dbo.GEN_COMPONENTE', 'id' => 'IDE_COMPONENTE', 'sp' => 'dbo.SP_GEN_COMPONENTE', 'estado' => 'EST_COMPONENTE',

@@ -5,6 +5,7 @@ use App\Http\Controllers\IngresoController;
 use App\Http\Controllers\InicioController;
 use App\Http\Controllers\ProyectoContratosController;
 use App\Http\Controllers\ProyectosController;
+use App\Http\Controllers\TablerosController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -18,6 +19,7 @@ Route::post('/salir', [IngresoController::class, 'salir'])->middleware('auth')->
 Route::middleware(['auth', 'gepro'])->group(function () {
     Route::get('/', InicioController::class)->name('inicio');
     Route::get('/proyectos', [ProyectosController::class, 'index'])->name('proyectos.index');
+    Route::get('/tableros/{pagina}', [TablerosController::class, 'index'])->where('pagina', '[A-Za-z0-9_]+')->name('tableros.index');
     Route::get('/catalogos/{pagina}', [CatalogosController::class, 'index'])->where('pagina', '[A-Za-z0-9_]+')->name('catalogos.index');
     Route::get('/proyectos/{proyecto}/contratos', [ProyectoContratosController::class, 'index'])->whereNumber('proyecto')->name('proyectos.contratos');
 });
