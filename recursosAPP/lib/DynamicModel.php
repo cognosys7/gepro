@@ -18,6 +18,11 @@ class DynamicModel{
 		return "";
 	}
 
+	//SIN ESTO isset($obj->CAMPO) SIEMPRE DA FALSO (Y empty() VERDADERO) AUNQUE EL CAMPO TENGA VALOR
+	public function __isset($aPropertyName) {
+		return isset($this->mPropertyList[$aPropertyName]);
+	}
+
 	public function __set($aPropertyName, $aPropertyValue) {
 		$this->mPropertyList[$aPropertyName] = $aPropertyValue;
 	}

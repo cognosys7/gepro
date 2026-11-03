@@ -1,0 +1,259 @@
+/*****************************************************
+Parte superior de las paginas de gepro: migas de pan, pestanas, mensaje y
+cabecera de la grilla. Se carga despues del tema flaty (Vista.php)
+*****************************************************/
+
+/*Migas de pan*/
+#breadcrumbs .breadcrumb {
+    background: #fff;
+    border: 1px solid #dfe5eb;
+    box-shadow: none;
+}
+
+/*Contenedor de la pagina*/
+#main-content .box-content {
+    padding: 8px;
+}
+
+/*Pestanas (jQuery UI): planas, la activa con linea azul arriba*/
+#tabs.ui-tabs {
+    padding: 0;
+    border: 1px solid #dfe5eb;
+    border-radius: 4px;
+    background: #fff;
+}
+#tabs .ui-tabs-nav {
+    padding: 0 8px;
+    background: #f4f7fa;
+    border: 0;
+    border-bottom: 1px solid #dfe5eb;
+    border-radius: 4px 4px 0 0;
+}
+#tabs .ui-tabs-nav li {
+    margin: 6px 4px -1px 0;
+    border: 1px solid transparent;
+    border-bottom: 0;
+    background: transparent;
+    border-radius: 4px 4px 0 0;
+}
+#tabs .ui-tabs-nav li a {
+    padding: 7px 16px;
+    font-size: 13px;
+    color: #5b6b7b;
+}
+#tabs .ui-tabs-nav li.ui-tabs-active {
+    background: #fff;
+    border-color: #dfe5eb;
+    border-top: 3px solid #0a8fdc;
+}
+#tabs .ui-tabs-nav li.ui-tabs-active a {
+    color: #1f3550;
+    font-weight: bold;
+}
+#tabs .ui-tabs-nav li.ui-state-disabled a {
+    color: #a9b4bf;
+}
+#tabs .ui-tabs-panel {
+    padding: 10px 10px 6px;
+}
+
+/*Mensaje informativo ("Seleccione un registro para editar...")*/
+.msjinformacion {
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    border: 0;
+    border-left: 3px solid #0a8fdc;
+    background: #f2f8fd;
+    font-size: 12px;
+}
+
+/*Grilla: el buscador va a la derecha de la barra de botones (Nuevo, Salir...)
+  y se ahorra una fila. Solo si la barra tiene botones (flexigrid la crea aunque este vacia)*/
+.flexigrid:has(> div.tDiv .fbutton) {
+    padding-top: 32px;
+}
+.flexigrid:has(> div.tDiv .fbutton) > div.sDiv {
+    top: 32px;
+    right: 0;
+    left: auto;
+    width: auto;
+    background: none;
+    border: 0;
+    z-index: 2;
+}
+.flexigrid:has(> div.tDiv .fbutton) > div.sDiv div.sDiv2 {
+    width: auto;
+    padding: 4px 6px 0 0;
+}
+/*Si hay muchos botones, pasan a otra linea en vez de quedar bajo el buscador*/
+.flexigrid:has(> div.sDiv) > div.tDiv div.tDiv2 {
+    max-width: calc(100% - 440px);
+}
+
+/*Botones Cargar / Importar de las grillas (GrillaEstilizarAcciones en js/ventana-modal.js)*/
+.gr-accion {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    border: 1px solid;
+    border-radius: 14px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 16px;
+    cursor: pointer;
+    transition: background .15s, color .15s;
+}
+.gr-accion i {
+    font-size: 13px;
+}
+.gr-accion.gr-cargar {
+    background: #f0f6fc;
+    border-color: #b6d0e8;
+    color: #0773B3;
+}
+.gr-accion.gr-cargar:hover {
+    background: #0773B3;
+    border-color: #0773B3;
+    color: #fff;
+}
+.gr-accion.gr-importar {
+    background: #eef8f1;
+    border-color: #b7dfc2;
+    color: #1f7a3d;
+}
+.gr-accion.gr-importar:hover {
+    background: #1f7a3d;
+    border-color: #1f7a3d;
+    color: #fff;
+}
+.gr-accion.gr-descargar {
+    background: #e8f6f8;
+    border-color: #a9dbe3;
+    color: #0b6b7a;
+}
+.gr-accion.gr-descargar:hover {
+    background: #0b6b7a;
+    border-color: #0b6b7a;
+    color: #fff;
+}
+.gr-accion.gr-detalle {
+    background: #f4f1fb;
+    border-color: #d6cdf0;
+    color: #5a3fa8;
+}
+.gr-accion.gr-detalle:hover {
+    background: #5a3fa8;
+    border-color: #5a3fa8;
+    color: #fff;
+}
+
+/*Version del budget en las grillas (GrillaMarcarVersion en js/ventana-modal.js): Budget azul, Forecast ambar*/
+.gr-version {
+    display: inline-block;
+    min-width: 110px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 16px;
+    text-align: center;
+}
+.gr-version.gr-budget {
+    background: #e3eef8;
+    border: 1px solid #b6d0e8;
+    color: #0773B3;
+}
+.gr-version.gr-forecast {
+    background: #fff4dc;
+    border: 1px solid #f2cf85;
+    color: #8a5a00;
+}
+.gr-version.gr-otra {
+    background: #eef1f4;
+    border: 1px solid #d3dae1;
+    color: #4b5b6b;
+}
+tr.gr-fila-budget td.gr-franja {
+    box-shadow: inset 4px 0 0 #0773B3;
+}
+tr.gr-fila-forecast td.gr-franja {
+    box-shadow: inset 4px 0 0 #e0a21e;
+}
+tr.gr-fila-otra td.gr-franja {
+    box-shadow: inset 4px 0 0 #9aa7b4;
+}
+/*Sangria (no relleno): no cambia el ancho de la celda*/
+td.gr-franja > div {
+    text-indent: 7px;
+}
+
+/*Tipo de plan en las grillas (GrillaMarcarTipoPlan en js/ventana-modal.js): Produccion violeta, Avances ambar oscuro*/
+.gr-tipoplan {
+    display: inline-block;
+    min-width: 92px;
+    margin-right: 6px;
+    padding: 1px 8px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 15px;
+    text-align: center;
+    text-indent: 0;
+    text-transform: uppercase;
+}
+.gr-tipoplan.gr-produccion {
+    background: #f1edfb;
+    border: 1px solid #cfc3ee;
+    color: #5a3fa8;
+}
+.gr-tipoplan.gr-avances {
+    background: #fbf0e6;
+    border: 1px solid #e9c7a3;
+    color: #8a4b12;
+}
+
+/*Filtro con botones en la barra de la grilla (GrillaFiltroBotones en js/ventana-modal.js)*/
+.flexigrid div.tDiv2 div.fbutton.gr-filtro,
+.flexigrid div.tDiv2 div.fbutton.gr-filtro:hover {
+    display: inline-flex;
+    align-items: center;
+    gap: 0;
+    margin-left: 10px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: default;
+}
+.gr-filtro .gr-filtro-titulo {
+    margin-right: 6px;
+    font-size: 12px;
+    font-weight: bold;
+    color: #4b5b6b;
+}
+.gr-filtro button {
+    height: 28px;
+    padding: 0 14px;
+    border: 1px solid #b9c3cd;
+    border-left-width: 0;
+    background: #fff;
+    color: #263645;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.gr-filtro button:first-of-type {
+    border-left-width: 1px;
+    border-radius: 14px 0 0 14px;
+}
+.gr-filtro button:last-of-type {
+    border-radius: 0 14px 14px 0;
+}
+.gr-filtro button:hover {
+    background: #f1f4f7;
+}
+.gr-filtro button.gr-activo {
+    border-color: #0773B3;
+    background: #0773B3;
+    color: #fff;
+}

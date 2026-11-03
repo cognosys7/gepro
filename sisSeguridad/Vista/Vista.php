@@ -42,6 +42,7 @@ function Vista($aPagina='',$aVistaLocal='',$aAjax='') {
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/framework/themes.css">
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/framework/style.css">
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/estilos.css"  type="text/css" media="screen" />
+                <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/css/menu.css"  type="text/css" media="screen" />
                 
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/js/jquery-ui/jquery.ui.core.css"  type="text/css" media="screen"/>
                 <link rel="stylesheet" href="<?php echo RECURSOSGEN_RECURSOS?>/js/jquery-ui/jquery.ui.theme.css" type="text/css" media="screen"/>

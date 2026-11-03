@@ -1,0 +1,364 @@
+/*****************************************************
+Formularios de mantenimiento (pestaña "Detalle" de las grillas).
+Para usarlo en un formulario de Bootstrap (control-group / control-label / controls):
+cambiar class="validform form-horizontal" por class="validform fm-form".
+No hace falta tocar los campos: las etiquetas pasan arriba y los campos se ordenan en
+columnas que se ajustan al ancho. Lo que no sea control-group (titulo, datos del registro
+padre, botones) ocupa todo el ancho.
+*****************************************************/
+
+.fm-form {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px 20px;
+    max-width: 1000px;
+    padding: 16px;
+    border: 1px solid #dfe5eb;
+    border-radius: 4px;
+    background: #f7f9fb;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #263645;
+}
+.fm-form > * {
+    grid-column: 1 / -1;
+}
+.fm-form > .control-group {
+    grid-column: auto;
+    margin: 0;
+}
+.fm-form > br {
+    display: none;
+}
+
+/*Titulo*/
+.fm-form > legend {
+    margin: 0;
+    padding: 0 0 10px;
+    border-bottom: 1px solid #dfe5eb;
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 1.3;
+    color: #0773B3;
+}
+
+/*Etiqueta arriba del campo*/
+.fm-form .control-label {
+    display: block;
+    float: none;
+    width: auto;
+    margin: 0 0 5px;
+    padding: 0;
+    text-align: left;
+    font-size: 12px;
+    font-weight: bold;
+    color: #263645;
+}
+.fm-form .control-label .error {
+    color: #c62828;
+}
+.fm-form .controls {
+    margin: 0;
+}
+.fm-form .controls select,
+.fm-form .controls input[type=text],
+.fm-form .controls input[type=number],
+.fm-form .controls input[type=date] {
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 34px;
+    margin: 0;
+}
+.fm-form .controls textarea {
+    box-sizing: border-box;
+    width: 100% !important;
+    margin: 0;
+}
+
+/*Botones a la derecha*/
+.fm-form .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin: 4px 0 0;
+    padding: 12px 0 0;
+    border-top: 1px solid #dfe5eb;
+    background: none;
+}
+.fm-form .form-actions .btn {
+    min-width: 120px;
+}
+
+/*Campos que van mas anchos (texto largo): <div class="control-group fm-ancho">*/
+.fm-form > .control-group.fm-ancho {
+    grid-column: span 2;
+}
+@media (max-width: 760px) {
+    .fm-form > .control-group.fm-ancho {
+        grid-column: 1 / -1;
+    }
+}
+
+/*****************************************************
+Ajustes para los formularios de GEPRO (mas variados que los de CUBMIN)
+*****************************************************/
+
+/*Textos largos y tablas (p. ej. botones de PROYECTO) ocupan todo el ancho sin marcar fm-ancho*/
+.fm-form > .control-group:has(textarea),
+.fm-form > .control-group:has(table) {
+    grid-column: 1 / -1;
+}
+
+/*Otros campos de texto*/
+.fm-form .controls input[type=password],
+.fm-form .controls input[type=email],
+.fm-form .controls input:not([type]) {
+    box-sizing: border-box;
+    width: 100% !important;
+    height: 34px;
+    margin: 0;
+}
+.fm-form .controls select[multiple] {
+    height: auto;
+}
+
+/*Campo con boton o icono al lado (buscar, calendario): en la misma linea*/
+.fm-form .controls:has(> button, > input[type=button], > img, > a.btn) {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.fm-form .controls:has(> button, > input[type=button], > img, > a.btn) > input[type=text],
+.fm-form .controls:has(> button, > input[type=button], > img, > a.btn) > select {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/*Bloques que agrupan campos (secciones que se muestran u ocultan): tambien en columnas*/
+.fm-form > div:not(.control-group):not(.form-actions):not(.fm-resumen):has(> .control-group) {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px 20px;
+}
+.fm-form > div:not(.control-group):not(.form-actions) > .control-group {
+    margin: 0;
+}
+.fm-form > div:not(.control-group):not(.form-actions) > .control-group:has(textarea) {
+    grid-column: 1 / -1;
+}
+
+/*Tablas usadas para maquetar (titulos de seccion)*/
+.fm-form > table {
+    width: 100%;
+}
+.fm-form > table td {
+    padding: 4px 0;
+    vertical-align: top;
+}
+
+/*Legend vacio usado como separador*/
+.fm-form > legend:empty {
+    padding: 0;
+    border-bottom: 1px dashed #dfe5eb;
+}
+
+/*Campos de solo lectura*/
+.fm-form .controls input[readonly],
+.fm-form .controls input[disabled],
+.fm-form .controls select[disabled],
+.fm-form .controls textarea[readonly],
+.fm-form .controls textarea[disabled] {
+    background: #eef1f4 !important;
+    color: #4b5b6b;
+}
+
+/*Foco*/
+.fm-form .controls input:focus,
+.fm-form .controls select:focus,
+.fm-form .controls textarea:focus {
+    border-color: #0a8fdc;
+    box-shadow: 0 0 0 3px rgba(10,143,220,.15);
+    outline: 0;
+}
+
+/*****************************************************
+Formularios por secciones (p. ej. PROYECTO):
+<div class="fm-resumen"> titulo del registro + campo destacado (codigo)
+<div class="fm-seccion">
+    <div class="fm-seccion-titulo"><i class="icon-..."></i> Titulo <small>ayuda</small></div>
+    <div class="fm-campos"> control-group (1 columna), .fm-ancho (2), .fm-completo (todo el ancho) </div>
+    o <div class="fm-enlaces"> botones .fm-enlace que abren ventanas </div>
+</div>
+*****************************************************/
+.fm-form.fm-form {
+    gap: 16px;
+}
+.fm-form > .fm-resumen {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 18px;
+    border: 1px solid #dfe5eb;
+    border-left: 4px solid #0773B3;
+    border-radius: 4px;
+    background: #fff;
+}
+.fm-resumen h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #263645;
+}
+.fm-resumen h4 small {
+    margin-left: 6px;
+    font-size: 12px;
+    font-weight: normal;
+    color: #6b7b8b;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+}
+.fm-resumen p {
+    margin: 4px 0 0;
+    font-size: 12px;
+    color: #6b7b8b;
+}
+.fm-resumen .fm-resumen-codigo {
+    flex: 0 0 200px;
+    margin: 0;
+}
+.fm-resumen .fm-resumen-codigo input {
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 14px !important;
+    font-weight: bold;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.fm-form > .fm-seccion {
+    border: 1px solid #dfe5eb;
+    border-radius: 4px;
+    background: #fff;
+}
+.fm-seccion-titulo {
+    padding: 10px 16px;
+    border-bottom: 1px solid #dfe5eb;
+    background: #f4f7fa;
+    font-size: 13px;
+    font-weight: bold;
+    color: #0773B3;
+    text-transform: uppercase;
+    letter-spacing: .3px;
+}
+.fm-seccion-titulo i {
+    margin-right: 6px;
+}
+.fm-seccion-titulo small {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+    font-weight: normal;
+    color: #6b7b8b;
+    text-transform: none;
+    letter-spacing: 0;
+}
+.fm-seccion > .fm-campos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px 18px;
+    padding: 14px 16px 16px;
+}
+.fm-campos > .control-group {
+    margin: 0;
+}
+.fm-campos > .control-group.fm-ancho {
+    grid-column: span 2;
+}
+.fm-campos > .control-group.fm-completo {
+    grid-column: 1 / -1;
+}
+.fm-campos textarea {
+    min-height: 54px;
+    resize: vertical;
+}
+.fm-form .controls input.fm-numero {
+    text-align: right;
+}
+
+/*Botones que abren ventanas relacionadas*/
+.fm-seccion > .fm-enlaces {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+    padding: 14px 16px 16px;
+}
+.fm-enlaces .fm-enlace {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid #dfe5eb;
+    border-radius: 4px;
+    background: #f7f9fb;
+    color: #263645;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+}
+.fm-enlaces .fm-enlace i {
+    flex: 0 0 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #e3f1fb;
+    color: #0773B3;
+    line-height: 30px;
+    text-align: center;
+    font-size: 14px;
+}
+.fm-enlaces .fm-enlace:hover {
+    border-color: #9fd0f0;
+    background: #e3f1fb;
+}
+
+@media (max-width: 640px) {
+    .fm-form > .fm-resumen {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .fm-resumen .fm-resumen-codigo {
+        flex-basis: auto;
+    }
+    .fm-campos > .control-group.fm-ancho {
+        grid-column: 1 / -1;
+    }
+}
+
+/*Secciones armadas por js/formulario.js*/
+.fm-form > legend.fm-separador,
+.fm-form > hr.fm-separador {
+    display: none;
+}
+/*Seccion sin ningun campo visible (todos ocultos, aunque el JS de la pagina los muestre despues)*/
+.fm-form > .fm-seccion.fm-auto:not(:has(.fm-campos > :not([style*="display:none"]):not([style*="display: none"]))) {
+    display: none;
+}
+/*Seccion sin titulo: los campos empiezan arriba*/
+.fm-seccion.fm-auto > .fm-campos:first-child {
+    padding-top: 16px;
+}
+.fm-campos > .fm-extra table {
+    width: 100%;
+}
+/*Bloques propios de la pagina (secciones que se muestran u ocultan) con el mismo aspecto*/
+.fm-form > .fm-bloque {
+    padding: 14px 16px 16px;
+    border: 1px solid #dfe5eb;
+    border-radius: 4px;
+    background: #fff;
+}
+.fm-form > .fm-bloque > .control-group.fm-ancho {
+    grid-column: span 2;
+}
+.fm-form > .fm-bloque > .control-group.fm-completo {
+    grid-column: 1 / -1;
+}

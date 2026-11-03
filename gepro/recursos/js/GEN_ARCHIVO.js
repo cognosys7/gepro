@@ -221,10 +221,20 @@ function EliminarInformacion(Valor)
  * (OPCIONAL)FUNCIONES DE VENTANAS ANIDADAS     
  ***********************************************************************************/
 
+//DESCARGA EL ARCHIVO SIN ABRIR OTRA VENTANA: DescargarArchivo.php VALIDA LA SESION Y LA RUTA Y LO
+//ENVIA CON SU NOMBRE ORIGINAL. SE USA UN IFRAME OCULTO; SI HAY UN ERROR, LA PAGINA DE DESCARGA LO AVISA
 function abrirArchivo(Ruta,Archivo)
 {
-//    alert("hopla");
-    window.open(Ruta + Archivo, "Archivo Digital", "width=800, height=600");
+    //t: PARA QUE EL MISMO ARCHIVO SE PUEDA DESCARGAR DOS VECES SEGUIDAS (EL IFRAME NO RECARGA LA MISMA URL)
+    var url = 'DescargarArchivo.php?ruta=' + encodeURIComponent(Ruta) + '&archivo=' + encodeURIComponent(Archivo) + '&t=' + new Date().getTime();
+    var marco = document.getElementById('marcoDescarga');
+    if (!marco) {
+        marco = document.createElement('iframe');
+        marco.id = 'marcoDescarga';
+        marco.style.display = 'none';
+        document.body.appendChild(marco);
+    }
+    marco.src = url;
 }
 
 

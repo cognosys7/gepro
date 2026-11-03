@@ -121,8 +121,8 @@ function crudGrabarCancelar($SeleccionarID,$Usuario,$Perfil) {
 
     
     $Botones = '<div class="form-actions">';
-    $Botones .= ( $Grabar=='Ver' ? '<input type="button" id="BtnForm01" class="btn btn-primary" name="btnForm" value="'.$Boton.'"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' : '' ) ;                
-    $Botones .= ' <button type="button" onclick="Cancelar()" class="btn">Cancelar</button>
+    $Botones .= ( $Grabar=='Ver' ? '<button type="button" id="BtnForm01" class="btn btn-primary" name="btnForm"><i class="icon-save"></i>'.$Boton.'</button> &nbsp; ' : '' ) ;
+    $Botones .= ' <button type="button" onclick="Cancelar()" class="btn"><i class="icon-remove"></i>Cancelar</button>
                 </div>
     ' ;
     
@@ -539,9 +539,9 @@ function crudGrabarCancelar2($SeleccionarID,$Ver) {
 //    $Botones = '<hr id="hrGrabar">';
     $Botones = '';
     $Botones .= '<div class="form-actions">';
-    $Botones .= ( $Ver=='true' ? '<input type="button" id="BtnForm01" class="btn btn-primary" name="btnForm" value="'.$Boton.'">  ' : '' ) ;  
-    $Botones .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' ;
-    $Botones .= ' <button type="button" onclick="Cancelar()" class="btn">Cancelar</button>' ;
+    $Botones .= ( $Ver=='true' ? '<button type="button" id="BtnForm01" class="btn btn-primary" name="btnForm"><i class="icon-save"></i>'.$Boton.'</button>  ' : '' ) ;
+    $Botones .= '&nbsp;' ;
+    $Botones .= ' <button type="button" onclick="Cancelar()" class="btn"><i class="icon-remove"></i>Cancelar</button>' ;
     $Botones .= ' </div>' ;
     
     return $Botones ;

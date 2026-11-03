@@ -139,7 +139,7 @@ function EliminarInformacion(Valor)
 function abrirGEN_ARCHIVO(PIDE,Tabla)
 {
     OcultaBOx();
-    $.colorbox({width: "100%", height: "100%", iframe: true, escKey: false, overlayClose: false, href: "mainpage.php?Pagina=GEN_ARCHIVO&Accion=muestraVista&AccionLocal=2&PIDE=" + PIDE+"&Tabla=" + Tabla});
+    $.colorbox({width: "1000px", height: "90%", maxWidth: "95%", maxHeight: "95%", iframe: true, escKey: false, overlayClose: false, href: "mainpage.php?Pagina=GEN_ARCHIVO&Accion=muestraVista&AccionLocal=2&PIDE=" + PIDE+"&Tabla=" + Tabla});
     $('#cboxClose').remove();
 }
 
