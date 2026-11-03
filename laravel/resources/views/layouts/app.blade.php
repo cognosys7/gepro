@@ -15,7 +15,7 @@
     <header class="gp-barra">
         <button type="button" class="gp-barra-menu" id="gp-abrir-menu" title="Menú"><i class="fa-solid fa-bars"></i></button>
         <a href="{{ route('inicio') }}" class="gp-barra-marca"><img src="{{ asset('img/cognosys_barra.png') }}" alt="COGNOSYS"></a>
-        <div class="gp-barra-titulo">SISTEMA INTEGRAL PARA OFICINA DE PROYECTOS (PMO)</div>
+        <div class="gp-barra-titulo">{{ ! empty($areaSeguridad) ? 'SEGURIDAD DEL SISTEMA' : 'SISTEMA INTEGRAL PARA OFICINA DE PROYECTOS (PMO)' }}</div>
         <div class="gp-usuario">
             <button type="button" id="gp-usuario-boton" aria-haspopup="true" aria-expanded="false">
                 <i class="fa-solid fa-circle-user"></i>
@@ -42,9 +42,16 @@
             <input type="text" id="gp-menu-buscar" placeholder="Buscar opción..." autocomplete="off">
         </div>
         <ul>
-            <li @class(['gp-activo' => request()->routeIs('inicio')])>
-                <a href="{{ route('inicio') }}"><i class="gp-icono fa-solid fa-gauge-high"></i> Inicio</a>
-            </li>
+            @if (! empty($areaSeguridad))
+                {{-- SISTEMA DE SEGURIDAD: SU MENU, CON UN ENLACE PARA VOLVER A GEPRO --}}
+                <li>
+                    <a href="{{ route('inicio') }}"><i class="gp-icono fa-solid fa-arrow-left"></i> Volver a GEPRO</a>
+                </li>
+            @else
+                <li @class(['gp-activo' => request()->routeIs('inicio')])>
+                    <a href="{{ route('inicio') }}"><i class="gp-icono fa-solid fa-gauge-high"></i> Inicio</a>
+                </li>
+            @endif
             @foreach ($menuGepro as $opcion)
                 @include('layouts.menu-opcion', ['opcion' => $opcion, 'nivel' => 1])
             @endforeach
@@ -55,6 +62,10 @@
         <div class="gp-migas">
             <i class="fa-solid fa-house"></i>
             <a href="{{ route('inicio') }}">Inicio</a>
+            @if (! empty($areaSeguridad))
+                <i class="fa-solid fa-angle-right"></i>
+                <a href="{{ route('seguridad.inicio') }}">Seguridad del sistema</a>
+            @endif
             @foreach (($migas ?? []) as $miga)
                 <i class="fa-solid fa-angle-right"></i>
                 <span class="gp-actual">{{ $miga }}</span>

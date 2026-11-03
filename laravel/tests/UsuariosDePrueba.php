@@ -34,4 +34,25 @@ trait UsuariosDePrueba
 
         return null;
     }
+
+    /**
+     * Usuario activo con perfil de administracion en el sistema de seguridad ($conSeguridad = true) o
+     * con perfil en GEPRO y sin ese perfil ($conSeguridad = false)
+     */
+    protected function usuarioSeguridad(bool $conSeguridad = true): ?object
+    {
+        $seguridad = app(Seguridad::class);
+        foreach (DB::table('seguridad.tsusuarioperfil')->where('upsestado', 1)->orderBy('upsusuario')->pluck('upsusuario')->unique() as $id) {
+            $tiene = $seguridad->perfilSeguridad((int) $id) !== null;
+            if ($tiene !== $conSeguridad || (! $conSeguridad && ! $seguridad->perfil((int) $id))) {
+                continue;
+            }
+            $usuario = (new LegadoUserProvider())->retrieveById($id);
+            if ($usuario) {
+                return $usuario;
+            }
+        }
+
+        return null;
+    }
 }

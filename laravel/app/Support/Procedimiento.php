@@ -21,11 +21,23 @@ class Procedimiento
      */
     public static function grabar(string $sp, string $accion, array $parametros, bool $exigirOk = true): array
     {
+        return self::ejecutar($sp, ['TipoAccion' => $accion] + $parametros, $exigirOk);
+    }
+
+    /**
+     * Igual que grabar(), para los procedimientos que no tienen @TipoAccion (los de seguridad: p. ej.
+     * seguridad.paInsertaDatosPerfil). En ellos @pIdError dice que paso: 1 registrado, 2 ya existe,
+     * 3 actualizado, 4 eliminado (siempre con @pMensajeError = 'OK').
+     *
+     * @return array{id: string, mensaje: string}
+     */
+    public static function ejecutar(string $sp, array $parametros, bool $exigirOk = true): array
+    {
         if (! preg_match('/^[A-Za-z0-9_]+\.[A-Za-z0-9_]+$/', $sp)) {
             throw new RuntimeException('Nombre de procedimiento no válido.');
         }
-        $partes = ['@TipoAccion = ?'];
-        $valores = [$accion];
+        $partes = [];
+        $valores = [];
         foreach ($parametros as $nombre => $valor) {
             if (! preg_match('/^[A-Za-z0-9_]+$/', $nombre)) {
                 throw new RuntimeException('Nombre de parámetro no válido.');

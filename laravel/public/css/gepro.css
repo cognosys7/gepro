@@ -666,3 +666,16 @@ body.gp-embebido { background: #fff; }
 .gp-tablero-cabecera h1 { margin: 0; font-size: 17px; color: #1d3340; }
 .gp-tablero-cabecera h1 i { margin-right: 6px; color: var(--petroleo); }
 .gp-tablero-marco { flex: 1 1 auto; width: 100%; border: 0; background: #f4f7fa; }
+
+/*Sistema de seguridad (/seguridad): arbol de opciones, radios del formulario y avisos informativos*/
+.gp-texto-suave { color: var(--texto-suave); }
+.gp-tabla td.gp-texto-suave { font-size: 12px; }
+.gp-opcion-principal { font-weight: 700; color: #1d3340; }
+.gp-tabla td i.fa-turn-up { margin-right: 6px; font-size: 11px; }
+.gr-ico:disabled { opacity: .35; cursor: default; transform: none; }
+.gr-ico:disabled:hover { background: #eef1f4; color: #4b5b6b !important; }
+.fm-opciones { display: flex; flex-wrap: wrap; gap: 16px; padding: 6px 0; }
+.fm-opciones label { display: inline-flex; align-items: center; gap: 6px; font-weight: 400; cursor: pointer; }
+.gp-grilla > .fm-aviso { margin-bottom: 10px; }
+.fm-panel-cuerpo > .fm-aviso:not(.fm-aviso-error) { border-left-color: #0773B3; background: #e3f1fb; color: #0b4f7c; margin-bottom: 12px; }
+.gp-grilla > .fm-aviso:not(.fm-aviso-error) { border-left-color: #0773B3; background: #e3f1fb; color: #0b4f7c; }

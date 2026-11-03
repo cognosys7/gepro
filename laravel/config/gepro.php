@@ -32,6 +32,24 @@ return [
         'PROYECTO' => 'proyectos.index',
     ],
 
+    // Sistema de seguridad (sisSeguridad en el sistema actual): usuarios, perfiles, opciones del menu y accesos.
+    // Entra solo quien tiene en ese sistema uno de estos perfiles (decidido el 2026-11-03).
+    'seguridad' => [
+        'sistema' => env('GEPRO_SEGURIDAD_SISTEMA', 'GESUSU'),
+        'perfiles' => ['ADMINISTRADOR', 'GESTOR DE USUARIOS'],
+        'legado_vista' => '/sisSeguridad/Vista/',
+        // Paginas del menu de seguridad que ya estan en Laravel (/seguridad/{Pagina})
+        'paginas' => ['Usuarios', 'Perfil', 'Acceso', 'Opcion', 'Sistema'],
+        // Opciones del menu que solo descargan un archivo (PEX_SEG_AUDITORIA: Excel publicado por AMSAC)
+        'descargas' => [
+            'PEX_SEG_AUDITORIA' => env('GEPRO_SEG_AUDITORIA_URL', 'http://198.150.0.125/SGPAM_archivos/TablerosExcel/SGPAM_SEG_AUDITORIA.xlsm'),
+        ],
+        // Al registrar un usuario: tipo de documento DNI (general.tgcatalogo) y unidad organica (trpersonal),
+        // los mismos valores fijos del sistema actual (UsuariosLN.php / UsuariosVista.php)
+        'documento_dni' => 30,
+        'unidad_organica' => 59,
+    ],
+
     // Archivos adjuntos (GEN_ARCHIVO): los mismos del sistema actual, en SGPAM_archivos/<carpeta>/.
     // Tabla => [carpeta, titulo, tabla de la base, clave]. Se suben con el prefijo DDMMAAAA_HHMMSS_.
     'archivos' => [

@@ -19,6 +19,8 @@ return [
     'PBI_TABLEROS_SEGUIMIENTO' => env('GEPRO_PBI_TABLEROS_SEGUIMIENTO', 'https://app.powerbi.com/view?r=eyJrIjoiMDU0MzdjZGUtMzc4Zi00MzgzLTkwYjktNDYyMjI5ZTU5M2MzIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9&pageName=ReportSection'),
     'PBI_PRY_CONT_21ETAPAS' => env('GEPRO_PBI_PRY_CONT_21ETAPAS', 'https://app.powerbi.com/view?r=eyJrIjoiYjhmMTc5MDYtMTJjNi00ZjdjLTk5OWMtNWI0MDU3ZmUwYjgxIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
     'PBI_PRY_2CONTRATOS' => env('GEPRO_PBI_PRY_2CONTRATOS', 'https://app.powerbi.com/view?r=eyJrIjoiNTdjNDc1YWQtMDQwNi00NzQ5LWJhYTEtOWZiNTFiNjYzMDc4IiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
+    // Del menu del sistema de seguridad (/seguridad/tableros/{Pagina})
+    'PBI_SEG_USUARIOS_ROL' => env('GEPRO_PBI_SEG_USUARIOS_ROL', 'https://app.powerbi.com/view?r=eyJrIjoiM2Y4MWU2OGEtY2VjMS00N2ZhLTk4NzktM2NhYTVkZDRjZjgyIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
     'PBI_TABLERO_PRESUPUESTO' => env('GEPRO_PBI_TABLERO_PRESUPUESTO', 'https://app.powerbi.com/view?r=eyJrIjoiM2QxZmQwMTctYjRhMC00MWM4LTgwMTUtZjMyNWI3YTE0NmVhIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
 
 ];
