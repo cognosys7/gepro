@@ -76,7 +76,8 @@ class ProyectoContratosTest extends TestCase
         $p = $this->proyectoConContratos();
         Livewire::test(ProyectoContratosTabla::class, ['proyecto' => (int) $p->IDE_PROYECTO, 'opcion' => 211, 'tipo' => 0])
             ->assertViewHas('acciones', fn ($a) => array_keys($a) === ['etapas', 'contrato', 'ampliacion', 'interesados', 'migrar'])
-            ->assertSee('Pagina=PROY_COMPONENTE', false)
+            //LAS ETAPAS YA ABREN LA PANTALLA DE LARAVEL
+            ->assertSee('/catalogos/PROY_COMPONENTE?de=', false)
             ->assertSee('Nuevo contrato');
         Livewire::test(ProyectoContratosTabla::class, ['proyecto' => (int) $p->IDE_PROYECTO, 'opcion' => 214, 'tipo' => 0])
             ->assertViewHas('acciones', fn ($a) => array_keys($a) === ['interesados'])

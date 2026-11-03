@@ -34,7 +34,8 @@ class CatalogosTest extends TestCase
             [$esquema, $tabla] = explode('.', $def['tabla']);
             $columnas = DB::table('INFORMATION_SCHEMA.COLUMNS')->where('TABLE_SCHEMA', $esquema)->where('TABLE_NAME', $tabla)->pluck('COLUMN_NAME')->all();
             $this->assertNotEmpty($columnas, "$pagina: no existe la tabla");
-            foreach (array_unique(array_merge([$def['id'], $def['estado']], $def['parametros'], array_keys($def['campos']))) as $c) {
+            $columnasDef = array_keys(array_filter($def['campos'], fn ($c) => empty($c[2]['expresion'])));
+            foreach (array_unique(array_merge([$def['id'], $def['estado']], $def['parametros'], $columnasDef)) as $c) {
                 $this->assertContains($c, $columnas, "$pagina: no existe la columna $c");
             }
             $this->assertNotNull(DB::selectOne('SELECT OBJECT_ID(?) AS o', [$def['sp']])->o, "$pagina: no existe {$def['sp']}");
@@ -50,6 +51,10 @@ class CatalogosTest extends TestCase
             'GEN_CONCEPTO_SOCIAL' => ' AND T.NUM_NIVEL=11 ',
         ];
         foreach (config('catalogos') as $pagina => $def) {
+            //LAS PANTALLAS QUE DEPENDEN DE OTRO REGISTRO SE PRUEBAN EN CadenaContratoTest
+            if (! empty($def['de'])) {
+                continue;
+            }
             $legado = (int) array_values((array) DB::selectOne('SET NOCOUNT ON; EXEC '.$def['sp']." @TipoAccion='Count', @filtro=?", [$filtroRaiz[$pagina] ?? '']))[0];
             //SP_GEN_BANCO 'Count' FILTRA POR IDE_BANCO <> '2' (ERROR DEL SISTEMA ACTUAL: DEBIA SER EST_BANCO) Y
             //DEJA FUERA DEL TOTAL AL BANCO 2 AUNQUE SU GRILLA SI LO LISTA; SE SUMA SI ESTA ACTIVO

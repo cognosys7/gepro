@@ -16,8 +16,11 @@ use RuntimeException;
 
 /**
  * Formulario de cualquier catalogo de config/catalogos.php. Graba con el Insert / Update de su SP:
- * - los parametros que no estan en el formulario se conservan como estan (al registrar van vacios);
- * - los campos de solo lectura se toman siempre de la base;
+ * - los parametros que no estan en el formulario se conservan como estan (al registrar van vacios o
+ *   con 'nuevo_valores', que acepta {de.COLUMNA});
+ * - los campos de solo lectura se toman siempre de la base; los 'calculado' los llena el SP;
+ * - en las pantallas que dependen de otro registro ('de'), su columna toma el id de ese registro;
+ * - 'calculo' => clase con calcular(datos, de): recalcula montos al escribir (p. ej. control mensual);
  * - el perfil "CONSULTA TOTAL" o un catalogo sin edicion abren el formulario solo para ver.
  */
 class CatalogoFormulario extends Component
@@ -36,11 +39,29 @@ class CatalogoFormulario extends Component
     #[Locked]
     public ?string $padre = null;
 
-    public function mount(string $pagina, ?string $padre = null): void
+    /** Pantallas que dependen de otro registro: su id */
+    #[Locked]
+    public ?string $de = null;
+
+    /** Calculo automatico de montos (casilla "Calcular montos automáticamente") */
+    public bool $autoCalcular = true;
+
+    public function mount(string $pagina, ?string $padre = null, ?string $de = null): void
     {
         Catalogo::definicion($pagina);
         $this->pagina = $pagina;
         $this->padre = $padre;
+        $this->de = $de;
+    }
+
+    public function def(): array
+    {
+        return Catalogo::definicion($this->pagina);
+    }
+
+    private function filaDe(): ?object
+    {
+        return Catalogo::filaDe($this->def(), $this->de);
     }
 
     /** Valores que fija la jerarquia al registrar (tabla, padre, nivel...) */
@@ -51,17 +72,25 @@ class CatalogoFormulario extends Component
         return Catalogo::contexto($def, Catalogo::fila($def, $this->padre))['valores'];
     }
 
-    /** Columnas que maneja la jerarquia: no se editan */
-    private function columnasJerarquia(): array
+    /** Columnas que fijan la jerarquia o el registro "de": no se editan */
+    private function columnasFijas(): array
     {
-        $j = $this->def()['jerarquia'] ?? null;
+        $def = $this->def();
+        $j = $def['jerarquia'] ?? null;
+        $fijas = $j ? array_keys(array_merge($j['raiz']['valores'] ?? [], $j['hijo']['valores'] ?? [])) : [];
+        if (! empty($def['de'])) {
+            $fijas[] = $def['de']['columna'];
+        }
 
-        return $j ? array_keys(array_merge($j['raiz']['valores'] ?? [], $j['hijo']['valores'] ?? [])) : [];
+        return $fijas;
     }
 
-    public function def(): array
+    /** Valores iniciales al registrar ('nuevo_valores' con {de.COLUMNA}) */
+    private function valoresNuevo(): array
     {
-        return Catalogo::definicion($this->pagina);
+        $de = $this->filaDe();
+
+        return array_map(fn ($v) => Catalogo::conDe((string) $v, $de), $this->def()['nuevo_valores'] ?? []);
     }
 
     /** Si puede grabar lo que tiene abierto (registrar o editar) */
@@ -75,10 +104,16 @@ class CatalogoFormulario extends Component
     public function bloqueado(string $campo): bool
     {
         $c = $this->def()['campos'][$campo] ?? null;
+        //CALCULADOS POR EL CALCULO AUTOMATICO: SE EDITAN SOLO SI ESTA DESACTIVADO
+        if ($c && ! empty($c[2]['auto']) && $this->autoCalcular) {
+            return true;
+        }
 
-        return ! $this->puedeGrabar() || ! $c || ! empty($c[2]['oculto']) || (! empty($c[2]['solo_lectura']) && $this->idRegistro !== null)
+        return ! $this->puedeGrabar() || ! $c || ! empty($c[2]['oculto']) || ! empty($c[2]['calculado'])
+            || ! Catalogo::esColumna($c)
+            || (! empty($c[2]['solo_lectura']) && $this->idRegistro !== null)
             || ! in_array($campo, $this->def()['parametros'], true)
-            || in_array($campo, $this->columnasJerarquia(), true);
+            || in_array($campo, $this->columnasFijas(), true);
     }
 
     #[On('catalogo-nuevo')]
@@ -87,16 +122,23 @@ class CatalogoFormulario extends Component
         if (empty($this->def()['nuevo']) || ! app(Seguridad::class)->puedeGrabar()) {
             return;
         }
+        $def = $this->def();
         $this->resetValidation();
         $this->idRegistro = null;
-        $this->datos = array_fill_keys(array_keys($this->def()['campos']), '');
-        $this->datos[$this->def()['estado']] = '1';
-        //SE MUESTRAN LOS VALORES QUE PONE LA JERARQUIA (P. EJ. EL RUBRO SUPERIOR)
-        foreach ($this->valoresJerarquia() as $columna => $valor) {
+        $this->autoCalcular = true;
+        $this->datos = array_fill_keys(array_keys($def['campos']), '');
+        $this->datos[$def['estado']] = '1';
+        //VALORES INICIALES Y LOS QUE PONE LA JERARQUIA (P. EJ. EL RUBRO SUPERIOR)
+        foreach (array_merge($this->valoresNuevo(), $this->valoresJerarquia()) as $columna => $valor) {
             if (array_key_exists($columna, $this->datos)) {
+                //NUMEROS CON EL MISMO FORMATO QUE AL EDITAR ('.1800' -> '0.18')
+                if (($def['campos'][$columna][1] ?? '') === 'numero' && is_numeric($valor)) {
+                    $valor = rtrim(rtrim(number_format((float) $valor, 4, '.', ''), '0'), '.');
+                }
                 $this->datos[$columna] = $valor;
             }
         }
+        $this->calcular();
         $this->abierto = true;
     }
 
@@ -116,7 +158,8 @@ class CatalogoFormulario extends Component
         }
         $this->resetValidation();
         $this->idRegistro = $id;
-        $this->datos = $this->valores($fila, array_keys($this->def()['campos']));
+        $this->autoCalcular = true;
+        $this->datos = $this->valores($fila, array_keys(array_filter($this->def()['campos'], fn ($c) => Catalogo::esColumna($c))));
         $this->abierto = true;
     }
 
@@ -124,7 +167,10 @@ class CatalogoFormulario extends Component
     {
         $def = $this->def();
 
-        return DB::table($def['tabla'])->where($def['id'], $id)->where($def['estado'], '<>', '2')->first();
+        return DB::table($def['tabla'])->where($def['id'], $id)->where($def['estado'], '<>', Catalogo::eliminado($def))
+            //EN UNA PANTALLA QUE DEPENDE DE OTRO REGISTRO, SOLO SUS PROPIAS FILAS
+            ->when(! empty($def['de']), fn ($q) => $q->where($def['de']['columna'], $this->de))
+            ->first();
     }
 
     private function valores(object $fila, array $campos): array
@@ -144,6 +190,25 @@ class CatalogoFormulario extends Component
         return $datos;
     }
 
+    /** Recalcula los montos con la clase 'calculo' de la definicion (si el calculo automatico esta activo) */
+    private function calcular(): void
+    {
+        $clase = $this->def()['calculo'] ?? null;
+        if ($clase && $this->autoCalcular) {
+            $this->datos = array_merge($this->datos, app($clase)->calcular($this->datos, $this->filaDe()));
+        }
+    }
+
+    public function updatedDatos(): void
+    {
+        $this->calcular();
+    }
+
+    public function updatedAutoCalcular(): void
+    {
+        $this->calcular();
+    }
+
     public function cerrar(): void
     {
         $this->abierto = false;
@@ -156,8 +221,10 @@ class CatalogoFormulario extends Component
             throw ValidationException::withMessages(['general' => 'No tiene permiso para grabar en este catálogo.']);
         }
         $def = $this->def();
+        //LOS MONTOS SE RECALCULAN AL ESCRIBIR (updatedDatos), NO AL GRABAR: ASI UN REGISTRO QUE SE GRABA
+        //SIN CAMBIAR SUS IMPORTES CONSERVA LOS QUE TENIA (COMO EL SISTEMA ACTUAL)
 
-        //VALORES QUE NO VIENEN DEL NAVEGADOR: PARAMETROS OCULTOS Y CAMPOS DE SOLO LECTURA (DE LA BASE)
+        //VALORES QUE NO VIENEN DEL NAVEGADOR: PARAMETROS OCULTOS, SOLO LECTURA Y CALCULADOS (DE LA BASE)
         $base = [];
         if ($this->idRegistro !== null) {
             $actual = $this->leer($this->idRegistro);
@@ -165,18 +232,25 @@ class CatalogoFormulario extends Component
                 throw ValidationException::withMessages(['general' => 'El registro ya no existe.']);
             }
             $base = $this->valores($actual, $def['parametros']);
+        } else {
+            $base = $this->valoresNuevo();
         }
+        $autoCalculados = array_keys(array_filter($def['campos'], fn ($c) => ! empty($c[2]['auto'])));
         $parametros = [];
         foreach ($def['parametros'] as $p) {
-            $editable = isset($def['campos'][$p]) && ! $this->bloqueado($p);
+            $editable = isset($def['campos'][$p]) && (! $this->bloqueado($p) || (in_array($p, $autoCalculados, true) && $this->puedeGrabar()));
             $parametros[$p] = $editable ? trim((string) ($this->datos[$p] ?? '')) : ($base[$p] ?? '');
         }
-        //AL REGISTRAR, LA JERARQUIA FIJA SUS COLUMNAS (AL EDITAR SE CONSERVAN LAS DE LA BASE)
+        //AL REGISTRAR, LA JERARQUIA Y EL REGISTRO "de" FIJAN SUS COLUMNAS (AL EDITAR SE CONSERVAN)
         if ($this->idRegistro === null) {
             foreach ($this->valoresJerarquia() as $columna => $valor) {
                 if (in_array($columna, $def['parametros'], true)) {
                     $parametros[$columna] = $valor;
                 }
+            }
+            if (! empty($def['de'])) {
+                abort_unless($this->filaDe(), 404);
+                $parametros[$def['de']['columna']] = $this->de;
             }
         }
 
@@ -184,7 +258,7 @@ class CatalogoFormulario extends Component
         $reglas = [];
         $nombres = [];
         foreach ($def['campos'] as $campo => [$etiqueta, $tipo, $o]) {
-            if ($this->bloqueado($campo)) {
+            if ($this->bloqueado($campo) && ! in_array($campo, $autoCalculados, true)) {
                 continue;
             }
             $r = [! empty($o['requerido']) ? 'required' : 'nullable'];
@@ -193,7 +267,7 @@ class CatalogoFormulario extends Component
             } elseif ($tipo === 'fecha') {
                 $r[] = 'date_format:Y-m-d';
             } elseif ($tipo === 'combo') {
-                $r[] = Rule::in(array_map('strval', array_keys(Catalogo::opciones($def['campos'][$campo], $base[$campo] ?? null))));
+                $r[] = Rule::in(array_map('strval', array_keys(Catalogo::opciones($def['campos'][$campo], $base[$campo] ?? null, $this->filaDe()))));
             } else {
                 $r[] = 'string';
                 if (! empty($o['max'])) {
@@ -233,9 +307,10 @@ class CatalogoFormulario extends Component
         $def = $this->def();
         $combos = [];
         if ($this->abierto) {
+            $de = $this->filaDe();
             foreach ($def['campos'] as $campo => $c) {
                 if ($c[1] === 'combo') {
-                    $combos[$campo] = Catalogo::opciones($c, $this->datos[$campo] ?? null);
+                    $combos[$campo] = Catalogo::opciones($c, $this->datos[$campo] ?? null, $de);
                 }
             }
         }

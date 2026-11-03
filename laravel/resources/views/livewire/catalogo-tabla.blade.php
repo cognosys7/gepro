@@ -35,6 +35,9 @@
                             @endif
                         </th>
                     @endforeach
+                    @foreach ($def['acciones'] ?? [] as $accion)
+                        <th class="gp-col-accion">{{ $accion[0] }}</th>
+                    @endforeach
                     @if ($conAcciones)
                         <th class="gp-col-accion">Acciones</th>
                     @endif
@@ -57,6 +60,17 @@
                                 <td>{{ $valor }}</td>
                             @endif
                         @endforeach
+                        {{-- ACCIONES DE LA FILA: ABREN OTRA PANTALLA EN LA VENTANA MODAL --}}
+                        @foreach ($def['acciones'] ?? [] as $accion)
+                            <td class="gp-col-accion">
+                                <button type="button" class="gr-ico {{ $accion[2] }}" title="{{ $accion[3] ?? $accion[0] }}"
+                                    data-modal-url="{{ $this->urlAccion($accion[4], $fila) }}" data-modal-titulo="{{ $accion[3] ?? $accion[0] }}"
+                                    @php($primera = array_key_first($columnas))
+                                    data-modal-subtitulo="{{ $etiquetas[$primera][trim((string) $fila->{$primera})] ?? trim((string) $fila->{$primera}) }}">
+                                    <i class="fa-solid {{ $accion[1] }}"></i>
+                                </button>
+                            </td>
+                        @endforeach
                         @if ($conAcciones)
                             <td class="gp-col-accion">
                                 @if ($this->conHijos())
@@ -78,7 +92,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ count($columnas) + ($conAcciones ? 1 : 0) }}" class="gp-vacio">
+                        <td colspan="{{ count($columnas) + count($def['acciones'] ?? []) + ($conAcciones ? 1 : 0) }}" class="gp-vacio">
                             <i class="fa-regular fa-folder-open"></i>
                             {{ $buscar !== '' ? 'No hay registros que coincidan con la búsqueda.' : 'No hay registros.' }}
                         </td>

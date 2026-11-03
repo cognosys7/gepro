@@ -642,3 +642,7 @@ body.gp-embebido { background: #fff; }
 .fm-panel.fm-panel-angosto { max-width: 760px; }
 .gp-tabla th.gp-numero { text-align: right; }
 .gp-estado.gp-estado-activo { background: #e5f4e8; color: #1f7a3d; }
+
+/*Montos calculados automaticamente (control mensual): en verde, como el sistema actual*/
+.fm-campo.fm-auto input { background: #e6f5e3 !important; border-color: #b5e5ae; color: #1f5e2a; }
+.fm-auto-calculo { float: right; display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--texto); cursor: pointer; }
