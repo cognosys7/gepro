@@ -7,11 +7,13 @@
             //CAMPOS DEL FORMULARIO AGRUPADOS POR SECCION ('seccion' en el campo; por defecto "Datos")
             $secciones = [];
             foreach ($def['campos'] as $campo => $c) {
-                if (empty($c[2]['oculto']) && \App\Support\Catalogo::esColumna($c)) {
+                if (empty($c[2]['oculto']) && \App\Support\Catalogo::esColumna($c) && $this->visible($campo)) {
                     $secciones[$c[2]['seccion'] ?? 'Datos'][$campo] = $c;
                 }
             }
             $conCalculo = ! empty($def['calculo']);
+            //CON 'segun', LOS CAMPOS SE MUESTRAN AL ELEGIR (LA LISTA DE 'segun' ENVIA SU VALOR AL MOMENTO)
+            $campoSegun = $def['segun']['campo'] ?? null;
             $ancho = count($def['campos']) > 10 ? '' : 'fm-panel-angosto';
         @endphp
         <div class="fm-fondo" wire:keydown.escape="cerrar">
@@ -34,24 +36,24 @@
                         <section class="fm-seccion">
                             <h3>
                                 <i class="fa-solid {{ $loop->first ? $def['icono'] : 'fa-calculator' }}"></i> {{ $nombreSeccion }}
-                                @if ($conCalculo && $puede && ! $loop->first)
+                                @if ($conCalculo && $puede && ! $loop->first && $this->calculoAplica())
                                     {{-- CALCULO AUTOMATICO: LOS MONTOS EN VERDE SE CALCULAN SOLOS --}}
-                                    <label class="fm-auto-calculo"><input type="checkbox" wire:model.live="autoCalcular"> Calcular montos automáticamente (en verde)</label>
+                                    <label class="fm-auto-calculo"><input type="checkbox" wire:model.live="autoCalcular"> {{ $def['calculo_texto'] ?? 'Calcular montos automáticamente' }} (en verde)</label>
                                 @endif
                             </h3>
                             <div class="fm-campos">
                                 @foreach ($camposSeccion as $campo => [$etiqueta, $tipo, $o])
                                     @include('livewire.partes.campo', ['c' => [
                                         'nombre' => $campo,
-                                        'etiqueta' => $etiqueta.(! empty($o['requerido']) && ! $this->bloqueado($campo) ? ' *' : ''),
+                                        'etiqueta' => $this->etiqueta($campo).(! empty($o['requerido']) && ! $this->bloqueado($campo) ? ' *' : ''),
                                         'tipo' => $tipos[$tipo],
                                         'extra' => array_filter([
                                             'opciones' => $combos[$campo] ?? null,
                                             'maxlength' => $o['max'] ?? null,
                                             'step' => $tipo === 'numero' ? 'any' : null,
                                             'clase' => $tipo === 'area' ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),
-                                            'live' => $conCalculo && $tipo === 'numero' ? true : null,
-                                            'auto' => ! empty($o['auto']) && $this->autoCalcular ? true : null,
+                                            'live' => ($conCalculo && in_array($tipo, ['numero', 'combo', 'fecha'], true)) || $campo === $campoSegun ? true : null,
+                                            'auto' => ! empty($o['auto']) && $this->bloqueado($campo) && $puede ? true : null,
                                         ], fn ($v) => $v !== null),
                                     ]])
                                 @endforeach

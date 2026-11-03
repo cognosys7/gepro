@@ -176,6 +176,10 @@ class ProyectosTabla extends Component
         if ($pagina === 'PROYECTO_ACTIVIDAD') {
             return route('proyectos.contratos', ['proyecto' => (int) $fila->IDE_PROYECTO, 'opcion' => $this->opcion, 'tipo' => (int) $parametros['Pfiltro']]);
         }
+        //PANTALLAS DEL PROYECTO QUE YA ESTAN EN LARAVEL (config/catalogos.php, P. EJ. LECCIONES APRENDIDAS)
+        if (\App\Support\Catalogo::existe($pagina) && ! empty(config('catalogos.'.$pagina.'.de'))) {
+            return route('catalogos.index', ['pagina' => $pagina, 'de' => (int) $fila->IDE_PROYECTO]);
+        }
         $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2, 'vmSinCabecera' => 1];
         foreach ($parametros as $clave => $valor) {
             $consulta[$clave] = str_replace(['{id}', '{opcion}'], [(int) $fila->IDE_PROYECTO, $this->opcion], (string) $valor);

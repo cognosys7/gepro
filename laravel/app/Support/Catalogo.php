@@ -19,8 +19,13 @@ class Catalogo
     public static function definicion(string $pagina): array
     {
         abort_unless(self::existe($pagina), 404);
+        $def = config('catalogos.'.$pagina);
+        //'base': LA MISMA PANTALLA DE OTRO CATALOGO CON OTRO FILTRO (P. EJ. EL PROCESO DE UN CONTRATO)
+        if (! empty($def['base'])) {
+            $def = array_merge(config('catalogos.'.$def['base']), $def);
+        }
 
-        return config('catalogos.'.$pagina);
+        return $def;
     }
 
     /** Valor del estado que significa "eliminado" (baja logica del SP): '2' salvo que se indique otro */
@@ -85,9 +90,16 @@ class Catalogo
     }
 
     /**
-     * 'clave_numerica': la columna es numerica pero GEN_TABLAS guarda el codigo con ceros ('07'):
-     * las claves se comparan sin ceros a la izquierda ('7')
+     * 'clave_numerica': la columna es numerica pero GEN_TABLAS guarda el codigo con ceros ('07'), o la
+     * columna guarda la clave con decimales ('1.000'): las claves se comparan como enteros ('7', '1')
      */
+    public static function clave(array $campo, mixed $valor): string
+    {
+        $valor = trim((string) $valor);
+
+        return ! empty($campo[2]['clave_numerica']) && is_numeric($valor) ? (string) (int) $valor : $valor;
+    }
+
     private static function normalizar(array $campo, array $opciones): array
     {
         if (empty($campo[2]['clave_numerica'])) {
@@ -106,6 +118,12 @@ class Catalogo
         $o = $campo[2];
         $conIncluir = $incluir !== null && $incluir !== '';
         $excluir = array_map('strval', $o['excluir'] ?? []);
+        //VALORES FIJOS (LA COLUMNA GUARDA EL TEXTO, P. EJ. EL ESTADO DEL ITEM DE UN PROCESO)
+        if (isset($o['valores'])) {
+            $valores = array_combine($o['valores'], $o['valores']);
+
+            return $conIncluir && ! isset($valores[$incluir]) ? $valores + [$incluir => $incluir] : $valores;
+        }
         if (isset($o['tabla'])) {
             if ($o['tabla'] === '99') {
                 $excluir[] = '2';
@@ -141,6 +159,9 @@ class Catalogo
     private static function etiquetasSinNormalizar(array $campo): array
     {
         $o = $campo[2];
+        if (isset($o['valores'])) {
+            return array_combine($o['valores'], $o['valores']);
+        }
         if (isset($o['tabla'])) {
             return DB::table('dbo.GEN_TABLAS')->where('COD_TABLA', $o['tabla'])
                 ->pluck('DES_ITEM', 'COD_ITEM')->mapWithKeys(fn ($d, $k) => [trim((string) $k) => trim((string) $d)])->all();
@@ -169,6 +190,21 @@ class Catalogo
 
         return DB::table($d['tabla'].' as X')->where('X.'.$d['id'], $id)
             ->select('X.*')->selectRaw(($d['titulo'] ?? "''").' AS TITULO_DE')->first();
+    }
+
+    /**
+     * Limita una consulta (tabla con alias) a las filas del registro "de": por su 'columna' o, si la
+     * tabla no apunta directo a el, con 'enlace' (SQL con {T} = alias y ? = id del registro "de"; p. ej.
+     * los contratos de un PROYECTO_ACTIVIDAD a traves de PROY_CONTRATO)
+     */
+    public static function filtrarDe($consulta, array $def, int|string|null $de, string $alias)
+    {
+        $d = $def['de'];
+        if (! empty($d['enlace'])) {
+            return $consulta->whereRaw(str_replace('{T}', $alias, $d['enlace']), [$de]);
+        }
+
+        return $consulta->where($alias.'.'.$d['columna'], $de);
     }
 
     /*

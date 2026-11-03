@@ -659,3 +659,10 @@ body.gp-embebido { background: #fff; }
 .gp-tabla tbody tr:nth-child(even) td.gp-col-fija { background: #f7f9fb; }
 .gp-tabla tbody tr:hover td.gp-col-fija { background: #eaf4fb; }
 .gp-tabla td.gp-col-fija .gr-ico + .gr-ico { margin-left: 3px; }
+
+/*Tableros de Power BI: el reporte ocupa el alto disponible*/
+.gp-tablero { display: flex; flex-direction: column; height: calc(100vh - var(--alto-barra) - 110px); min-height: 480px; }
+.gp-tablero-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; border-bottom: 1px solid var(--borde); }
+.gp-tablero-cabecera h1 { margin: 0; font-size: 17px; color: #1d3340; }
+.gp-tablero-cabecera h1 i { margin-right: 6px; color: var(--petroleo); }
+.gp-tablero-marco { flex: 1 1 auto; width: 100%; border: 0; background: #f4f7fa; }

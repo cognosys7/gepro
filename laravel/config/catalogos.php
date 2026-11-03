@@ -18,6 +18,10 @@
 |   oculto: solo en la grilla (el formulario del sistema actual no lo muestra; se conserva).
 | - filtro: condiciones fijas de la grilla, como las de su SelGrd.
 | - jerarquia (Tablas maestras, Entregables, Concepto de gestion social): ver App\Support\Catalogo.
+| - segun: ['campo' => X, 'casos' => [valor => [columna => etiqueta ('' = la suya)]], 'calcular' => [valores]]:
+|   los campos de algun caso solo se muestran en el valor elegido de X (con esa etiqueta), y el calculo
+|   automatico solo corre en los valores de 'calcular'. Combo con 'una_vez' => [valores]: cada valor
+|   lo puede tener un solo registro del mismo "de" (p. ej. el plazo contractual de un contrato).
 | - nuevo / editar / eliminar: lo que permite el sistema actual (botones y columnas de su grilla).
 */
 
@@ -229,6 +233,59 @@ return [
             'padre' => ['COD_TABLA' => '0', 'COD_ITEM' => '{COD_TABLA}'],
             'niveles' => 2, 'boton' => ['Ver valores', 'fa-list'], 'titulo' => 'DES_ITEM',
         ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    /*
+    | 2.1 Fases y componentes, 2.3 Modalidad y 2.4 Hitos claves: el menu del sistema actual las tiene pero
+    | sus pantallas no existen; las tablas y sus SP si (GEN_INTERVENCION, GEN_MODO_EJECUCION, GEN_INTERVENCION_COMP)
+    */
+    'GEN_INTERVENCION' => [
+        'titulo' => 'Fases y componentes', 'icono' => 'fa-diagram-project',
+        'tabla' => 'dbo.GEN_INTERVENCION', 'id' => 'IDE_INTERVENCION', 'sp' => 'dbo.SP_GEN_INTERVENCION', 'estado' => 'EST_INTERVENCION',
+        'parametros' => ['IDE_SECTOR', 'DES_INTERVENCION', 'NUM_NIVEL', 'IDE_INTERVENCION_SUP', 'DES_RUBRO', 'TIP_SECTOR_PIRCC', 'EST_INTERVENCION'],
+        //SECTOR DE GEPRO (14): NIVEL 1 = ENTIDAD, NIVEL 2 = FASES, NIVEL 3 = COMPONENTES (LOS QUE USAN LOS CONTRATOS)
+        'filtro' => ['IDE_SECTOR' => 14],
+        'campos' => [
+            'DES_INTERVENCION' => ['Descripción', 'texto', ['requerido' => true, 'max' => 150, 'grilla' => true]],
+            'DES_RUBRO' => ['Rubro', 'texto', ['max' => 200, 'grilla' => true]],
+            'EST_INTERVENCION' => $estado,
+        ],
+        'jerarquia' => [
+            'raiz' => ['filtro' => ['NUM_NIVEL' => 1], 'valores' => ['NUM_NIVEL' => '1', 'IDE_SECTOR' => '14']],
+            'hijo' => ['filtro' => ['IDE_INTERVENCION_SUP' => '{id}'], 'valores' => ['IDE_INTERVENCION_SUP' => '{id}', 'NUM_NIVEL' => '{NUM_NIVEL+1}', 'IDE_SECTOR' => '{IDE_SECTOR}']],
+            'padre' => ['IDE_INTERVENCION' => '{IDE_INTERVENCION_SUP}'],
+            'niveles' => 3, 'boton' => ['Ver fases / componentes', 'fa-sitemap'], 'titulo' => 'DES_INTERVENCION',
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'GEN_MODO_EJECUCION' => [
+        'titulo' => 'Modalidades de ejecución', 'icono' => 'fa-gears',
+        'tabla' => 'dbo.GEN_MODO_EJECUCION', 'id' => 'IDE_MODO_EJECUCION', 'sp' => 'dbo.SP_GEN_MODO_EJECUCION', 'estado' => 'EST_MODO_EJECUCION',
+        'parametros' => ['DES_MODO_EJECUCION', 'DES_ABREVIATURA', 'EST_MODO_EJECUCION'],
+        'campos' => [
+            'DES_MODO_EJECUCION' => ['Modalidad', 'texto', ['requerido' => true, 'max' => 150, 'grilla' => true]],
+            'DES_ABREVIATURA' => ['Abreviatura', 'texto', ['max' => 20, 'grilla' => true]],
+            'EST_MODO_EJECUCION' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'Gen_intervencion_comp' => [
+        'titulo' => 'Hitos claves por componente', 'icono' => 'fa-flag-checkered',
+        'tabla' => 'dbo.GEN_INTERVENCION_COMP', 'id' => 'IDE_INTERVENCION_COMP', 'sp' => 'dbo.SP_GEN_INTERVENCION_COMP', 'estado' => 'EST_INTERVENCION_COMP',
+        'parametros' => ['IDE_INTERVENCION', 'IDE_COMPONENTE', 'COMP_PRINCIPAL', 'IDE_MODO_EJECUCION', 'IDE_TIPO_PROC', 'EST_INTERVENCION_COMP'],
+        //QUE ETAPAS (HITOS) TIENE CADA FASE - COMPONENTE: DE AQUI SALE EL COMBO DE ETAPAS DE LOS CONTRATOS
+        'campos' => [
+            'IDE_INTERVENCION' => ['Fase - componente', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_INTERVENCION', 'IDE_INTERVENCION', 'DES_INTERVENCION', 'EST_INTERVENCION', ['IDE_SECTOR' => 14, 'NUM_NIVEL' => 3]]]],
+            'IDE_COMPONENTE' => ['Etapa (hito)', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_COMPONENTE', 'IDE_COMPONENTE', 'DES_COMPONENTE', 'EST_COMPONENTE']]],
+            'COMP_PRINCIPAL' => ['Orden principal', 'numero', ['grilla' => true]],
+            'IDE_MODO_EJECUCION' => ['Modalidad de ejecución', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_MODO_EJECUCION', 'IDE_MODO_EJECUCION', 'DES_MODO_EJECUCION', 'EST_MODO_EJECUCION']]],
+            'IDE_TIPO_PROC' => ['Tipo de proceso', 'combo', ['lista' => ['dbo.PROC_TIPO', 'IDE_TIPO_PROC', 'TIPO_PROC', 'EST_PROC_TIPO']]],
+            'EST_INTERVENCION_COMP' => $estado,
+        ],
+        'orden' => [['IDE_INTERVENCION', 'asc'], ['COMP_PRINCIPAL', 'asc']],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
@@ -522,7 +579,7 @@ return [
         'calculo' => App\Calculos\ControlMensual::class,
         'orden' => [['NUM_ANIO', 'asc'], ['NUM_MES', 'asc']],
         'acciones' => [
-            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos', ['legado' => ['GEN_ARCHIVO', ['PIDE' => '{id}', 'Tabla' => 'PROY_CONT_COMP_CONTROL_DET']]]],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos', ['archivos' => 'PROY_CONT_COMP_CONTROL_DET']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
@@ -548,6 +605,461 @@ return [
         'campos' => [
             'UNIDAD_MEDIDA' => ['Unidad de medida', 'texto', ['requerido' => true, 'max' => 70, 'grilla' => true]],
             'EST_UNIDAD_MEDIDA' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //13. ACTOS PREPARATORIOS: PROCESOS DE SELECCION (PROCESO) CON SUS ITEMS Y SU CRONOGRAMA
+    'PROCESO' => [
+        'titulo' => 'Actos preparatorios (procesos de selección)', 'icono' => 'fa-file-signature',
+        'tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'sp' => 'dbo.SP_PROCESO', 'estado' => 'EST_PROCESO',
+        //LA CLAVE ES EL CODIGO DE LA CONVOCATORIA EN EL SEACE: LA ESCRIBE EL USUARIO Y EL SP LA RECIBE EN @pCodigo
+        'codigo' => 'IDE_CONVOCATORIA',
+        'parametros' => ['IDE_CONVOCATORIA', 'IDE_TIPO_PROC', 'IDE_PLAN', 'IDE_ENTIDAD_EJECUTORA', 'IDE_CENCOSTO', 'COD_PAC', 'DES_DEPTO_EJECUTORA', 'DES_PROV_EJECUTORA',
+            'DES_DIST_EJECUTORA', 'NUM_ANO_EJE', 'NUM_PROC_ESPECIFICO', 'DES_OBJETO', 'TIP_OBJETO', 'IMP_VAL_REFERENCIAL', 'DES_URL_PROCESO', 'EST_PROCESO'],
+        'campos' => [
+            'IDE_CONVOCATORIA' => ['Código del proceso', 'texto', ['requerido' => true, 'max' => 9, 'digitos' => true, 'grilla' => true, 'buscar' => true, 'solo_lectura' => true, 'unico' => true]],
+            'IDE_ENTIDAD_EJECUTORA' => ['Unidad ejecutora', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_ENTIDAD', 'IDE_ENTIDAD', 'DES_ENTIDAD', 'EST_ENTIDAD']]],
+            'DES_OBJETO' => ['Objeto de contratación', 'area', ['requerido' => true, 'max' => 500, 'grilla' => true]],
+            'IMP_VAL_REFERENCIAL' => ['Valor referencial (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+            'NUM_ITEMS' => ['Ítems', 'numero', ['grilla' => true, 'expresion' => "(SELECT COUNT(*) FROM dbo.PROC_ITEM I WHERE I.IDE_CONVOCATORIA = T.IDE_CONVOCATORIA AND I.EST_PROCESO_ITEM <> '2')"]],
+            'IDE_TIPO_PROC' => ['Tipo de proceso', 'combo', ['requerido' => true, 'lista' => ['dbo.PROC_TIPO', 'IDE_TIPO_PROC', 'TIPO_PROC', 'EST_PROC_TIPO']]],
+            'TIP_OBJETO' => ['Tipo de objeto', 'combo', ['requerido' => true, 'tabla' => '1']],
+            'NUM_PROC_ESPECIFICO' => ['Nº de proceso', 'texto', ['requerido' => true, 'max' => 500]],
+            'NUM_ANO_EJE' => ['Año de ejecución', 'texto', ['requerido' => true, 'max' => 4, 'digitos' => true]],
+            'COD_PAC' => ['Código PAC', 'texto', ['requerido' => true, 'max' => 50]],
+            'IDE_CENCOSTO' => ['Centro de costo', 'combo', ['lista' => ['dbo.GEN_CENTRO_COSTO', 'IDE_CENCOSTO', 'DES_CENCOSTO', 'EST_CENCOSTO']]],
+            'DES_DEPTO_EJECUTORA' => ['Departamento', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_PROV_EJECUTORA' => ['Provincia', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_DIST_EJECUTORA' => ['Distrito', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'EST_PROCESO' => $estado,
+        ],
+        //COMO SU SelGrd: POR UNIDAD EJECUTORA Y OBJETO
+        'orden' => [['(SELECT E.DES_ENTIDAD FROM dbo.GEN_ENTIDAD E WHERE E.IDE_ENTIDAD = T.IDE_ENTIDAD_EJECUTORA)', 'asc'], ['DES_OBJETO', 'asc']],
+        'acciones' => [
+            ['OSCE', 'fa-landmark-flag', 'gr-violeta', 'Ficha del proceso en el SEACE (OSCE)', ['url' => 'https://prodapp2.seace.gob.pe/seacebus-uiwd-pub/fichaSeleccion/fichaSeleccion.xhtml?idSistema=3&ongei=1&idConvocatoria={id}']],
+            ['Ítems', 'fa-list-check', 'gr-verde', 'Ítems del proceso', ['catalogo' => 'PROC_ITEM']],
+            ['Cronograma', 'fa-calendar-days', 'gr-azul', 'Cronograma del proceso', ['catalogo' => 'PROC_CRONOGRAMA']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROC_ITEM' => [
+        'titulo' => 'Ítems del proceso', 'icono' => 'fa-list-check', 'acceso' => ['PROCESO', 'PROYECTO'],
+        'tabla' => 'dbo.PROC_ITEM', 'id' => 'IDE_PROC_ITEM', 'sp' => 'dbo.SP_PROC_ITEM', 'estado' => 'EST_PROCESO_ITEM',
+        'de' => ['tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'columna' => 'IDE_CONVOCATORIA',
+            'titulo' => "CONCAT(CAST(X.IDE_CONVOCATORIA AS varchar(12)), ' - ', X.DES_OBJETO)"],
+        //AL REGISTRAR UN ITEM, EL SP CREA SU PROYECTO (SP_PROYECTO_ACTIVIDAD)
+        'parametros' => ['IDE_CONVOCATORIA', 'COD_ITEM', 'COD_PROYECTO', 'DES_DEPTO_ITEM', 'DES_PROV_ITEM', 'DES_DIST_ITEM', 'DES_ITEM', 'CNT_PROPUESTAS',
+            'FEC_PUBLICACION', 'FEC_BUENA_PRO_INICIAL', 'FEC_BUENA_PRO_FINAL', 'FEC_APELACION', 'FEC_ADJUDICACION', 'FEC_INICIO_CONTRATO', 'FEC_TERMINO_CONTRATO',
+            'COD_CONTRATO', 'IMP_VAL_REFERENCIAL_ITEM', 'IMP_VAL_ADJUDICADO_ITEM', 'COD_RUC_POSTOR_GANADOR', 'DES_POSTOR_GANADOR', 'EST_PROCESO_ITEM',
+            'DES_OBSERVACION', 'IDE_MODO_EJECUCION', 'IDE_UNIDAD_MEDIDA', 'CNT_ITEM'],
+        'campos' => [
+            'COD_ITEM' => ['Nº ítem', 'texto', ['requerido' => true, 'max' => 2, 'digitos' => true, 'grilla' => true]],
+            'COD_PROYECTO' => ['Código del proyecto', 'texto', ['calculado' => true, 'grilla' => true]],
+            'DES_ITEM' => ['Objeto de contratación', 'area', ['requerido' => true, 'max' => 500, 'grilla' => true]],
+            'IMP_VAL_REFERENCIAL_ITEM' => ['Valor referencial (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+            'IDE_MODO_EJECUCION' => ['Modo de ejecución', 'combo', ['requerido' => true, 'lista' => ['dbo.GEN_MODO_EJECUCION', 'IDE_MODO_EJECUCION', 'DES_MODO_EJECUCION', 'EST_MODO_EJECUCION']]],
+            'IDE_UNIDAD_MEDIDA' => ['Unidad de medida', 'combo', ['requerido' => true, 'lista' => ['dbo.PROC_UNIDAD_MEDIDA', 'IDE_UNIDAD_MEDIDA', 'UNIDAD_MEDIDA', 'EST_UNIDAD_MEDIDA']]],
+            'CNT_ITEM' => ['Cantidad', 'numero', ['requerido' => true]],
+            'CNT_PROPUESTAS' => ['Nº de propuestas', 'numero', []],
+            //EL ESTADO ES TEXTO ('2' ES ELIMINADO); CON CONTRATADO O EN EJECUCIÓN EL SP DEJA EL PROYECTO EN EJECUCION
+            'EST_PROCESO_ITEM' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'valores' => ['EN PROCESO', 'ACTIVO', 'CONTRATADO', 'EN EJECUCIÓN', 'CANCELADO']]],
+            'DES_DEPTO_ITEM' => ['Departamento', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_PROV_ITEM' => ['Provincia', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'DES_DIST_ITEM' => ['Distrito', 'texto', ['requerido' => true, 'max' => 100, 'seccion' => 'Lugar de ejecución']],
+            'FEC_PUBLICACION' => ['Publicación', 'fecha', ['grilla' => true, 'seccion' => 'Fechas']],
+            'FEC_BUENA_PRO_INICIAL' => ['Buena pro inicial', 'fecha', ['grilla' => true, 'seccion' => 'Fechas']],
+            'FEC_BUENA_PRO_FINAL' => ['Buena pro final', 'fecha', ['seccion' => 'Fechas']],
+            'FEC_APELACION' => ['Apelación', 'fecha', ['seccion' => 'Fechas']],
+            'FEC_ADJUDICACION' => ['Adjudicación', 'fecha', ['grilla' => true, 'seccion' => 'Fechas']],
+            'FEC_INICIO_CONTRATO' => ['Inicio del contrato', 'fecha', ['seccion' => 'Fechas']],
+            'FEC_TERMINO_CONTRATO' => ['Término del contrato', 'fecha', ['seccion' => 'Fechas']],
+            'COD_CONTRATO' => ['Nº de contrato', 'texto', ['max' => 60, 'seccion' => 'Adjudicación']],
+            'IMP_VAL_ADJUDICADO_ITEM' => ['Valor adjudicado (S/)', 'numero', ['seccion' => 'Adjudicación']],
+            'COD_RUC_POSTOR_GANADOR' => ['RUC del postor ganador', 'texto', ['max' => 15, 'digitos' => true, 'seccion' => 'Adjudicación']],
+            'DES_POSTOR_GANADOR' => ['Postor ganador', 'texto', ['max' => 150, 'seccion' => 'Adjudicación']],
+            'DES_OBSERVACION' => ['Observación', 'area', ['max' => 500, 'seccion' => 'Adjudicación']],
+        ],
+        'nuevo_valores' => ['EST_PROCESO_ITEM' => 'EN PROCESO'],
+        'orden' => [['COD_ITEM', 'asc']],
+        'acciones' => [
+            ['Postores', 'fa-user-tie', 'gr-verde', 'Postores del ítem', ['legado' => ['PROC_POSTORES', ['PIDE_PROC_ITEM' => '{id}']]]],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROC_CRONOGRAMA' => [
+        'titulo' => 'Cronograma del proceso', 'icono' => 'fa-calendar-days', 'acceso' => ['PROCESO', 'PROYECTO'],
+        'tabla' => 'dbo.PROC_CRONOGRAMA', 'id' => 'IDE_CRONOGRAMA', 'sp' => 'dbo.SP_PROC_CRONOGRAMA', 'estado' => 'EST_PROC_CRONOGRAMA',
+        'de' => ['tabla' => 'dbo.PROCESO', 'id' => 'IDE_CONVOCATORIA', 'columna' => 'IDE_CONVOCATORIA',
+            'titulo' => "CONCAT(CAST(X.IDE_CONVOCATORIA AS varchar(12)), ' - ', X.DES_OBJETO)"],
+        'parametros' => ['IDE_CONVOCATORIA', 'NUM_CONVOCATORIA', 'IDE_ORDEN', 'FEC_PUBLICACION', 'DES_ACTIVIDAD', 'FEC_INICIO', 'FEC_TERMINO', 'EST_PROC_CRONOGRAMA'],
+        'campos' => [
+            'IDE_ORDEN' => ['Nº de orden', 'numero', ['requerido' => true, 'grilla' => true]],
+            'DES_ACTIVIDAD' => ['Actividad', 'texto', ['requerido' => true, 'max' => 40, 'grilla' => true]],
+            'FEC_PUBLICACION' => ['Publicación', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'FEC_INICIO' => ['Inicio', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'FEC_TERMINO' => ['Finalización', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'EST_PROC_CRONOGRAMA' => $estado,
+        ],
+        'orden' => [['IDE_ORDEN', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+
+    //PANTALLAS DEL CONTRATO (PROYECTO_ACTIVIDAD) Y DEL PROYECTO QUE SE ABREN DESDE SUS GRILLAS
+    'CONTRATO' => [
+        'titulo' => 'Detalle del contrato', 'icono' => 'fa-file-lines', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONTRATO', 'id' => 'IDE_CONTRATO', 'sp' => 'dbo.SP_CONTRATO', 'estado' => 'EST_CONTRATO',
+        //EL CONTRATO SE ENLAZA AL PROYECTO_ACTIVIDAD EN PROY_CONTRATO (LO CREA SP_PROYECTO_ACTIVIDAD)
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD',
+            'enlace' => '{T}.IDE_CONTRATO IN (SELECT PC.IDE_CONTRATO FROM dbo.PROY_CONTRATO PC WHERE PC.IDE_PROYECTO_ACTIVIDAD = ?)',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_PROVEEDOR', 'IDE_ADM_CONTRATO', 'COD_CONTRATO', 'COD_CONTRATO_ENTIDAD', 'COD_CONTRATO_SUP', 'DES_CONTRATO', 'TIP_CONTRATO', 'FEC_CONTRATO',
+            'FEC_INICIO_CONTRATO', 'FEC_TERMINO_CONTRATO', 'FEC_CIERRE_CONTRATO', 'IMP_IMPONIBLE', 'IMP_IMPUESTOS', 'IMP_TOTAL', 'IMG_CONTRATO', 'DES_COMENTARIO', 'EST_CONTRATO'],
+        'campos' => [
+            'COD_UNICO_ORDEN' => ['Cód. orden', 'texto', ['calculado' => true, 'grilla' => true]],
+            'COD_CONTRATO_ENTIDAD' => ['Documento interno', 'texto', ['max' => 40, 'grilla' => true]],
+            'DES_CONTRATO' => ['Definición', 'area', ['max' => 1000, 'grilla' => true]],
+            'IDE_PROVEEDOR' => ['Proveedor', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_PROVEEDOR', 'IDE_PROVEEDOR', 'DES_PROVEEDOR', 'EST_PROVEEDOR']]],
+            //LAS FECHAS NO SE EDITAN AQUI (EL SISTEMA ACTUAL LAS OCULTA EN EL FORMULARIO)
+            'FEC_INICIO_CONTRATO' => ['Inicio', 'fecha', ['oculto' => true, 'grilla' => true]],
+            'FEC_TERMINO_CONTRATO' => ['Término', 'fecha', ['oculto' => true, 'grilla' => true]],
+            'FEC_CIERRE_CONTRATO' => ['Cierre', 'fecha', ['oculto' => true, 'grilla' => true]],
+            'IMP_TOTAL' => ['Monto total (S/)', 'numero', ['grilla' => true]],
+            'COD_CONTRATO' => ['Número de contrato', 'texto', ['max' => 20]],
+            'TIP_CONTRATO' => ['Tipo', 'combo', ['tabla' => '64']],
+            'IMP_IMPONIBLE' => ['Monto imponible (S/)', 'numero', []],
+            'IMP_IMPUESTOS' => ['Monto impuesto (S/)', 'numero', []],
+            'EST_CONTRATO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '84']],
+        ],
+        'acciones' => [
+            ['Carta fianza', 'fa-money-check-dollar', 'gr-verde', 'Carta fianza y conceptos del contrato', ['catalogo' => 'CONTRATO_CONCEPTO']],
+            ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['legado' => ['BIDM_GASTO_CONSOLIDA', ['PIDE' => '{id}']]]],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del contrato', ['archivos' => 'CONTRATO']],
+        ],
+        //EL CONTRATO SE REGISTRA DESDE LA GRILLA DE CONTRATOS DEL PROYECTO
+        'nuevo' => false, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_RIESGO_PROBLEMA' => [
+        'titulo' => 'Riesgos del contrato', 'icono' => 'fa-triangle-exclamation', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_RIESGO_PROBLEMA', 'id' => 'IDE_RIESGO_PROB', 'sp' => 'dbo.SP_PROY_RIESGO_PROBLEMA', 'estado' => 'EST_RIESGO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_PROYECTO_ACTIVIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO_ACTIVIDAD', 'IDE_PROC_ITEM', 'IDE_TIPO_RIESGO_PROB', 'TIP_RIESGO_PROB', 'DES_NOMBRE', 'DES_DETALLE', 'IDE_IMPACTO', 'IDE_PROBABILIDAD',
+            'IDE_PRIORIDAD', 'DES_CAUSA_PROBLEMA', 'DES_CONSECUENCIA_RIESGO', 'DES_SOLUCION', 'FEC_INICIO_SOLUCION', 'FEC_TERMINO_SOLUCION', 'EST_RIESGO'],
+        'campos' => [
+            'IDE_TIPO_RIESGO_PROB' => ['Tipo de riesgo', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_TIPO_RIESGO', 'IDE_TIPO_RIESGO', 'DES_TIPO_RIESGO', 'EST_TIPO_RIESGO']]],
+            'TIP_RIESGO_PROB' => ['Tipo de estrategia', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '85']],
+            'DES_NOMBRE' => ['Código del riesgo', 'texto', ['requerido' => true, 'max' => 200, 'grilla' => true]],
+            'DES_DETALLE' => ['Descripción del riesgo', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'DES_CAUSA_PROBLEMA' => ['Causa generadora', 'area', ['max' => 1000]],
+            'IDE_PROBABILIDAD' => ['Probabilidad de ocurrencia', 'combo', ['requerido' => true, 'seccion' => 'Evaluación', 'lista' => ['dbo.GEN_PROBABILIDAD_RIESGO', 'IDE_PROBABILIDAD', 'DES_PROBABILIDAD', 'EST_PROBABILIDAD']]],
+            'IDE_IMPACTO' => ['Impacto', 'combo', ['requerido' => true, 'seccion' => 'Evaluación', 'lista' => ['dbo.GEN_IMPACTO_RIESGO', 'IDE_IMPACTO', 'DES_IMPACTO', 'EST_IMPACTO']]],
+            //PROBABILIDAD X IMPACTO (App\Calculos\PrioridadRiesgo)
+            'IDE_PRIORIDAD' => ['Prioridad', 'combo', ['requerido' => true, 'auto' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'lista' => ['dbo.GEN_PRIORIDAD_RIESGO', 'IDE_PRIORIDAD', 'DES_PRIORIDAD', 'EST_PRIORIDAD'], 'excluir' => [11]]],
+            'DES_CONSECUENCIA_RIESGO' => ['Disparador del riesgo', 'area', ['max' => 1000, 'seccion' => 'Respuesta']],
+            'DES_SOLUCION' => ['Acción para dar respuesta al riesgo', 'area', ['max' => 1000, 'seccion' => 'Respuesta']],
+            'FEC_INICIO_SOLUCION' => ['Inicio de la acción', 'fecha', ['requerido' => true, 'seccion' => 'Respuesta']],
+            'FEC_TERMINO_SOLUCION' => ['Término de la acción', 'fecha', ['seccion' => 'Respuesta']],
+            'EST_RIESGO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '4', 'seccion' => 'Respuesta']],
+        ],
+        'calculo' => App\Calculos\PrioridadRiesgo::class,
+        'calculo_texto' => 'Calcular la prioridad automáticamente',
+        'orden' => [['IDE_RIESGO_PROB', 'desc']],
+        'acciones' => [
+            ['Recurso', 'fa-briefcase', 'gr-azul', 'Recursos del riesgo', ['catalogo' => 'PROY_RIESGO_RECURSO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONT_INTERESADOS' => [
+        'titulo' => 'Interesados del contrato', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        //IDE_CONTRATO GUARDA EL IDE_PROYECTO_ACTIVIDAD (ASI LO GRABA EL SISTEMA ACTUAL)
+        'tabla' => 'dbo.CONT_INTERESADOS', 'id' => 'IDE_CONT_INTERESADO', 'sp' => 'dbo.SP_CONT_INTERESADOS', 'estado' => 'EST_CONT_INTERESADO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_RECURSO', 'IDE_ROL', 'IDE_PUESTO', 'DES_LOCALIZACION', 'DES_MAIL', 'DES_TELEFONO', 'DES_REQUERIMIENTOS_PRIMORDIALES',
+            'DES_EXPECTATIVAS_PRINCIPALES', 'TIP_INFLUENCIA_POTENCIAL', 'DES_FASE_MAYOR_INTERES', 'TIP_INTERNO_EXTERNO', 'TIP_CLASIFICACION', 'DES_INTERES_PROYECTO',
+            'TIP_EVALUACION_IMPACTO', 'DES_ESTRATEGIA_PRINCIPAL', 'DES_OBSERVACION', 'EST_CONT_INTERESADO'],
+        'campos' => [
+            'IDE_RECURSO' => ['Personal', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO']]],
+            'IDE_ROL' => ['Rol', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_ROLES', 'IDE_ROL', 'DES_ROL', 'EST_ROL']]],
+            'IDE_PUESTO' => ['Cargo', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_CARGO', 'IDE_CARGO', 'DES_CARGO', 'EST_CARGO']]],
+            'DES_LOCALIZACION' => ['Organización / institución', 'texto', ['requerido' => true, 'max' => 100, 'grilla' => true]],
+            'DES_MAIL' => ['Correo', 'texto', ['max' => 100]],
+            'DES_TELEFONO' => ['Teléfono', 'texto', ['max' => 50, 'grilla' => true]],
+            'TIP_INTERNO_EXTERNO' => ['Pertenencia institucional', 'combo', ['requerido' => true, 'tabla' => '70']],
+            'DES_OBSERVACION' => ['Dirección', 'area', ['max' => 1000]],
+            'DES_REQUERIMIENTOS_PRIMORDIALES' => ['Requerimientos', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true, 'seccion' => 'Interés en el proyecto']],
+            'DES_EXPECTATIVAS_PRINCIPALES' => ['Expectativas', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true, 'seccion' => 'Interés en el proyecto']],
+            'DES_ESTRATEGIA_PRINCIPAL' => ['Acción', 'area', ['max' => 1000, 'seccion' => 'Interés en el proyecto']],
+            'DES_INTERES_PROYECTO' => ['Interés del proyecto', 'area', ['max' => 1000, 'seccion' => 'Interés en el proyecto']],
+            'DES_FASE_MAYOR_INTERES' => ['Fase de mayor interés', 'area', ['max' => 1000, 'seccion' => 'Interés en el proyecto']],
+            'TIP_CLASIFICACION' => ['Tipo de interesado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '71', 'seccion' => 'Clasificación']],
+            'TIP_INFLUENCIA_POTENCIAL' => ['Tipo de influencia', 'combo', ['tabla' => '69', 'seccion' => 'Clasificación']],
+            'TIP_EVALUACION_IMPACTO' => ['Impacto de su evaluación', 'combo', ['tabla' => '72', 'seccion' => 'Clasificación']],
+            'EST_CONT_INTERESADO' => ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true, 'seccion' => 'Clasificación']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONT_DOCUMENTACION' => [
+        'titulo' => 'Documentos del contrato', 'icono' => 'fa-folder-open', 'acceso' => 'PROYECTO',
+        //IDE_CONTRATO GUARDA EL IDE_PROYECTO_ACTIVIDAD (ASI LO GRABA EL SISTEMA ACTUAL)
+        'tabla' => 'dbo.CONT_DOCUMENTACION', 'id' => 'IDE_CONT_DOCUM', 'sp' => 'dbo.SP_CONT_DOCUMENTACION', 'estado' => 'EST_DOCUMENTO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_CONOC_PROC', 'FEC_DOCUMENTO', 'DES_DOCUMENTO', 'EST_DOCUMENTO'],
+        'campos' => [
+            'IDE_CONOC_PROC' => ['Conocimiento del proceso (PMI)', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_MATRIZ_CONOCIMIENTO_PROCESO', 'IDE_CONOC_PROC', 'DES_CRUCE_CONOC_PROC', 'EST_CONOC_PROC']]],
+            'FEC_DOCUMENTO' => ['Fecha de registro', 'fecha', ['grilla' => true]],
+            'DES_DOCUMENTO' => ['Ruta del contenido (SharePoint)', 'area', ['requerido' => true, 'max' => 500, 'grilla' => true]],
+            'EST_DOCUMENTO' => $estado,
+        ],
+        'acciones' => [
+            ['Contenido', 'fa-paperclip', 'gr-teal', 'Ver el contenido', ['campo' => 'DES_DOCUMENTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_LECCION_APRENDIDA' => [
+        'titulo' => 'Lecciones aprendidas', 'icono' => 'fa-lightbulb', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_LECCION_APRENDIDA', 'id' => 'IDE_LECCION_APRENDIDA', 'sp' => 'dbo.SP_PROY_LECCION_APRENDIDA', 'estado' => 'EST_LECCION',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'IDE_FASE_COMPONENTE', 'COD_LECCION_APRENDIDA', 'TIP_LECCION', 'IDE_TIPO_RIESGO', 'DES_LECCION_APRENDIDA', 'DES_RIESGO',
+            'TIP_IMPACTO_SITUACION', 'DES_RECOMENDACION', 'DES_ACCION_PROPUESTA', 'FEC_LECCION', 'EST_LECCION'],
+        'campos' => [
+            'IDE_FASE_COMPONENTE' => ['Fase - componente', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_INTERVENCION', 'IDE_INTERVENCION', 'DES_INTERVENCION', 'EST_INTERVENCION', ['NUM_NIVEL' => 3, 'IDE_SECTOR' => 14]]]],
+            'COD_LECCION_APRENDIDA' => ['Código de lección', 'texto', ['max' => 20, 'grilla' => true]],
+            'TIP_LECCION' => ['Tipo de lección', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '80']],
+            'IDE_TIPO_RIESGO' => ['Tipo de riesgo', 'combo', ['grilla' => true, 'lista' => ['dbo.GEN_TIPO_RIESGO', 'IDE_TIPO_RIESGO', 'DES_TIPO_RIESGO', 'EST_TIPO_RIESGO']]],
+            'FEC_LECCION' => ['Fecha de la lección', 'fecha', ['requerido' => true]],
+            'DES_RIESGO' => ['Descripción de riesgos', 'area', ['max' => 2000]],
+            'DES_LECCION_APRENDIDA' => ['Causa', 'area', ['requerido' => true, 'max' => 2000, 'grilla' => true]],
+            'TIP_IMPACTO_SITUACION' => ['Tipo de impacto', 'combo', ['requerido' => true, 'tabla' => '81']],
+            'DES_RECOMENDACION' => ['Efecto', 'area', ['max' => 2000]],
+            'DES_ACCION_PROPUESTA' => ['Respuesta sugerida o realizada', 'area', ['max' => 2000]],
+            'EST_LECCION' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+
+    'PROY_RIESGO_RECURSO' => [
+        'titulo' => 'Recursos del riesgo', 'icono' => 'fa-briefcase', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_RIESGO_RECURSO', 'id' => 'IDE_RECURSO_RIESGO', 'sp' => 'dbo.SP_PROY_RIESGO_RECURSO', 'estado' => 'EST_RECURSO_RIESGO',
+        'de' => ['tabla' => 'dbo.PROY_RIESGO_PROBLEMA', 'id' => 'IDE_RIESGO_PROB', 'columna' => 'IDE_RIESGO_PROB',
+            'titulo' => "CONCAT(X.DES_NOMBRE, ' · ', X.DES_DETALLE)"],
+        'parametros' => ['IDE_RIESGO_PROB', 'IDE_RECURSO', 'EST_RECURSO_RIESGO'],
+        'campos' => [
+            'IDE_RECURSO' => ['Nombre del recurso', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO']]],
+            'EST_RECURSO_RIESGO' => $estado,
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONTRATO_CONCEPTO' => [
+        'titulo' => 'Cartas fianza del contrato', 'icono' => 'fa-money-check-dollar', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONTRATO_CONCEPTO', 'id' => 'IDE_CONT_CONCEPTO', 'sp' => 'dbo.SP_CONTRATO_CONCEPTO', 'estado' => 'EST_CONT_CONCEPTO',
+        'de' => ['tabla' => 'dbo.CONTRATO', 'id' => 'IDE_CONTRATO', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(X.COD_CONTRATO_ENTIDAD, ' · ', X.DES_CONTRATO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_BANCO', 'TIP_CONCEPTO', 'TIP_DOCUMENTO', 'COD_TIPO_DOCUMENTO', 'IMG_DOCUMENTO', 'IMP_CONCEPTO', 'FEC_EMISION',
+            'FEC_INICIO', 'FEC_TERMINO', 'DES_OBSERVACION', 'EST_CONT_CONCEPTO'],
+        'campos' => [
+            'TIP_CONCEPTO' => ['Tipo de concepto', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '66', 'solo' => ['1', '2', '3', '4']]],
+            'COD_TIPO_DOCUMENTO' => ['Número', 'texto', ['requerido' => true, 'max' => 30, 'grilla' => true]],
+            'TIP_DOCUMENTO' => ['Tipo de documento', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '67']],
+            'IDE_BANCO' => ['Banco', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_BANCO', 'IDE_BANCO', 'DES_BANCO', 'EST_BANCO']]],
+            'IMP_CONCEPTO' => ['Monto (S/)', 'numero', ['grilla' => true]],
+            'FEC_EMISION' => ['Emisión', 'fecha', []],
+            'FEC_INICIO' => ['Inicio', 'fecha', ['grilla' => true]],
+            'FEC_TERMINO' => ['Término', 'fecha', ['grilla' => true]],
+            'DES_OBSERVACION' => ['Observación', 'area', ['max' => 1000]],
+            'EST_CONT_CONCEPTO' => $estado,
+        ],
+        //COMO SU SelGrd: LAS MAS RECIENTES PRIMERO
+        'orden' => [['FEC_INICIO', 'desc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos de la carta fianza', ['archivos' => 'CONTRATO_CONCEPTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //PROCESO DE ADQUISICION DE UN CONTRATO: EL DE SU ITEM (PROYECTO_ACTIVIDAD.IDE_PROCESO_ITEM -> PROC_ITEM)
+    'PROCESO_CONTRATO' => [
+        'base' => 'PROCESO', 'titulo' => 'Proceso de adquisición', 'acceso' => 'PROYECTO',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD',
+            'enlace' => '{T}.IDE_CONVOCATORIA IN (SELECT I.IDE_CONVOCATORIA FROM dbo.PROC_ITEM I JOIN dbo.PROYECTO_ACTIVIDAD A ON A.IDE_PROCESO_ITEM = I.IDE_PROC_ITEM WHERE A.IDE_PROYECTO_ACTIVIDAD = ?)',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        //EL PROCESO SE REGISTRA EN ACTOS PREPARATORIOS
+        'nuevo' => false,
+    ],
+
+    //AMPLIACION DE PLAZO DEL CONTRATO: LOS CAMPOS Y SUS NOMBRES CAMBIAN SEGUN EL TIPO (filtrar_TIP_AMPLIACION()
+    //DE LA VISTA ACTUAL) Y EL PLAZO CONTRACTUAL SE REGISTRA UNA SOLA VEZ POR CONTRATO
+    'PROY_CONT_AMPLIACION' => [
+        'titulo' => 'Ampliación de plazo', 'icono' => 'fa-clock-rotate-left', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_CONT_AMPLIACION', 'id' => 'IDE_CONT_AMPLIACION', 'sp' => 'dbo.SP_PROY_CONT_AMPLIACION', 'estado' => 'EST_CONT_AMPLIACION',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_PROYECTO_ACTIVIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['NUM_ORDEN', 'IDE_PROYECTO_ACTIVIDAD', 'TIP_AMPLIACION', 'NUM_AMPLIACION', 'FEC_INICIO_AMP', 'CAN_DIAS_CALENDARIO',
+            'FEC_TERMINO_AMP', 'COD_RESOLUCION', 'EST_CONT_AMPLIACION'],
+        'campos' => [
+            'NUM_ORDEN' => ['Orden', 'numero', ['grilla' => true]],
+            'TIP_AMPLIACION' => ['Tipo de ampliación', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '103', 'una_vez' => ['3']]],
+            'NUM_AMPLIACION' => ['Nro. ampl. / susp.', 'numero', ['grilla' => true]],
+            'FEC_INICIO_AMP' => ['Inicio', 'fecha', ['grilla' => true, 'seccion' => 'Plazo']],
+            'CAN_DIAS_CALENDARIO' => ['Días calendario', 'numero', ['grilla' => true, 'seccion' => 'Plazo']],
+            'FEC_TERMINO_AMP' => ['Término', 'fecha', ['grilla' => true, 'seccion' => 'Plazo', 'auto' => true]],
+            'COD_RESOLUCION' => ['Nro. documento', 'texto', ['max' => 100, 'grilla' => true]],
+            'EST_CONT_AMPLIACION' => $estado,
+        ],
+        //'' = CON SU NOMBRE DE SIEMPRE; LOS CAMPOS QUE NO ESTAN EN EL TIPO ELEGIDO NO SE MUESTRAN
+        'segun' => ['campo' => 'TIP_AMPLIACION', 'calcular' => ['3', '8', '9'], 'casos' => [
+            '1' => ['NUM_ORDEN' => '', 'FEC_TERMINO_AMP' => 'Fecha de término'],
+            '2' => ['NUM_ORDEN' => '', 'FEC_TERMINO_AMP' => 'Fecha de término'],
+            '3' => ['NUM_ORDEN' => '', 'FEC_INICIO_AMP' => 'Inicio contractual', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término contractual'],
+            '4' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. ampliación', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término vigente', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '5' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. suspensión', 'FEC_INICIO_AMP' => 'Inicio suspensión', 'CAN_DIAS_CALENDARIO' => '',
+                'FEC_TERMINO_AMP' => 'Término suspensión', 'COD_RESOLUCION' => 'Acta de suspensión'],
+            '6' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. reducción', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término vigente', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '7' => ['NUM_ORDEN' => '', 'NUM_AMPLIACION' => 'Nro. ampliación', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término vigente', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '8' => ['NUM_ORDEN' => '', 'FEC_INICIO_AMP' => 'Inicio recepción', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término recepción', 'COD_RESOLUCION' => 'Nro. resolución'],
+            '9' => ['NUM_ORDEN' => '', 'FEC_INICIO_AMP' => 'Inicio liquidación', 'CAN_DIAS_CALENDARIO' => '', 'FEC_TERMINO_AMP' => 'Término liquidación', 'COD_RESOLUCION' => 'Nro. resolución'],
+        ]],
+        'calculo' => App\Calculos\AmpliacionPlazo::class,
+        'calculo_texto' => 'Calcular el término automáticamente',
+        //COMO SU GRILLA: POR ORDEN Y FECHA DE TERMINO
+        'orden' => [['NUM_ORDEN', 'asc'], ['FEC_TERMINO_AMP', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos de la ampliación', ['archivos' => 'PROY_CONT_AMPLIACION']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //PANTALLAS RELACIONADAS DEL PROYECTO (SECCION III DEL FORMULARIO DEL PROYECTO); SUS GRILLAS ORDENAN POR ID
+    'PROY_SOCIAL_OBJETIVO_ESP' => [
+        'titulo' => 'Objetivos específicos de gestión social', 'icono' => 'fa-flag', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_SOCIAL_OBJETIVO_ESP', 'id' => 'IDE_OBJETIVO_ESP', 'sp' => 'dbo.SP_PROY_SOCIAL_OBJETIVO_ESP', 'estado' => 'EST_OBJETIVO_ESP',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_OBJETIVO', 'DES_OBJETIVO_ESPECIFICO', 'DES_META', 'DES_INDICADOR', 'DES_ACTIVIDAD', 'EST_OBJETIVO_ESP'],
+        'campos' => [
+            'FEC_OBJETIVO' => ['Fecha', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'DES_OBJETIVO_ESPECIFICO' => ['Objetivo específico', 'area', ['requerido' => true, 'max' => 200, 'grilla' => true]],
+            'DES_META' => ['Metas', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'DES_INDICADOR' => ['Indicadores (calidad, cantidad y tiempo)', 'area', ['requerido' => true, 'max' => 2000, 'grilla' => true]],
+            'DES_ACTIVIDAD' => ['Actividades', 'area', ['requerido' => true, 'max' => 2000]],
+            'EST_OBJETIVO_ESP' => $estado,
+        ],
+        'orden' => [['IDE_OBJETIVO_ESP', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_ACCION_GESTION' => [
+        'titulo' => 'Principales acciones de gestión', 'icono' => 'fa-square-check', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_ACCION_GESTION', 'id' => 'IDE_PROY_ACCION_GESTION', 'sp' => 'dbo.SP_PROY_ACCION_GESTION', 'estado' => 'EST_ACCION',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_ACCION', 'TIP_COMPONENTE', 'DES_ACCION', 'EST_ACCION'],
+        'campos' => [
+            'FEC_ACCION' => ['Fecha de la acción', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'TIP_COMPONENTE' => ['Componente', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_ACCION' => ['Acción de gestión', 'area', ['requerido' => true, 'max' => 4000, 'grilla' => true]],
+            'EST_ACCION' => $estado,
+        ],
+        'orden' => [['IDE_PROY_ACCION_GESTION', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_ACCION_CORRECTIVA' => [
+        'titulo' => 'Desviaciones y acciones correctivas', 'icono' => 'fa-wrench', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_ACCION_CORRECTIVA', 'id' => 'IDE_PROY_ACCION_CORRECTIVA', 'sp' => 'dbo.SP_PROY_ACCION_CORRECTIVA', 'estado' => 'EST_ACCION',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_ACCION', 'DES_DESVIACION_IDENTIFICADA', 'DES_ACCION_CORRECTIVA', 'EST_ACCION', 'TIP_COMPONENTE'],
+        'campos' => [
+            'FEC_ACCION' => ['Fecha de la acción', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'TIP_COMPONENTE' => ['Componente', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_DESVIACION_IDENTIFICADA' => ['Desviación identificada', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'DES_ACCION_CORRECTIVA' => ['Acción correctiva', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'EST_ACCION' => $estado,
+        ],
+        'orden' => [['IDE_PROY_ACCION_CORRECTIVA', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //LAS CLAVES DE PROBABILIDAD, IMPACTO Y VALORACION SE GUARDAN CON DECIMALES ('1.000'): 'clave_numerica'
+    'PROY_OPORTUNIDAD_RIESGO' => [
+        'titulo' => 'Oportunidades de mejora y análisis de riesgo', 'icono' => 'fa-triangle-exclamation', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_OPORTUNIDAD_RIESGO', 'id' => 'IDE_PROY_OPORTUNIDAD', 'sp' => 'dbo.SP_PROY_OPORTUNIDAD_RIESGO', 'estado' => 'EST_RIESGO',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_RIESGO', 'DES_RIESGO', 'NUM_PROBABILIDAD', 'NUM_IMPACTO', 'NUM_VALORACION', 'DES_ACCION', 'EST_RIESGO', 'TIP_COMPONENTE'],
+        'campos' => [
+            'FEC_RIESGO' => ['Fecha del riesgo', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'TIP_COMPONENTE' => ['Componente', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_RIESGO' => ['Riesgo identificado', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'NUM_PROBABILIDAD' => ['% Probabilidad', 'combo', ['requerido' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'clave_numerica' => true,
+                'lista' => ['dbo.GEN_PROBABILIDAD_RIESGO', 'IDE_PROBABILIDAD', 'DES_PROBABILIDAD', 'EST_PROBABILIDAD']]],
+            'NUM_IMPACTO' => ['Impacto', 'combo', ['requerido' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'clave_numerica' => true,
+                'lista' => ['dbo.GEN_IMPACTO_RIESGO', 'IDE_IMPACTO', 'DES_IMPACTO', 'EST_IMPACTO']]],
+            //PROBABILIDAD X IMPACTO (App\Calculos\ValoracionOportunidad)
+            'NUM_VALORACION' => ['Valoración (P x I)', 'combo', ['requerido' => true, 'auto' => true, 'grilla' => true, 'seccion' => 'Evaluación', 'clave_numerica' => true,
+                'lista' => ['dbo.GEN_PRIORIDAD_RIESGO', 'IDE_PRIORIDAD', 'DES_PRIORIDAD', 'EST_PRIORIDAD'], 'excluir' => [11]]],
+            'DES_ACCION' => ['Acción en proceso', 'area', ['max' => 1000, 'grilla' => true, 'seccion' => 'Evaluación']],
+            'EST_RIESGO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'seccion' => 'Evaluación']],
+        ],
+        'calculo' => App\Calculos\ValoracionOportunidad::class,
+        'calculo_texto' => 'Calcular la valoración automáticamente',
+        'orden' => [['IDE_PROY_OPORTUNIDAD', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_COSTO_COMPONENTE' => [
+        'titulo' => 'Costos del proyecto por componente', 'icono' => 'fa-money-bill-wave', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COSTO_COMPONENTE', 'id' => 'IDE_PROY_COSTO_COMPONENTE', 'sp' => 'dbo.SP_PROY_COSTO_COMPONENTE', 'estado' => 'EST_CAMBIO',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_CAMBIO', 'PCT_AVANCE_FISICO', 'IMP_CTO_PLAN_CIERRE', 'IMP_CTO_PERFIL', 'IMP_CTO_EXPEDIENTE', 'IMP_CTO_OBRA',
+            'IMP_CTO_SUPERVISION', 'IMP_CTO_GESTION_PROY', 'IMP_CTO_CAPACITACION', 'IMP_CTO_POST_CIERRE', 'TIP_COMPONENTE_ACT', 'DES_ACTUALIZACION', 'EST_CAMBIO'],
+        'campos' => [
+            'PCT_AVANCE_FISICO' => ['% Avance físico', 'numero', ['grilla' => true]],
+            'FEC_CAMBIO' => ['Fecha de actualización', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'IMP_CTO_PLAN_CIERRE' => ['Plan de cierre', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_PERFIL' => ['Perfil', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_EXPEDIENTE' => ['Expediente técnico', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_OBRA' => ['Ejecución de obra', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_SUPERVISION' => ['Supervisión', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_GESTION_PROY' => ['Gestión de proyecto', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_CAPACITACION' => ['Capacitación', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'IMP_CTO_POST_CIERRE' => ['Post cierre', 'numero', ['grilla' => true, 'seccion' => 'Costos (S/)']],
+            'TIP_COMPONENTE_ACT' => ['Componente actualizado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '105']],
+            'DES_ACTUALIZACION' => ['Descripción del cambio', 'area', ['max' => 1000, 'grilla' => true]],
+            'EST_CAMBIO' => $estado,
+        ],
+        'orden' => [['IDE_PROY_COSTO_COMPONENTE', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_SEGUIMIENTO' => [
+        'titulo' => 'Seguimiento del proyecto', 'icono' => 'fa-eye', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_SEGUIMIENTO', 'id' => 'IDE_SEGUIMIENTO', 'sp' => 'dbo.SP_PROY_SEGUIMIENTO', 'estado' => 'EST_SEGUIMIENTO',
+        'de' => ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'columna' => 'IDE_PROYECTO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"],
+        'parametros' => ['IDE_PROYECTO', 'FEC_SEGUIMIENTO', 'DES_SEGUIMIENTO', 'EST_SEGUIMIENTO'],
+        'campos' => [
+            'FEC_SEGUIMIENTO' => ['Fecha del seguimiento', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'DES_SEGUIMIENTO' => ['Descripción del seguimiento', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'EST_SEGUIMIENTO' => $estado,
+        ],
+        'orden' => [['IDE_SEGUIMIENTO', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del seguimiento', ['archivos' => 'PROY_SEGUIMIENTO']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
