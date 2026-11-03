@@ -81,6 +81,28 @@ class Catalogo
      */
     public static function opciones(array $campo, ?string $incluir = null, ?object $de = null): array
     {
+        return self::normalizar($campo, self::opcionesSinNormalizar($campo, $incluir, $de));
+    }
+
+    /**
+     * 'clave_numerica': la columna es numerica pero GEN_TABLAS guarda el codigo con ceros ('07'):
+     * las claves se comparan sin ceros a la izquierda ('7')
+     */
+    private static function normalizar(array $campo, array $opciones): array
+    {
+        if (empty($campo[2]['clave_numerica'])) {
+            return $opciones;
+        }
+        $r = [];
+        foreach ($opciones as $k => $v) {
+            $r[is_numeric($k) ? (string) (int) $k : (string) $k] = $v;
+        }
+
+        return $r;
+    }
+
+    private static function opcionesSinNormalizar(array $campo, ?string $incluir, ?object $de): array
+    {
         $o = $campo[2];
         $conIncluir = $incluir !== null && $incluir !== '';
         $excluir = array_map('strval', $o['excluir'] ?? []);
@@ -112,6 +134,11 @@ class Catalogo
 
     /** Todas las descripciones de un combo (tambien inactivas), para mostrar los valores en la grilla */
     public static function etiquetas(array $campo): array
+    {
+        return self::normalizar($campo, self::etiquetasSinNormalizar($campo));
+    }
+
+    private static function etiquetasSinNormalizar(array $campo): array
     {
         $o = $campo[2];
         if (isset($o['tabla'])) {
