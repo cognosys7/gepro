@@ -1,4 +1,7 @@
 <?php
+// Slim 2 no es de PHP 8: un aviso de obsolescencia no debe tumbar la API (Slim::handleErrors)
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_USER_DEPRECATED);
+
 require_once './lib/Slim/Slim.php';
 
 require_once 'Conexion.php';
