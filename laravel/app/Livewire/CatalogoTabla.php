@@ -90,6 +90,12 @@ class CatalogoTabla extends Component
         if (isset($accion['url'])) {
             return str_replace('{id}', rawurlencode($id), $accion['url']);
         }
+        //ENLACE ARMADO CON UN DATO DE LA FILA, SOLO SI EL DATO ES VALIDO (P. EJ. EL CODIGO UNICO EN EL MEF)
+        if (isset($accion['plantilla'])) {
+            $valor = trim((string) ($fila->{$accion['valor']} ?? ''));
+
+            return preg_match($accion['si'], $valor) ? str_replace('{valor}', rawurlencode($valor), $accion['plantilla']) : '';
+        }
         //ENLACE GUARDADO EN UNA COLUMNA (P. EJ. LA RUTA DEL DOCUMENTO EN SHAREPOINT): SOLO SI ES http(s)
         if (isset($accion['campo'])) {
             $url = trim((string) ($fila->{$accion['campo']} ?? ''));
@@ -120,7 +126,8 @@ class CatalogoTabla extends Component
 
     public function puede(string $accion): bool
     {
-        return ! empty($this->def()[$accion]) && app(Seguridad::class)->puedeGrabar();
+        return ! empty($this->def()[$accion]) && app(Seguridad::class)->puedeGrabar()
+            && ! ($accion === 'nuevo' && Catalogo::yaTieneUno($this->def(), $this->de));
     }
 
     public function updatedBuscar(): void

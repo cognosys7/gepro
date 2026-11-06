@@ -238,7 +238,7 @@ class CatalogoFormulario extends Component
     #[On('catalogo-nuevo')]
     public function nuevo(): void
     {
-        if (empty($this->def()['nuevo']) || ! app(Seguridad::class)->puedeGrabar()) {
+        if (empty($this->def()['nuevo']) || ! app(Seguridad::class)->puedeGrabar() || Catalogo::yaTieneUno($this->def(), $this->de)) {
             return;
         }
         $def = $this->def();
@@ -432,7 +432,11 @@ class CatalogoFormulario extends Component
             if ($this->idRegistro === null) {
                 //CLAVE QUE ESCRIBE EL USUARIO (P. EJ. EL CODIGO DEL PROCESO): EL SP LA RECIBE EN @pCodigo
                 $codigo = ! empty($def['codigo']) ? ['pCodigo' => $parametros[$def['codigo']]] : [];
-                Procedimiento::grabar($def['sp'], 'Insert', $codigo + $parametros);
+                if (! empty($def['registrar'])) {
+                    $def['registrar']::registrar($parametros);
+                } else {
+                    Procedimiento::grabar($def['sp'], 'Insert', $codigo + $parametros);
+                }
                 $mensaje = 'Registro creado.';
             } else {
                 Procedimiento::grabar($def['sp'], 'Update', ['pCodigo' => $this->idRegistro] + $parametros);

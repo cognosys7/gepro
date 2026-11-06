@@ -64,7 +64,7 @@
                                 {{-- ACCIONES DE LA DEFINICION: ABREN OTRA PANTALLA EN LA VENTANA MODAL --}}
                                 @php($primera = array_key_first($columnas))
                                 @foreach ($def['acciones'] ?? [] as $accion)
-                                    @if (isset($accion[4]['url']) || isset($accion[4]['campo']))
+                                    @if (isset($accion[4]['url']) || isset($accion[4]['campo']) || isset($accion[4]['plantilla']))
                                     @php($enlace = $this->urlAccion($accion[4], $fila))
                                     @if ($enlace !== '')
                                     <a class="gr-ico {{ $accion[2] }}" title="{{ $accion[3] ?? $accion[0] }}" href="{{ $enlace }}" target="_blank" rel="noopener"><i class="fa-solid {{ $accion[1] }}"></i></a>

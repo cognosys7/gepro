@@ -26,6 +26,10 @@
 |   'rellena' => [columna del formulario => columna de la lista] copia datos de la fila elegida.
 | - principal: dato que identifica el registro en la cabecera del formulario (por defecto, el primer texto).
 | - nuevo / editar / eliminar: lo que permite el sistema actual (botones y columnas de su grilla).
+| - unico_por_de: cada registro "de" admite uno solo vigente; despues no se ofrece Nuevo.
+| - registrar: clase con registrar(array $parametros) que reemplaza al 'Insert' del SP.
+| - acciones con ['plantilla' => url con {valor}, 'valor' => columna de la grilla, 'si' => regex]: enlace externo
+|   que usa un dato de la fila; solo se muestra si el dato cumple la expresion.
 */
 
 $estado = ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true]];
@@ -1076,6 +1080,30 @@ return [
             ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del seguimiento', ['archivos' => 'PROY_SEGUIMIENTO']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //UN PROYECTO SE ASOCIA A UN SOLO PIP. SU GRILLA ACTUAL OCULTA EDITAR Y ELIMINAR. SNIP Y CODIGO UNICO SALEN DEL
+    //PIP ELEGIDO; 50 DE 72 FILAS NO TIENEN IDE_PIP PORQUE VIENEN DE UNA CARGA Y LOS TRAEN EN LA PROPIA TABLA
+    'PROY_PIP' => [
+        'titulo' => 'Proyecto de inversión', 'icono' => 'fa-sack-dollar', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_PIP', 'id' => 'IDE_PROY_PIP', 'sp' => 'dbo.SP_PROY_PIP', 'estado' => 'EST_PROY_PIP',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO'],
+        'parametros' => ['IDE_PIP', 'IDE_PROYECTO', 'COD_SNIP', 'COD_UNICO', 'COD_INFOBRAS', 'COD_INTERNO', 'EST_PROY_SNIP', 'CHK', 'EST_PROY_PIP'],
+        'principal' => 'IDE_PIP',
+        'campos' => [
+            'IDE_PIP' => ['Proyecto de inversión', 'buscador', ['requerido' => true,
+                'lista' => ['dbo.GEN_PIP', 'IDE_PIP', "CONCAT_WS(' · ', NULLIF(LTRIM(RTRIM(ISNULL(NULLIF(LTRIM(RTRIM(COD_UNICO)), ''), COD_PROYECTO))), ''), NULLIF(LTRIM(RTRIM(COD_SNIP)), ''), DES_PIP)", 'EST_PIP']]],
+            'VER_SNIP' => ['Código SNIP', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => "ISNULL((SELECT NULLIF(LTRIM(RTRIM(P.COD_SNIP)), '') FROM dbo.GEN_PIP P WHERE P.IDE_PIP = T.IDE_PIP), T.COD_SNIP)"]],
+            'VER_UNICO' => ['Código único', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => "ISNULL((SELECT NULLIF(LTRIM(RTRIM(P.COD_UNICO)), '') FROM dbo.GEN_PIP P WHERE P.IDE_PIP = T.IDE_PIP), T.COD_UNICO)"]],
+            'VER_PIP' => ['Proyecto de inversión', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT P.DES_PIP FROM dbo.GEN_PIP P WHERE P.IDE_PIP = T.IDE_PIP)']],
+            'EST_PROY_PIP' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'acciones' => [
+            ['SNIP', 'fa-arrow-up-right-from-square', 'gr-verde', 'Ver la ficha SNIP en el MEF', ['plantilla' => 'http://ofi5.mef.gob.pe/invierte/formato/verFichaSNIP/{valor}/0/0', 'valor' => 'VER_SNIP', 'si' => '/^\d+$/']],
+            ['Código único', 'fa-landmark', 'gr-azul', 'Ver el código único en el MEF', ['plantilla' => 'https://ofi5.mef.gob.pe/invierte/formato/verProyectoCU/{valor}', 'valor' => 'VER_UNICO', 'si' => '/^\d+$/']],
+        ],
+        'unico_por_de' => true, 'registrar' => App\Support\ProyectoInversion::class,
+        'nuevo' => true, 'editar' => false, 'eliminar' => false,
     ],
 
     //EN IDE_PROYECTO_ACTIVIDAD SE GUARDA EL IDE_PROYECTO (SU CLAVE FORANEA APUNTA A PROYECTO)

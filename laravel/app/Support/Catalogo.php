@@ -40,6 +40,12 @@ class Catalogo
         return array_filter($def['campos'], fn ($c) => ! empty($c[2]['grilla']));
     }
 
+    /** Con 'unico_por_de': si el registro "de" ya tiene el suyo vigente */
+    public static function yaTieneUno(array $def, int|string|null $de): bool
+    {
+        return ! empty($def['unico_por_de']) && DB::table($def['tabla'])->where($def['de']['columna'], $de)->where($def['estado'], '<>', '2')->exists();
+    }
+
     /** Columnas de la tabla (las de expresion son calculadas: solo grilla) */
     public static function esColumna(array $campo): bool
     {
