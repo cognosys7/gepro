@@ -1106,6 +1106,49 @@ return [
         'nuevo' => true, 'editar' => false, 'eliminar' => false,
     ],
 
+    'PROY_COMUNICACION' => [
+        'titulo' => 'Comunicaciones', 'icono' => 'fa-comments', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COMUNICACION', 'id' => 'IDE_COMUNICACION', 'sp' => 'dbo.SP_PROY_COMUNICACION', 'estado' => 'EST_COMUNICACION',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO'],
+        'parametros' => ['IDE_PROYECTO', 'DES_COMUNICACION', 'FEC_INICIO', 'FEC_TERMINO', 'TIP_DIRECCION_EMISOR_RECEPTOR', 'TIP_FRECUENCIA', 'TIP_COMPLEJIDAD_COMUNICACION',
+            'TIP_METODO_COMUNICACION', 'TIP_MEDIO_COMUNICACION', 'DES_GLOSARIO_TERMINOS', 'EST_COMUNICACION'],
+        'campos' => [
+            'DES_COMUNICACION' => ['Descripción de la comunicación', 'area', ['requerido' => true, 'max' => 400, 'grilla' => true, 'buscar' => true]],
+            //HAY FECHAS DE TERMINO ANTERIORES AL INICIO: NO SE VALIDA EL ORDEN, COMO EN EL SISTEMA ACTUAL
+            'FEC_INICIO' => ['Inicio', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'FEC_TERMINO' => ['Término', 'fecha', ['grilla' => true]],
+            'TIP_DIRECCION_EMISOR_RECEPTOR' => ['Dirección de emisor', 'combo', ['tabla' => '87']],
+            'TIP_FRECUENCIA' => ['Frecuencia', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '88']],
+            'TIP_COMPLEJIDAD_COMUNICACION' => ['Complejidad', 'combo', ['tabla' => '89']],
+            'TIP_METODO_COMUNICACION' => ['Método', 'combo', ['grilla' => true, 'tabla' => '90']],
+            'TIP_MEDIO_COMUNICACION' => ['Medio', 'combo', ['grilla' => true, 'tabla' => '91']],
+            'DES_GLOSARIO_TERMINOS' => ['Glosario de términos', 'area', ['max' => 2000]],
+            'EST_COMUNICACION' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'acciones' => [
+            ['Interesados', 'fa-users', 'gr-violeta', 'Interesados de la comunicación', ['catalogo' => 'PROY_COM_INTERESADOS']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //SU BUSCADOR ACTUAL NO FILTRA POR EL PROYECTO (EL JS ENVIA Proyecto = 0): AQUI SALEN LOS DEL MISMO CODIGO UNICO
+    'PROY_COM_INTERESADOS' => [
+        'titulo' => 'Interesados de la comunicación', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COM_INTERESADOS', 'id' => 'IDE_PROY_COM_INTERESADO', 'sp' => 'dbo.SP_PROY_COM_INTERESADOS', 'estado' => 'EST_PROY_COM_INTERESADO',
+        'de' => ['tabla' => 'dbo.PROY_COMUNICACION', 'id' => 'IDE_COMUNICACION', 'columna' => 'IDE_COMUNICACION', 'titulo' => 'X.DES_COMUNICACION'],
+        'parametros' => ['IDE_COMUNICACION', 'IDE_CONT_INTERESADO', 'TIP_RESPONSABILIDAD', 'DES_COMENTARIO', 'EST_PROY_COM_INTERESADO'],
+        'campos' => [
+            'IDE_CONT_INTERESADO' => ['Interesado', 'combo', ['requerido' => true] + $interesadoDelProyecto],
+            'DES_RECURSO' => ['Recurso', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_RECURSO', 'INNER JOIN dbo.GEN_RECURSO R ON R.IDE_RECURSO = CI.IDE_RECURSO')]],
+            'DES_CARGO' => ['Cargo', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('C.DES_CARGO', 'INNER JOIN dbo.GEN_CARGO C ON C.IDE_CARGO = CI.IDE_PUESTO')]],
+            'DES_ROL' => ['Rol', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_ROL', 'INNER JOIN dbo.GEN_ROLES R ON R.IDE_ROL = CI.IDE_ROL')]],
+            'TIP_RESPONSABILIDAD' => ['Responsabilidad', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '92']],
+            'DES_COMENTARIO' => ['Comentario', 'area', ['max' => 4000, 'grilla' => true, 'buscar' => true]],
+            'EST_PROY_COM_INTERESADO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
     //EN IDE_PROYECTO_ACTIVIDAD SE GUARDA EL IDE_PROYECTO (SU CLAVE FORANEA APUNTA A PROYECTO)
     'PROY_ACT_UBIGEO' => [
         'titulo' => 'Lugares beneficiados (UBIGEO)', 'icono' => 'fa-location-dot', 'acceso' => 'PROYECTO',
