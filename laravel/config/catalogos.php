@@ -702,8 +702,30 @@ return [
         'nuevo_valores' => ['EST_PROCESO_ITEM' => 'EN PROCESO'],
         'orden' => [['COD_ITEM', 'asc']],
         'acciones' => [
-            ['Postores', 'fa-user-tie', 'gr-verde', 'Postores del ítem', ['legado' => ['PROC_POSTORES', ['PIDE_PROC_ITEM' => '{id}']]]],
+            ['Postores', 'fa-user-tie', 'gr-verde', 'Postores del ítem', ['catalogo' => 'PROC_POSTORES']],
         ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROC_POSTORES' => [
+        'titulo' => 'Postores del ítem', 'icono' => 'fa-user-tie', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROC_POSTORES', 'id' => 'IDE_POSTOR', 'sp' => 'dbo.SP_PROC_POSTORES', 'estado' => 'EST_POSTOR',
+        'de' => ['tabla' => 'dbo.PROC_ITEM', 'id' => 'IDE_PROC_ITEM', 'columna' => 'IDE_PROC_ITEM',
+            'titulo' => "CONCAT_WS(' · ', NULLIF(LTRIM(RTRIM(X.COD_PROYECTO)), ''), X.DES_ITEM, CONCAT('Valor referencial S/ ', FORMAT(X.IMP_VAL_REFERENCIAL_ITEM, 'N2', 'es-PE')))"],
+        'parametros' => ['IDE_PROC_ITEM', 'RUC_POSTOR', 'DES_POSTOR', 'TIP_POSTOR', 'VAL_REFERENCIAL_ITEM', 'VAL_OFERTADO_ITEM', 'EST_POSTOR', 'FEC_REG_PROPUESTA'],
+        'principal' => 'DES_POSTOR',
+        'campos' => [
+            'RUC_POSTOR' => ['N.º de RUC', 'texto', ['requerido' => true, 'max' => 15, 'grilla' => true, 'buscar' => true]],
+            //EL PARAMETRO DEL SP ES varchar(150), AUNQUE LA COLUMNA TENGA 300
+            'DES_POSTOR' => ['Razón social', 'texto', ['requerido' => true, 'max' => 150, 'grilla' => true, 'buscar' => true]],
+            'TIP_POSTOR' => ['Tipo de postor', 'combo', ['requerido' => true, 'tabla' => '3']],
+            'VAL_REFERENCIAL_ITEM' => ['Valor referencial (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+            'VAL_OFERTADO_ITEM' => ['Valor ofertado (S/)', 'numero', ['grilla' => true]],
+            'FEC_REG_PROPUESTA' => ['Propuesta presentada el', 'fecha', ['grilla' => true]],
+            'EST_POSTOR' => ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'nuevo_valores' => ['VAL_REFERENCIAL_ITEM' => '{de.IMP_VAL_REFERENCIAL_ITEM}'],
+        'orden' => [['DES_POSTOR', 'asc']],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
