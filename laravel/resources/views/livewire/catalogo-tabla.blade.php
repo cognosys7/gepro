@@ -14,6 +14,9 @@
         </label>
         <span class="gp-grilla-total" wire:loading.remove>{{ number_format($filas->total()) }} registros</span>
         <span class="gp-grilla-total" wire:loading><i class="fa-solid fa-spinner fa-spin"></i> Cargando…</span>
+        @if ($suma !== null)
+            <span class="gp-grilla-suma">{{ $def['total'][1] }}: S/ {{ number_format((float) $suma, 2, '.', ',') }}</span>
+        @endif
         @if ($this->puede('nuevo'))
             <button type="button" class="gp-boton-nuevo" wire:click="$dispatch('catalogo-nuevo')"><i class="fa-solid fa-plus"></i> Nuevo</button>
         @endif
@@ -54,7 +57,7 @@
                                 <td class="gp-fecha">{{ $valor !== '' ? \Illuminate\Support\Carbon::parse(substr($valor, 0, 10))->format('d/m/Y') : '' }}</td>
                             @elseif ($tipo === 'numero')
                                 {{-- IMPORTES (IMP_*) SIEMPRE CON DOS DECIMALES; LOS DEMAS NUMEROS SIN CEROS DE SOBRA --}}
-                                <td class="gp-numero">{{ $valor === '' ? '' : (str_starts_with($columna, 'IMP_') ? number_format((float) $valor, 2, '.', ',') : rtrim(rtrim(number_format((float) $valor, 2, '.', ','), '0'), '.')) }}</td>
+                                <td class="gp-numero">{{ $valor === '' ? '' : (str_starts_with($columna, 'IMP_') || ! empty($columnas[$columna][2]['importe']) ? number_format((float) $valor, 2, '.', ',') : rtrim(rtrim(number_format((float) $valor, 2, '.', ','), '0'), '.')) }}</td>
                             @else
                                 <td>{{ $valor }}</td>
                             @endif
@@ -98,7 +101,7 @@
                     <tr>
                         <td colspan="{{ count($columnas) + ($conAcciones ? 1 : 0) }}" class="gp-vacio">
                             <i class="fa-regular fa-folder-open"></i>
-                            {{ $buscar !== '' ? 'No hay registros que coincidan con la búsqueda.' : 'No hay registros.' }}
+                            {{ $noDisponible ?? ($buscar !== '' ? 'No hay registros que coincidan con la búsqueda.' : 'No hay registros.') }}
                         </td>
                     </tr>
                 @endforelse

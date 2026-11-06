@@ -776,11 +776,43 @@ return [
         ],
         'acciones' => [
             ['Carta fianza', 'fa-money-check-dollar', 'gr-verde', 'Carta fianza y conceptos del contrato', ['catalogo' => 'CONTRATO_CONCEPTO']],
-            ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['legado' => ['BIDM_GASTO_CONSOLIDA', ['PIDE' => '{id}']]]],
+            ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['catalogo' => 'BIDM_GASTO_CONSOLIDA']],
             ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del contrato', ['archivos' => 'CONTRATO']],
         ],
         //EL CONTRATO SE REGISTRA DESDE LA GRILLA DE CONTRATOS DEL PROYECTO
         'nuevo' => false, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //SOLO CONSULTA: LA VISTA LEE EL DATA MART DEL CLIENTE (DM_AMSAC.dbo.BI_GASTO_CONSOLIDA). LOS GL SE BUSCAN POR
+    //SU DOCUMENTO INTERNO Y LOS DEMAS POR SU ORDEN. SIN ORDEN NO HAY FILAS: EL SISTEMA ACTUAL TRAIA LAS QUE NO TIENEN ORDEN
+    'BIDM_GASTO_CONSOLIDA' => [
+        'titulo' => 'Gasto consolidado del contrato', 'icono' => 'fa-sack-dollar', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.BIDM_GASTO_CONSOLIDA', 'id' => 'IDE_BIDM_GASTO_CONSOLIDA', 'sp' => 'dbo.SP_BIDM_GASTO_CONSOLIDA', 'estado' => 'EST_BIDM_GASTO_CONSOLIDA',
+        'de' => ['tabla' => 'dbo.CONTRATO', 'id' => 'IDE_CONTRATO',
+            //COLLATE: LA VISTA VIENE DE OTRA BASE, QUE PUEDE TENER OTRA INTERCALACION
+            'enlace' => "EXISTS (SELECT 1 FROM dbo.CONTRATO C WHERE C.IDE_CONTRATO = ? AND (
+                (LEFT(LTRIM(C.COD_CONTRATO_ENTIDAD), 2) = 'GL' AND LTRIM(RTRIM({T}.ContratoOrden)) COLLATE DATABASE_DEFAULT = LTRIM(RTRIM(C.COD_CONTRATO_ENTIDAD)))
+                OR (ISNULL(LEFT(LTRIM(C.COD_CONTRATO_ENTIDAD), 2), '') <> 'GL' AND LTRIM(RTRIM({T}.OrdenCodigo)) COLLATE DATABASE_DEFAULT = NULLIF(LTRIM(RTRIM(C.COD_ORDEN)), ''))))",
+            'titulo' => "CONCAT(X.COD_CONTRATO_ENTIDAD, ' · ', X.DES_CONTRATO)"],
+        'parametros' => [],
+        'campos' => [
+            'AsientoPeriodo' => ['Periodo', 'texto', ['grilla' => true]],
+            'AsientoIde' => ['Asiento', 'texto', ['grilla' => true]],
+            'AsientoNumDocumento' => ['Documento', 'texto', ['grilla' => true]],
+            'AsientoMontoSoles' => ['Monto (S/)', 'numero', ['grilla' => true, 'importe' => true, 'buscar' => true]],
+            'ContratoOrden' => ['Contrato / orden', 'texto', ['grilla' => true]],
+            'OrdenCodigo' => ['Entregable', 'texto', ['grilla' => true]],
+            'ActorNombre' => ['Proveedor', 'texto', ['grilla' => true]],
+            'Componente' => ['Componente', 'texto', ['grilla' => true]],
+            'ProyectoNombreCorto' => ['Proyecto', 'texto', ['grilla' => true]],
+            'FuenteAbrev' => ['Fuente', 'texto', ['grilla' => true]],
+            'CtaNomPartida' => ['Partida', 'texto', ['grilla' => true]],
+        ],
+        //SUMA DE TODO EL CONTRATO, SIN CONTAR LA BUSQUEDA (COMO LA CABECERA DEL SISTEMA ACTUAL)
+        'total' => ['AsientoMontoSoles', 'Monto total'],
+        'no_disponible' => 'El gasto consolidado no está disponible: esta base no tiene el origen de datos de gastos.',
+        'orden' => [['AsientoPeriodo', 'asc']],
+        'nuevo' => false, 'editar' => false, 'eliminar' => false,
     ],
 
     'PROY_RIESGO_PROBLEMA' => [

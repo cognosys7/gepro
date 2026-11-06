@@ -399,6 +399,7 @@ a { color: var(--azul); }
 .gp-grilla-filas { display: flex; align-items: center; gap: 6px; color: var(--texto-suave); }
 .gp-grilla-filas select { height: 32px; padding: 2px 6px; border: 1px solid #cfd8e0; border-radius: 5px; font: inherit; }
 .gp-grilla-total { margin-left: auto; color: var(--texto-suave); font-weight: 600; }
+.gp-grilla-suma { font-weight: 700; white-space: nowrap; }
 .gp-tabla-caja { overflow-x: auto; border: 1px solid var(--borde); border-radius: 6px; }
 .gp-tabla { width: 100%; border-collapse: collapse; }
 .gp-tabla th {
