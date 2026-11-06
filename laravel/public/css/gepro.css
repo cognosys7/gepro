@@ -747,3 +747,10 @@ body.gp-embebido { background: #fff; }
 .mg-confirma { display: flex; align-items: flex-start; gap: 8px; padding-top: 10px; border-top: 1px solid var(--borde); cursor: pointer; }
 .mg-confirma input { margin-top: 3px; }
 .mg-pie { display: flex; justify-content: flex-end; }
+.mg-tabla { width: 100%; border-collapse: collapse; }
+.mg-tabla th, .mg-tabla td { padding: 7px 10px 7px 0; border-bottom: 1px solid var(--borde); text-align: left; }
+.mg-tabla th { color: var(--texto-suave); font-size: 12px; font-weight: 600; }
+.mg-tabla td + td, .mg-tabla th + th { text-align: right; font-variant-numeric: tabular-nums; }
+.mg-dato { margin: 0; }
+.mg-exito { margin: 0; padding: 10px 14px; border-left: 4px solid #1f7a3d; border-radius: 4px; background: #e6f4ea; color: #17602f; font-weight: 600; }
+.fm-aviso .mg-lista { margin-top: 6px; }

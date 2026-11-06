@@ -12,8 +12,8 @@ use Tests\TestCase;
 use Tests\UsuariosDePrueba;
 
 /**
- * Pantalla previa a la migracion. Estas pruebas solo leen: NUNCA abren la pagina de importacion del
- * sistema actual, porque corre al abrirla (TRUNCATE de las tablas etl_ y reemplazo del control mensual).
+ * Pantalla de la migracion. Estas pruebas solo leen: NUNCA abren la pagina de importacion del sistema
+ * actual, porque corre al abrirla (TRUNCATE de las tablas etl_ y reemplazo del control mensual).
  */
 class MigrarControlTest extends TestCase
 {
@@ -68,33 +68,26 @@ class MigrarControlTest extends TestCase
         $this->actingAs($usuario)->get(route('contratos.migrar-control', ['contrato' => 0, 'opcion' => $opcion]))->assertNotFound();
     }
 
-    public function test_el_boton_migrar_exige_archivo_y_confirmacion(): void
+    public function test_sin_archivo_no_hay_nada_que_revisar(): void
     {
         $usuario = $this->usuarioGepro();
         if (! $usuario) {
             $this->markTestSkipped('No hay un usuario que pueda grabar.');
         }
-        $this->actingAs($usuario);
 
-        //SIN ARCHIVO NO SE PUEDE CONFIRMAR NI SE HABILITA EL BOTON
-        $sinArchivo = Livewire::test(MigrarControlEtapas::class, ['contrato' => 0])->set('entendido', true);
-        $this->assertFalse($sinArchivo->instance()->esImportable($sinArchivo->instance()->archivo()));
-        $sinArchivo->assertSee('Cargar archivo');
-        $this->assertMatchesRegularExpression('/data-modal-url="[^"]*migrar_Importar_sqlserver[^>]*disabled/s', $sinArchivo->html());
-
-        //AL CERRAR UNA VENTANA SE VUELVE A PEDIR LA CONFIRMACION
-        $sinArchivo->dispatch('gepro-modal-cerrada')->assertSet('entendido', false);
+        Livewire::actingAs($usuario)->test(MigrarControlEtapas::class, ['contrato' => 0])
+            ->assertSee('Cargar archivo')->assertDontSee('Revisar archivo')
+            ->call('revisar')->assertSee('no está en el servidor')->assertSet('revision', null);
     }
 
-    public function test_el_perfil_de_consulta_no_puede_migrar(): void
+    public function test_ya_no_abre_la_importacion_del_sistema_actual(): void
     {
-        $usuario = $this->usuarioGepro(true);
+        $usuario = $this->usuarioGepro();
         if (! $usuario) {
-            $this->markTestSkipped('No hay un usuario de solo consulta.');
+            $this->markTestSkipped('No hay un usuario que pueda grabar.');
         }
         $html = Livewire::actingAs($usuario)->test(MigrarControlEtapas::class, ['contrato' => 0])->html();
 
         $this->assertFalse(Str::contains($html, 'migrar_Importar_sqlserver'));
-        $this->assertStringContainsString('solo consulta', $html);
     }
 }
