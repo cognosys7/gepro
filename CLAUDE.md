@@ -38,7 +38,7 @@ El funcionamiento de las páginas (Antirefresh, mainpage, LN/Vista, `Accion` vs 
 - Trae datos de otros clientes (PRONIED, AMSAC): 504 usuarios y 17 tablas con DNI, correo, teléfono o dirección. Para Chancay hace falta una base limpia.
 - Las claves de usuario usan `md5` (`intranet/.../ClaveLN.php`, `PrincipalLN.php`, `RecuperaclaveLN.php`).
 
-**Menú (sistema 30, `/gepro`):** 60 páginas activas de 136 vistas. Cuatro opciones del menú no tienen vista (`GEN_INTERVENCION`, `GEN_INTERVENCION_COMP`, `GEN_MODO_EJECUCION`, `X`); las tres primeras ya están en Laravel como catálogos. Quedan 2 vistas `migrar_*` de interesados (`migrar_INTERESADOS` hace `TRUNCATE` al abrirla) que no están en el menú, igual que `RPT_INTERVENCIONES`; son las únicas que usan PHPExcel. Nunca abrirlas en pruebas automáticas.
+**Menú (sistema 30, `/gepro`):** 60 páginas activas de 136 vistas. Cuatro opciones del menú no tienen vista (`GEN_INTERVENCION`, `GEN_INTERVENCION_COMP`, `GEN_MODO_EJECUCION`, `X`); las tres primeras ya están en Laravel como catálogos. `RPT_INTERVENCIONES` no está en el menú. Las vistas `migrar_*` se borraron (2026-11-06): esas importaciones ya están en Laravel.
 - 12 vistas `PEX_*` descargan Excel desde `http://sgpam.amsac.pe/SGPAM_archivos/...` (dominio de AMSAC): cambiar para Chancay.
 
 ## Plan (cada etapa en su rama y PR)
