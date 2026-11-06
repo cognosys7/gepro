@@ -32,8 +32,29 @@ return [
         'PROYECTO' => 'proyectos.index',
     ],
 
+    // Sistema de seguridad (sisSeguridad en el sistema actual): usuarios, perfiles, opciones del menu y accesos.
+    // Entra solo quien tiene en ese sistema uno de estos perfiles (decidido el 2026-11-03).
+    'seguridad' => [
+        'sistema' => env('GEPRO_SEGURIDAD_SISTEMA', 'GESUSU'),
+        'perfiles' => ['ADMINISTRADOR', 'GESTOR DE USUARIOS'],
+        'legado_vista' => '/sisSeguridad/Vista/',
+        // Paginas del menu de seguridad que ya estan en Laravel (/seguridad/{Pagina})
+        'paginas' => ['Usuarios', 'Perfil', 'Acceso', 'Opcion', 'Sistema'],
+        // Opciones del menu que solo descargan un archivo (PEX_SEG_AUDITORIA: Excel publicado por AMSAC)
+        'descargas' => [
+            'PEX_SEG_AUDITORIA' => env('GEPRO_SEG_AUDITORIA_URL', 'http://198.150.0.125/SGPAM_archivos/TablerosExcel/SGPAM_SEG_AUDITORIA.xlsm'),
+        ],
+        // Al registrar un usuario: tipo de documento DNI (general.tgcatalogo) y unidad organica (trpersonal),
+        // los mismos valores fijos del sistema actual (UsuariosLN.php / UsuariosVista.php)
+        'documento_dni' => 30,
+        'unidad_organica' => 59,
+    ],
+
     // Archivos adjuntos (GEN_ARCHIVO): los mismos del sistema actual, en SGPAM_archivos/<carpeta>/.
     // Tabla => [carpeta, titulo, tabla de la base, clave]. Se suben con el prefijo DDMMAAAA_HHMMSS_.
+    // Guia de usuario del menu: PDF relativo a la carpeta de archivos (la de AMSAC; cada cliente pone la suya)
+    'guia_usuario' => env('GEPRO_GUIA_USUARIO', 'Manual/E0010_AMSAC_MANUAL_DE_USUARIO.pdf'),
+
     'archivos' => [
         'raiz' => env('GEPRO_ARCHIVOS', dirname(base_path()).DIRECTORY_SEPARATOR.'SGPAM_archivos'),
         'max_kb' => (int) env('GEPRO_ARCHIVOS_MAX_KB', 51200),
@@ -44,6 +65,9 @@ return [
             'CONT_DOCUMENTACION' => ['ContratoDocumentos', 'Documentos del contrato', 'dbo.CONT_DOCUMENTACION', 'IDE_CONT_DOCUM'],
             'CONT_CALIDAD' => ['ContratoEntregables', 'Entregables del contrato', 'dbo.CONT_CALIDAD', 'IDE_CONT_CALIDAD'],
             'PROY_CONT_COMP_CONTROL_DET' => ['ContratoControlDetalle', 'Control mensual del contrato', 'dbo.PROY_CONT_COMP_CONTROL_DET', 'IDE_CONT_ETAPA_CONTROL_DET'],
+            // Matriz de interesados: un solo archivo para toda la entidad, sin tabla base (registro 1 en GEN_ARCHIVO)
+            'migrar_INTERESADOS' => ['etl_Interesados', 'Matriz de interesados', null, null],
+            'migrar_CONT_ETAPA_CONTROL' => ['etl_FichaTecnica', 'Excel de control de etapas del contrato', 'dbo.PROYECTO_ACTIVIDAD', 'IDE_PROYECTO_ACTIVIDAD'],
             'PROY_CONT_AMPLIACION' => ['ContratoAmpliacion', 'Ampliación de plazo del contrato', 'dbo.PROY_CONT_AMPLIACION', 'IDE_CONT_AMPLIACION'],
             'PROY_COMP_SEGUIMIENTO' => ['ContratoComponenteSeguimiento', 'Seguimiento de la etapa del contrato', 'dbo.PROY_COMP_SEGUIMIENTO', 'IDE_SEGUIMIENTO'],
             'PROY_SEGUIMIENTO' => ['ProyectoSeguimiento', 'Seguimiento del proyecto', 'dbo.PROY_SEGUIMIENTO', 'IDE_SEGUIMIENTO'],

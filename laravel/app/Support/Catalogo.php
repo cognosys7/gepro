@@ -40,6 +40,12 @@ class Catalogo
         return array_filter($def['campos'], fn ($c) => ! empty($c[2]['grilla']));
     }
 
+    /** Con 'unico_por_de': si el registro "de" ya tiene el suyo vigente */
+    public static function yaTieneUno(array $def, int|string|null $de): bool
+    {
+        return ! empty($def['unico_por_de']) && DB::table($def['tabla'])->where($def['de']['columna'], $de)->where($def['estado'], '<>', '2')->exists();
+    }
+
     /** Columnas de la tabla (las de expresion son calculadas: solo grilla) */
     public static function esColumna(array $campo): bool
     {
@@ -52,11 +58,23 @@ class Catalogo
         return preg_replace_callback('/\{de\.(\w+)\}/', fn ($m) => trim((string) ($de->{$m[1]} ?? '')), $texto);
     }
 
+    /** Descripcion de una lista: una columna o una expresion SQL */
+    private static function expresionLista(array $lista): string
+    {
+        return str_contains($lista[2], '(') ? $lista[2] : '['.$lista[2].']';
+    }
+
+    /** Solo las filas de la lista que no estan eliminadas */
+    private static function activos($consulta, array $lista)
+    {
+        return $consulta->where(fn ($q) => $q->where($lista[3], '<>', '2')->orWhereNull($lista[3]));
+    }
+
     /** Lista de otra tabla: [tabla, id, descripcion, estado, filtro opcional]; la descripcion puede ser una expresion */
     private static function consultaLista(array $lista, ?object $de = null, array $opciones = [])
     {
-        [$tabla, $id, $descripcion] = $lista;
-        $expresion = str_contains($descripcion, '(') ? $descripcion : '['.$descripcion.']';
+        [$tabla, $id] = $lista;
+        $expresion = self::expresionLista($lista);
 
         return DB::table($tabla)
             ->when(! empty($lista[4]), fn ($q) => $q->where($lista[4]))
@@ -137,17 +155,56 @@ class Catalogo
                 ->pluck('DES_ITEM', 'COD_ITEM')->mapWithKeys(fn ($d, $k) => [trim((string) $k) => trim((string) $d)])->all();
         }
         if (isset($o['lista'])) {
-            $estado = $o['lista'][3];
             $id = $o['lista'][1];
-
-            return self::aOpciones(self::consultaLista($o['lista'], $de, $o)
-                ->where(fn ($q) => $q->where(fn ($q) => $q->where($estado, '<>', '2')->orWhereNull($estado))
-                    ->when($conIncluir, fn ($q) => $q->orWhere($id, $incluir)))
+            $opciones = self::aOpciones(self::activos(self::consultaLista($o['lista'], $de, $o), $o['lista'])
                 ->when($excluir, fn ($q) => $q->whereNotIn($id, $excluir))
                 ->get());
+            //EL VALOR ACTUAL NO SE PIERDE AUNQUE ESTE ELIMINADO O FUERA DEL FILTRO DE LA LISTA
+            if ($conIncluir && ! isset($opciones[$incluir]) && ! in_array($incluir, $excluir, true)) {
+                $opciones += self::filaFuera($o['lista'], $incluir);
+            }
+
+            return $opciones;
         }
 
         return [];
+    }
+
+    /** La fila de una lista por su clave, sin el filtro de la lista ni su estado */
+    private static function filaFuera(array $lista, string $valor): array
+    {
+        unset($lista[4]);
+
+        return self::aOpciones(self::consultaLista($lista)->where($lista[1], $valor)->get());
+    }
+
+    /**
+     * Campo 'buscador' (listas largas, p. ej. UBIGEO o comunidades): las filas activas cuya descripcion
+     * contiene todas las palabras escritas
+     */
+    public static function buscarLista(array $campo, string $texto, ?object $de = null, int $limite = 15): array
+    {
+        $o = $campo[2];
+        $consulta = self::activos(self::consultaLista($o['lista'], $de, $o), $o['lista']);
+        foreach (preg_split('/\s+/', trim($texto), -1, PREG_SPLIT_NO_EMPTY) as $palabra) {
+            $consulta->whereRaw(self::expresionLista($o['lista']).' LIKE ?', ['%'.str_replace(['[', '%', '_'], ['[[]', '[%]', '[_]'], $palabra).'%']);
+        }
+
+        return self::aOpciones($consulta->limit($limite)->get());
+    }
+
+    /** Si la clave se puede elegir en el campo 'buscador' */
+    public static function enLista(array $campo, string $valor, ?object $de = null): bool
+    {
+        $o = $campo[2];
+
+        return self::activos(self::consultaLista($o['lista'], $de, $o), $o['lista'])->where($o['lista'][1], $valor)->limit(1)->get()->isNotEmpty();
+    }
+
+    /** Descripcion del valor elegido en el campo 'buscador' */
+    public static function etiquetaLista(array $campo, string $valor): string
+    {
+        return (string) (array_values(self::filaFuera($campo[2]['lista'], $valor))[0] ?? $valor);
     }
 
     /** Todas las descripciones de un combo (tambien inactivas), para mostrar los valores en la grilla */

@@ -16,6 +16,12 @@ class UsuarioGepro extends GenericUser
         return '';
     }
 
+    /** No hay opcion "recordarme": sin esto, Auth::logout() falla al buscar el token */
+    public function getRememberToken()
+    {
+        return null;
+    }
+
     /** "MEZA YANGALI JULIO CESAR" -> "Meza Yangali Julio Cesar" */
     public function nombreVisible(): string
     {

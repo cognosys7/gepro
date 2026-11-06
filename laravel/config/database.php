@@ -6,7 +6,9 @@ use Pdo\Mysql;
 // CREDENCIALES DE BDGEPRO: FUERA DEL SITIO, EN EL MISMO ARCHIVO QUE USA EL SISTEMA ACTUAL
 // (GEPRO_CONFIG, P. EJ. C:/gepro_config/config.php). SI NO EXISTE SE USAN LAS VARIABLES DB_* DEL .env
 $geproConfig = env('GEPRO_CONFIG');
-$geproDb = ($geproConfig && is_file($geproConfig)) ? ((require $geproConfig)['db'] ?? []) : [];
+$geproArchivo = ($geproConfig && is_file($geproConfig)) ? (require $geproConfig) : [];
+$geproDb = $geproArchivo['db'] ?? [];
+$geproReniec = $geproArchivo['db_reniec'] ?? [];
 
 return [
 
@@ -113,6 +115,21 @@ return [
             'database' => $geproDb['database'] ?? env('DB_DATABASE', 'BDGEPRO'),
             'username' => $geproDb['user'] ?? env('DB_USERNAME', ''),
             'password' => $geproDb['password'] ?? env('DB_PASSWORD', ''),
+            'charset' => env('DB_CHARSET', 'utf8'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'encrypt' => env('DB_ENCRYPT', 'no'),
+            'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'true'),
+        ],
+
+        //BDRENIEC (DATOS DE LAS PERSONAS POR DNI, AL REGISTRAR UN USUARIO): 'db_reniec' DEL MISMO ARCHIVO
+        'reniec' => [
+            'driver' => 'sqlsrv',
+            'host' => $geproReniec['host'] ?? env('RENIEC_DB_HOST', $geproDb['host'] ?? env('DB_HOST', 'localhost')),
+            'port' => env('RENIEC_DB_PORT', ''),
+            'database' => $geproReniec['database'] ?? env('RENIEC_DB_DATABASE', 'BDRENIEC'),
+            'username' => $geproReniec['user'] ?? env('RENIEC_DB_USERNAME', ''),
+            'password' => $geproReniec['password'] ?? env('RENIEC_DB_PASSWORD', ''),
             'charset' => env('DB_CHARSET', 'utf8'),
             'prefix' => '',
             'prefix_indexes' => true,

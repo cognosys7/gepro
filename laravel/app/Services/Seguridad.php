@@ -31,18 +31,20 @@ class Seguridad
 
     /**
      * ['perfil' => upsperfil, 'modulo' => pefmodulo, 'nombre' => pefnombre, 'soloConsulta' => bool]
-     * del usuario en GEPRO, o null si no tiene acceso
+     * del usuario en GEPRO (o en el sistema de esa abreviatura), o null si no tiene acceso
      */
-    public function perfil(int $idUsuario): ?array
+    public function perfil(int $idUsuario, ?string $sistema = null): ?array
     {
-        if (array_key_exists($idUsuario, $this->perfiles)) {
-            return $this->perfiles[$idUsuario];
+        $sistema ??= (string) config('gepro.sistema');
+        $clave = $sistema.'|'.$idUsuario;
+        if (array_key_exists($clave, $this->perfiles)) {
+            return $this->perfiles[$clave];
         }
         $fila = DB::table('seguridad.tssistema as s')
             ->join('seguridad.tsmodulo as m', 'm.modsistema', '=', 's.IdSistema')
             ->join('seguridad.tsperfil as pf', 'pf.pefmodulo', '=', 'm.idmodulo')
             ->join('seguridad.tsusuarioperfil as up', 'up.upsperfil', '=', 'pf.idperfil')
-            ->where('s.sisabreviatura', config('gepro.sistema'))
+            ->where('s.sisabreviatura', $sistema)
             ->where('up.upsusuario', $idUsuario)
             ->where('up.upsestado', 1)
             ->where('pf.pefestado', 1)
@@ -51,12 +53,26 @@ class Seguridad
             ->select('up.upsperfil as perfil', 'pf.pefmodulo as modulo', 'pf.pefnombre as nombre')
             ->first();
 
-        return $this->perfiles[$idUsuario] = $fila ? [
+        return $this->perfiles[$clave] = $fila ? [
             'perfil' => (int) $fila->perfil,
             'modulo' => (int) $fila->modulo,
             'nombre' => trim((string) $fila->nombre),
             'soloConsulta' => strtoupper(trim((string) $fila->nombre)) === self::PERFIL_SOLO_CONSULTA,
         ] : null;
+    }
+
+    /**
+     * Perfil del usuario en el sistema de seguridad (GESUSU), solo si es uno de los que administran
+     * usuarios y accesos (config gepro.seguridad.perfiles; en el sistema actual, CallNomPerfil() en cada
+     * LN de sisSeguridad). A diferencia del sistema actual, no vale el perfil de GEPRO: alli la sesion es
+     * la misma y quien no tenia perfil en seguridad se quedaba con el de GEPRO (decidido el 2026-11-03).
+     */
+    public function perfilSeguridad(int $idUsuario): ?array
+    {
+        $perfil = $this->perfil($idUsuario, (string) config('gepro.seguridad.sistema'));
+        $permitidos = array_map('strtoupper', (array) config('gepro.seguridad.perfiles'));
+
+        return $perfil && in_array(strtoupper($perfil['nombre']), $permitidos, true) ? $perfil : null;
     }
 
     /** Si el usuario que ingreso puede registrar, editar y eliminar (su perfil no es de solo consulta) */
@@ -71,8 +87,9 @@ class Seguridad
     /**
      * Menu del perfil: opciones activas del modulo con acceso del perfil, en arbol (nivel 1 > 2 > 3)
      * y en el orden de OpcOrden. Cada opcion: id, nombre, url, nueva_ventana, icono, hijos.
+     * $seguridad: menu del sistema de seguridad (sus enlaces son de sisSeguridad/Vista/).
      */
-    public function menu(int $perfil, int $modulo): array
+    public function menu(int $perfil, int $modulo, bool $seguridad = false): array
     {
         $opciones = DB::table('seguridad.tsopcion as o')
             ->join('seguridad.tsacceso as a', function ($j) use ($perfil) {
@@ -87,7 +104,7 @@ class Seguridad
         foreach ($opciones as $o) {
             $porPadre[(int) $o->OpcNivel === 1 ? 0 : (int) $o->OpcPadre][] = $o;
         }
-        $armar = function (int $padre, int $nivel) use (&$armar, $porPadre) {
+        $armar = function (int $padre, int $nivel) use (&$armar, $porPadre, $seguridad) {
             $lista = [];
             foreach ($porPadre[$padre] ?? [] as $o) {
                 if ((int) $o->OpcNivel !== $nivel) {
@@ -97,7 +114,7 @@ class Seguridad
                 $lista[] = [
                     'id' => (int) $o->IdOpcion,
                     'nombre' => trim((string) $o->OpcDescripcion),
-                    'url' => $hijos ? null : $this->url($o),
+                    'url' => $hijos ? null : ($seguridad ? $this->urlSeguridad($o) : $this->url($o)),
                     'nueva_ventana' => (int) $o->OpcDestino !== 1,
                     'icono' => $nivel === 1 ? $this->icono((string) $o->OpcDescripcion) : null,
                     'hijos' => $hijos,
@@ -130,6 +147,14 @@ class Seguridad
         if ($enlace === '') {
             return null;
         }
+        //SISTEMA DE SEGURIDAD ("../../SisSeguridad/Vista/mainpage.php?"): YA ESTA EN LARAVEL
+        if (preg_match('#(^|/)sisSeguridad/#i', $enlace)) {
+            return route('seguridad.inicio');
+        }
+        //GUIA DE USUARIO: EL ENLACE GUARDADO APUNTA AL PDF PUBLICADO EN EL SITIO DEL SISTEMA ACTUAL
+        if (preg_match('#SGPAM_archivos/Manual/#i', $enlace)) {
+            return route('guia.usuario');
+        }
         if (preg_match('/[?&]Pagina=([A-Za-z0-9_]+)/', $enlace, $m)) {
             //CATALOGOS (config/catalogos.php): TODOS EN LA MISMA PANTALLA DE LARAVEL
             if (Catalogo::existe($m[1])) {
@@ -138,6 +163,10 @@ class Seguridad
             //TABLEROS DE POWER BI (config/tableros.php)
             if (is_string(config('tableros.'.$m[1]))) {
                 return route('tableros.index', ['pagina' => $m[1]]);
+            }
+            //DESCARGAS DE EXCEL (config/descargas.php)
+            if (is_string(config('descargas.'.$m[1]))) {
+                return route('descargas.index', ['pagina' => $m[1]]);
             }
             $ruta = config('gepro.paginas_migradas.'.$m[1]);
             if ($ruta) {
@@ -157,6 +186,36 @@ class Seguridad
         }
 
         return $this->urlLegado($enlace);
+    }
+
+    /**
+     * URL de una opcion del menu del sistema de seguridad: sus paginas (config gepro.seguridad.paginas) y
+     * su tablero de Power BI estan en Laravel; la descarga de la auditoria es un archivo externo; lo demas
+     * (la guia de usuario) es relativo a sisSeguridad/Vista/.
+     */
+    public function urlSeguridad(object $o): ?string
+    {
+        $enlace = $this->enlace($o);
+        if ($enlace === '') {
+            return null;
+        }
+        if (preg_match('/[?&]Pagina=([A-Za-z0-9_]+)/', $enlace, $m)) {
+            if (in_array($m[1], (array) config('gepro.seguridad.paginas'), true)) {
+                return route('seguridad.pagina', ['pagina' => $m[1]]);
+            }
+            if (is_string(config('tableros.'.$m[1]))) {
+                return route('seguridad.tablero', ['pagina' => $m[1]]);
+            }
+            $descarga = config('gepro.seguridad.descargas.'.$m[1]);
+            if (is_string($descarga) && $descarga !== '') {
+                return $descarga;
+            }
+        }
+        if (preg_match('#^https?://#i', $enlace)) {
+            return $enlace;
+        }
+
+        return $this->urlLegado($enlace, (string) config('gepro.seguridad.legado_vista'));
     }
 
     /**
@@ -202,10 +261,13 @@ class Seguridad
         return trim((string) DB::table('seguridad.tsopcion')->where('IdOpcion', $id)->value('OpcDescripcion'));
     }
 
-    /** Resuelve un enlace relativo a gepro/Vista/ del sistema actual ("../../SisSeguridad/x" -> /SisSeguridad/x) */
-    public function urlLegado(string $relativo): string
+    /**
+     * Resuelve un enlace relativo a gepro/Vista/ (u otra carpeta $base) del sistema actual
+     * ("../../SisSeguridad/x" -> /SisSeguridad/x)
+     */
+    public function urlLegado(string $relativo, ?string $base = null): string
     {
-        $partes = explode('/', trim(config('gepro.legado_vista'), '/'));
+        $partes = explode('/', trim($base ?? config('gepro.legado_vista'), '/'));
         [$ruta, $consulta] = array_pad(explode('?', $relativo, 2), 2, null);
         foreach (explode('/', $ruta) as $p) {
             if ($p === '..') {

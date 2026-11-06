@@ -5,8 +5,11 @@ namespace App\Livewire;
 use App\Services\Seguridad;
 use App\Support\Catalogo;
 use App\Support\Procedimiento;
+use Illuminate\Database\QueryException;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Locked;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Url;
@@ -90,6 +93,12 @@ class CatalogoTabla extends Component
         if (isset($accion['url'])) {
             return str_replace('{id}', rawurlencode($id), $accion['url']);
         }
+        //ENLACE ARMADO CON UN DATO DE LA FILA, SOLO SI EL DATO ES VALIDO (P. EJ. EL CODIGO UNICO EN EL MEF)
+        if (isset($accion['plantilla'])) {
+            $valor = trim((string) ($fila->{$accion['valor']} ?? ''));
+
+            return preg_match($accion['si'], $valor) ? str_replace('{valor}', rawurlencode($valor), $accion['plantilla']) : '';
+        }
         //ENLACE GUARDADO EN UNA COLUMNA (P. EJ. LA RUTA DEL DOCUMENTO EN SHAREPOINT): SOLO SI ES http(s)
         if (isset($accion['campo'])) {
             $url = trim((string) ($fila->{$accion['campo']} ?? ''));
@@ -120,7 +129,8 @@ class CatalogoTabla extends Component
 
     public function puede(string $accion): bool
     {
-        return ! empty($this->def()[$accion]) && app(Seguridad::class)->puedeGrabar();
+        return ! empty($this->def()[$accion]) && app(Seguridad::class)->puedeGrabar()
+            && ! ($accion === 'nuevo' && Catalogo::yaTieneUno($this->def(), $this->de));
     }
 
     public function updatedBuscar(): void
@@ -218,7 +228,7 @@ class CatalogoTabla extends Component
                             $q->orWhere('T.'.$columna, 'like', $patron);
                         } elseif (! empty($c[2]['buscar'])) {
                             //CODIGOS NUMERICOS QUE TAMBIEN SE BUSCAN (P. EJ. EL CODIGO DEL PROCESO)
-                            $q->orWhereRaw('CAST('.$this->expresion($columna, $c).' AS varchar(40)) LIKE ?', [$patron]);
+                            $q->orWhereRaw('CAST('.$this->expresion($columna, $c).' AS varchar(300)) LIKE ?', [$patron]);
                         }
                     }
                 });
@@ -238,8 +248,25 @@ class CatalogoTabla extends Component
         }
         //DESEMPATE POR LA CLAVE (SI NO ES YA UNA COLUMNA DEL ORDEN: SQL SERVER NO ACEPTA REPETIRLA)
         $porClave = $this->orden === $def['id'] || ($this->orden === '' && in_array($def['id'], array_column($def['orden'], 0), true));
-        $filas = $consulta->when(! $porClave, fn ($q) => $q->orderBy('T.'.$def['id']))
-            ->paginate($this->porPagina);
+        $consulta->when(! $porClave, fn ($q) => $q->orderBy('T.'.$def['id']));
+
+        //'no_disponible': LA FUENTE ES EXTERNA Y PUEDE NO EXISTIR EN ESTA BASE: SE AVISA EN LUGAR DE FALLAR
+        $noDisponible = null;
+        $suma = null;
+        try {
+            $filas = $consulta->paginate($this->porPagina);
+            if (! empty($def['total'])) {
+                $suma = Catalogo::filtrarDe(DB::table($def['tabla'].' as T'), $def, $this->de, 'T')
+                    ->where('T.'.$def['estado'], '<>', Catalogo::eliminado($def))->sum('T.'.$def['total'][0]);
+            }
+        } catch (QueryException $e) {
+            if (empty($def['no_disponible'])) {
+                throw $e;
+            }
+            Log::warning('Catalogo '.$this->pagina.' sin origen de datos: '.$e->getMessage());
+            $filas = new LengthAwarePaginator([], 0, $this->porPagina);
+            $noDisponible = $def['no_disponible'];
+        }
 
         //DESCRIPCIONES DE LOS COMBOS (INCLUIDO EL ESTADO) PARA MOSTRARLAS EN LUGAR DE LOS CODIGOS
         $etiquetas = [];
@@ -249,6 +276,6 @@ class CatalogoTabla extends Component
             }
         }
 
-        return view('livewire.catalogo-tabla', compact('def', 'columnas', 'filas', 'etiquetas'));
+        return view('livewire.catalogo-tabla', compact('def', 'columnas', 'filas', 'etiquetas', 'suma', 'noDisponible'));
     }
 }

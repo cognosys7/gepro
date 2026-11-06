@@ -22,6 +22,7 @@ use RuntimeException;
  * - en las pantallas que dependen de otro registro ('de'), su columna toma el id de ese registro;
  * - 'calculo' => clase con calcular(datos, de): recalcula montos al escribir (p. ej. control mensual);
  * - 'segun': campos que se muestran (y su etiqueta) segun el valor de otro campo (p. ej. el tipo de ampliacion);
+ * - tipo 'buscador': listas largas en las que se busca al escribir; 'rellena' copia columnas de la fila elegida;
  * - el perfil "CONSULTA TOTAL" o un catalogo sin edicion abren el formulario solo para ver.
  */
 class CatalogoFormulario extends Component
@@ -35,6 +36,9 @@ class CatalogoFormulario extends Component
     public ?string $idRegistro = null;
 
     public array $datos = [];
+
+    /** Texto escrito en los campos 'buscador': campo => texto */
+    public array $buscando = [];
 
     /** Catalogos jerarquicos: registro padre bajo el que se registra (null = raiz) */
     #[Locked]
@@ -167,6 +171,61 @@ class CatalogoFormulario extends Component
         return $opciones;
     }
 
+    /** Definicion del campo si es un 'buscador' que se puede cambiar */
+    private function buscador(string $campo): ?array
+    {
+        $c = $this->def()['campos'][$campo] ?? null;
+
+        return $c && $c[1] === 'buscador' && ! $this->bloqueado($campo) ? $c : null;
+    }
+
+    /** Filas que coinciden con lo escrito en un campo 'buscador' (desde dos letras) */
+    public function resultados(string $campo): array
+    {
+        $c = $this->buscador($campo);
+        $texto = trim((string) ($this->buscando[$campo] ?? ''));
+
+        return $c && mb_strlen($texto) >= 2 ? Catalogo::buscarLista($c, $texto, $this->filaDe()) : [];
+    }
+
+    public function etiquetaBuscador(string $campo): string
+    {
+        $valor = trim((string) ($this->datos[$campo] ?? ''));
+        $c = $this->def()['campos'][$campo];
+        //'texto': EL NOMBRE GUARDADO EN LA FILA MANDA SOBRE EL DE LA LISTA (P. EJ. EL ENTREGABLE DE UNA REVISION)
+        $guardado = trim((string) ($this->datos[$c[2]['texto'] ?? ''] ?? ''));
+        if ($valor === '') {
+            return '';
+        }
+
+        return $guardado !== '' ? $guardado : Catalogo::etiquetaLista($c, $valor);
+    }
+
+    public function elegir(string $campo, string $clave): void
+    {
+        $c = $this->buscador($campo);
+        if (! $c || ! Catalogo::enLista($c, $clave, $this->filaDe())) {
+            return;
+        }
+        $this->datos[$campo] = $clave;
+        $this->buscando[$campo] = '';
+        $this->resetValidation('datos.'.$campo);
+        //COLUMNAS QUE SE COPIAN DE LA FILA ELEGIDA (P. EJ. LAS COORDENADAS DEL UBIGEO)
+        if (! empty($c[2]['rellena'])) {
+            $fila = DB::table($c[2]['lista'][0])->where($c[2]['lista'][1], $clave)->first();
+            foreach ($c[2]['rellena'] as $destino => $origen) {
+                $this->datos[$destino] = trim((string) ($fila->{$origen} ?? ''));
+            }
+        }
+    }
+
+    public function quitar(string $campo): void
+    {
+        if ($this->buscador($campo)) {
+            $this->datos[$campo] = '';
+        }
+    }
+
     public function bloqueado(string $campo): bool
     {
         $c = $this->def()['campos'][$campo] ?? null;
@@ -185,13 +244,14 @@ class CatalogoFormulario extends Component
     #[On('catalogo-nuevo')]
     public function nuevo(): void
     {
-        if (empty($this->def()['nuevo']) || ! app(Seguridad::class)->puedeGrabar()) {
+        if (empty($this->def()['nuevo']) || ! app(Seguridad::class)->puedeGrabar() || Catalogo::yaTieneUno($this->def(), $this->de)) {
             return;
         }
         $def = $this->def();
         $this->resetValidation();
         $this->idRegistro = null;
         $this->autoCalcular = true;
+        $this->buscando = [];
         $this->datos = array_fill_keys(array_keys($def['campos']), '');
         $this->datos[$def['estado']] = '1';
         //VALORES INICIALES Y LOS QUE PONE LA JERARQUIA (P. EJ. EL RUBRO SUPERIOR)
@@ -225,6 +285,7 @@ class CatalogoFormulario extends Component
         $this->resetValidation();
         $this->idRegistro = $id;
         $this->autoCalcular = true;
+        $this->buscando = [];
         $this->datos = $this->valores($fila, array_keys(array_filter($this->def()['campos'], fn ($c) => Catalogo::esColumna($c))));
         $this->abierto = true;
     }
@@ -287,6 +348,25 @@ class CatalogoFormulario extends Component
         $this->resetValidation();
     }
 
+    /** 'rellena' hacia una columna oculta: no viene del navegador; si cambio la eleccion, se copia de la lista */
+    private function copiasOcultas(array $parametros, array $base): array
+    {
+        $campos = $this->def()['campos'];
+        foreach ($campos as $campo => $c) {
+            if ($c[1] !== 'buscador' || empty($c[2]['rellena']) || (string) ($parametros[$campo] ?? '') === (string) ($base[$campo] ?? '')) {
+                continue;
+            }
+            $fila = DB::table($c[2]['lista'][0])->where($c[2]['lista'][1], $parametros[$campo])->first();
+            foreach ($c[2]['rellena'] as $destino => $origen) {
+                if (! empty($campos[$destino][2]['oculto']) && array_key_exists($destino, $parametros)) {
+                    $parametros[$destino] = trim((string) ($fila->{$origen} ?? ''));
+                }
+            }
+        }
+
+        return $parametros;
+    }
+
     public function guardar(): void
     {
         if (! $this->puedeGrabar()) {
@@ -313,6 +393,7 @@ class CatalogoFormulario extends Component
             $editable = isset($def['campos'][$p]) && (! $this->bloqueado($p) || (in_array($p, $autoCalculados, true) && $this->puedeGrabar()));
             $parametros[$p] = $editable ? trim((string) ($this->datos[$p] ?? '')) : ($base[$p] ?? '');
         }
+        $parametros = $this->copiasOcultas($parametros, $base);
         //AL REGISTRAR, LA JERARQUIA Y EL REGISTRO "de" FIJAN SUS COLUMNAS (AL EDITAR SE CONSERVAN)
         if ($this->idRegistro === null) {
             foreach ($this->valoresJerarquia() as $columna => $valor) {
@@ -338,10 +419,23 @@ class CatalogoFormulario extends Component
             $r = [! empty($o['requerido']) && $this->visible($campo) ? 'required' : 'nullable'];
             if ($tipo === 'numero') {
                 $r[] = 'numeric';
+                if (! empty($o['entero'])) {
+                    array_push($r, 'integer', 'between:0,'.$o['entero']);
+                }
             } elseif ($tipo === 'fecha') {
                 $r[] = 'date_format:Y-m-d';
             } elseif ($tipo === 'combo') {
                 $r[] = Rule::in(array_map('strval', array_keys($this->opcionesCampo($campo, $base[$campo] ?? null))));
+            } elseif ($tipo === 'buscador') {
+                //EL VALOR QUE YA TENIA EL REGISTRO SE CONSERVA AUNQUE HOY NO SE PUEDA ELEGIR
+                $c = $def['campos'][$campo];
+                $actual = (string) ($base[$campo] ?? '');
+                $de = $this->filaDe();
+                $r[] = function ($atributo, $valor, $falla) use ($c, $actual, $de) {
+                    if ((string) $valor !== $actual && ! Catalogo::enLista($c, (string) $valor, $de)) {
+                        $falla('El valor elegido no es válido.');
+                    }
+                };
             } else {
                 $r[] = 'string';
                 if (! empty($o['max'])) {
@@ -367,7 +461,11 @@ class CatalogoFormulario extends Component
             if ($this->idRegistro === null) {
                 //CLAVE QUE ESCRIBE EL USUARIO (P. EJ. EL CODIGO DEL PROCESO): EL SP LA RECIBE EN @pCodigo
                 $codigo = ! empty($def['codigo']) ? ['pCodigo' => $parametros[$def['codigo']]] : [];
-                Procedimiento::grabar($def['sp'], 'Insert', $codigo + $parametros);
+                if (! empty($def['registrar'])) {
+                    $def['registrar']::registrar($parametros);
+                } else {
+                    Procedimiento::grabar($def['sp'], 'Insert', $codigo + $parametros);
+                }
                 $mensaje = 'Registro creado.';
             } else {
                 Procedimiento::grabar($def['sp'], 'Update', ['pCodigo' => $this->idRegistro] + $parametros);

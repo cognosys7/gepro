@@ -22,10 +22,34 @@
 |   los campos de algun caso solo se muestran en el valor elegido de X (con esa etiqueta), y el calculo
 |   automatico solo corre en los valores de 'calcular'. Combo con 'una_vez' => [valores]: cada valor
 |   lo puede tener un solo registro del mismo "de" (p. ej. el plazo contractual de un contrato).
+| - tipo buscador: para listas largas; se busca al escribir en 'lista' y se elige un resultado. Con
+|   'rellena' => [columna del formulario => columna de la lista] copia datos de la fila elegida (si la
+|   columna es 'oculto', la copia el servidor al grabar). Con 'texto' => columna, muestra el texto guardado.
+| - numero con 'entero' => N: numero entero entre 0 y N (la capacidad de la columna).
+| - principal: dato que identifica el registro en la cabecera del formulario (por defecto, el primer texto).
 | - nuevo / editar / eliminar: lo que permite el sistema actual (botones y columnas de su grilla).
+| - unico_por_de: cada registro "de" admite uno solo vigente; despues no se ofrece Nuevo.
+| - registrar: clase con registrar(array $parametros) que reemplaza al 'Insert' del SP.
+| - acciones con ['plantilla' => url con {valor}, 'valor' => columna de la grilla, 'si' => regex]: enlace externo
+|   que usa un dato de la fila; solo se muestra si el dato cumple la expresion.
 */
 
 $estado = ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true]];
+
+//PERSONAL DEL EJECUTOR (GEN_RECURSO TIPO 3) Y SU NOMBRE EN UNA GRILLA
+$personalEjecutor = ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO', ['TIP_RECURSO' => '3']];
+$nombreRecurso = fn (string $columna) => '(SELECT R.DES_RECURSO FROM dbo.GEN_RECURSO R WHERE R.IDE_RECURSO = T.'.$columna.')';
+
+//GESTION SOCIAL: PROYECTO DE LA CABECERA Y DATOS DEL INTERESADO DE LA FILA
+$deProyecto = ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"];
+$deGestionSocial = ['tabla' => 'dbo.PROY_GESTION_SOCIAL', 'id' => 'IDE_GESTION_SOCIAL', 'columna' => 'IDE_GESTION_SOCIAL',
+    'titulo' => "CONCAT((SELECT TOP 1 C.DES_COMUNIDAD FROM dbo.GEN_COMUNIDAD C WHERE C.IDE_COMUNIDAD = X.IDE_COMUNIDAD), ' · ', (SELECT TOP 1 I.DES_INTERVENCION FROM dbo.GEN_INTERVENCION I WHERE I.IDE_INTERVENCION = X.IDE_ETAPA_CONTRATO))"];
+$delInteresado = fn (string $columna, string $union = '') => '(SELECT TOP 1 '.$columna.' FROM dbo.CONT_INTERESADOS CI '.$union.' WHERE CI.IDE_CONT_INTERESADO = T.IDE_CONT_INTERESADO)';
+$delUbigeo = fn (string $columna) => '(SELECT TOP 1 G.'.$columna.' FROM dbo.GEN_UBIGEO G WHERE G.COD_UBIGEO = T.COD_UBIGEO)';
+//INTERESADOS DE TODOS LOS CONTRATOS DE LOS PROYECTOS CON EL MISMO CODIGO UNICO (COMO SU BUSQUEDA ACTUAL)
+$interesadoDelProyecto = ['lista' => ['dbo.CONT_INTERESADOS', 'IDE_CONT_INTERESADO',
+        "CONCAT((SELECT TOP 1 R.DES_RECURSO FROM dbo.GEN_RECURSO R WHERE R.IDE_RECURSO = dbo.CONT_INTERESADOS.IDE_RECURSO), ' · ', DES_LOCALIZACION)", 'EST_CONT_INTERESADO'],
+    'filtro_sql' => ['IDE_CONTRATO IN (SELECT PA.IDE_PROYECTO_ACTIVIDAD FROM dbo.PROYECTO_ACTIVIDAD PA INNER JOIN dbo.PROYECTO P ON P.IDE_PROYECTO = PA.IDE_PROYECTO WHERE P.COD_UNICO = (SELECT Y.COD_UNICO FROM dbo.PROYECTO Y WHERE Y.IDE_PROYECTO = ?))', ['{de.IDE_PROYECTO}']]];
 
 return [
 
@@ -684,8 +708,30 @@ return [
         'nuevo_valores' => ['EST_PROCESO_ITEM' => 'EN PROCESO'],
         'orden' => [['COD_ITEM', 'asc']],
         'acciones' => [
-            ['Postores', 'fa-user-tie', 'gr-verde', 'Postores del ítem', ['legado' => ['PROC_POSTORES', ['PIDE_PROC_ITEM' => '{id}']]]],
+            ['Postores', 'fa-user-tie', 'gr-verde', 'Postores del ítem', ['catalogo' => 'PROC_POSTORES']],
         ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROC_POSTORES' => [
+        'titulo' => 'Postores del ítem', 'icono' => 'fa-user-tie', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROC_POSTORES', 'id' => 'IDE_POSTOR', 'sp' => 'dbo.SP_PROC_POSTORES', 'estado' => 'EST_POSTOR',
+        'de' => ['tabla' => 'dbo.PROC_ITEM', 'id' => 'IDE_PROC_ITEM', 'columna' => 'IDE_PROC_ITEM',
+            'titulo' => "CONCAT_WS(' · ', NULLIF(LTRIM(RTRIM(X.COD_PROYECTO)), ''), X.DES_ITEM, CONCAT('Valor referencial S/ ', FORMAT(X.IMP_VAL_REFERENCIAL_ITEM, 'N2', 'es-PE')))"],
+        'parametros' => ['IDE_PROC_ITEM', 'RUC_POSTOR', 'DES_POSTOR', 'TIP_POSTOR', 'VAL_REFERENCIAL_ITEM', 'VAL_OFERTADO_ITEM', 'EST_POSTOR', 'FEC_REG_PROPUESTA'],
+        'principal' => 'DES_POSTOR',
+        'campos' => [
+            'RUC_POSTOR' => ['N.º de RUC', 'texto', ['requerido' => true, 'max' => 15, 'grilla' => true, 'buscar' => true]],
+            //EL PARAMETRO DEL SP ES varchar(150), AUNQUE LA COLUMNA TENGA 300
+            'DES_POSTOR' => ['Razón social', 'texto', ['requerido' => true, 'max' => 150, 'grilla' => true, 'buscar' => true]],
+            'TIP_POSTOR' => ['Tipo de postor', 'combo', ['requerido' => true, 'tabla' => '3']],
+            'VAL_REFERENCIAL_ITEM' => ['Valor referencial (S/)', 'numero', ['requerido' => true, 'grilla' => true]],
+            'VAL_OFERTADO_ITEM' => ['Valor ofertado (S/)', 'numero', ['grilla' => true]],
+            'FEC_REG_PROPUESTA' => ['Propuesta presentada el', 'fecha', ['grilla' => true]],
+            'EST_POSTOR' => ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'nuevo_valores' => ['VAL_REFERENCIAL_ITEM' => '{de.IMP_VAL_REFERENCIAL_ITEM}'],
+        'orden' => [['DES_POSTOR', 'asc']],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
@@ -736,11 +782,43 @@ return [
         ],
         'acciones' => [
             ['Carta fianza', 'fa-money-check-dollar', 'gr-verde', 'Carta fianza y conceptos del contrato', ['catalogo' => 'CONTRATO_CONCEPTO']],
-            ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['legado' => ['BIDM_GASTO_CONSOLIDA', ['PIDE' => '{id}']]]],
+            ['Gastos', 'fa-sack-dollar', 'gr-verde', 'Gasto consolidado del contrato', ['catalogo' => 'BIDM_GASTO_CONSOLIDA']],
             ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del contrato', ['archivos' => 'CONTRATO']],
         ],
         //EL CONTRATO SE REGISTRA DESDE LA GRILLA DE CONTRATOS DEL PROYECTO
         'nuevo' => false, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //SOLO CONSULTA: LA VISTA LEE EL DATA MART DEL CLIENTE (DM_AMSAC.dbo.BI_GASTO_CONSOLIDA). LOS GL SE BUSCAN POR
+    //SU DOCUMENTO INTERNO Y LOS DEMAS POR SU ORDEN. SIN ORDEN NO HAY FILAS: EL SISTEMA ACTUAL TRAIA LAS QUE NO TIENEN ORDEN
+    'BIDM_GASTO_CONSOLIDA' => [
+        'titulo' => 'Gasto consolidado del contrato', 'icono' => 'fa-sack-dollar', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.BIDM_GASTO_CONSOLIDA', 'id' => 'IDE_BIDM_GASTO_CONSOLIDA', 'sp' => 'dbo.SP_BIDM_GASTO_CONSOLIDA', 'estado' => 'EST_BIDM_GASTO_CONSOLIDA',
+        'de' => ['tabla' => 'dbo.CONTRATO', 'id' => 'IDE_CONTRATO',
+            //COLLATE: LA VISTA VIENE DE OTRA BASE, QUE PUEDE TENER OTRA INTERCALACION
+            'enlace' => "EXISTS (SELECT 1 FROM dbo.CONTRATO C WHERE C.IDE_CONTRATO = ? AND (
+                (LEFT(LTRIM(C.COD_CONTRATO_ENTIDAD), 2) = 'GL' AND LTRIM(RTRIM({T}.ContratoOrden)) COLLATE DATABASE_DEFAULT = LTRIM(RTRIM(C.COD_CONTRATO_ENTIDAD)))
+                OR (ISNULL(LEFT(LTRIM(C.COD_CONTRATO_ENTIDAD), 2), '') <> 'GL' AND LTRIM(RTRIM({T}.OrdenCodigo)) COLLATE DATABASE_DEFAULT = NULLIF(LTRIM(RTRIM(C.COD_ORDEN)), ''))))",
+            'titulo' => "CONCAT(X.COD_CONTRATO_ENTIDAD, ' · ', X.DES_CONTRATO)"],
+        'parametros' => [],
+        'campos' => [
+            'AsientoPeriodo' => ['Periodo', 'texto', ['grilla' => true]],
+            'AsientoIde' => ['Asiento', 'texto', ['grilla' => true]],
+            'AsientoNumDocumento' => ['Documento', 'texto', ['grilla' => true]],
+            'AsientoMontoSoles' => ['Monto (S/)', 'numero', ['grilla' => true, 'importe' => true, 'buscar' => true]],
+            'ContratoOrden' => ['Contrato / orden', 'texto', ['grilla' => true]],
+            'OrdenCodigo' => ['Entregable', 'texto', ['grilla' => true]],
+            'ActorNombre' => ['Proveedor', 'texto', ['grilla' => true]],
+            'Componente' => ['Componente', 'texto', ['grilla' => true]],
+            'ProyectoNombreCorto' => ['Proyecto', 'texto', ['grilla' => true]],
+            'FuenteAbrev' => ['Fuente', 'texto', ['grilla' => true]],
+            'CtaNomPartida' => ['Partida', 'texto', ['grilla' => true]],
+        ],
+        //SUMA DE TODO EL CONTRATO, SIN CONTAR LA BUSQUEDA (COMO LA CABECERA DEL SISTEMA ACTUAL)
+        'total' => ['AsientoMontoSoles', 'Monto total'],
+        'no_disponible' => 'El gasto consolidado no está disponible: esta base no tiene el origen de datos de gastos.',
+        'orden' => [['AsientoPeriodo', 'asc']],
+        'nuevo' => false, 'editar' => false, 'eliminar' => false,
     ],
 
     'PROY_RIESGO_PROBLEMA' => [
@@ -822,6 +900,62 @@ return [
         'acciones' => [
             ['Contenido', 'fa-paperclip', 'gr-teal', 'Ver el contenido', ['campo' => 'DES_DOCUMENTO']],
         ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //IDE_CONTRATO GUARDA EL IDE_PROYECTO_ACTIVIDAD (ASI LO GRABA EL SISTEMA ACTUAL). EL NOMBRE DEL ENTREGABLE SE GUARDA EN LA
+    //FILA Y MANDA SOBRE EL DEL CATALOGO: 14 DE LAS 52 FILAS CONSERVAN UN TEXTO QUE YA NO COINCIDE CON GEN_ENTREGABLE
+    'CONT_CALIDAD' => [
+        'titulo' => 'Calidad de entregables', 'icono' => 'fa-thumbs-up', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONT_CALIDAD', 'id' => 'IDE_CONT_CALIDAD', 'sp' => 'dbo.SP_CONT_CALIDAD', 'estado' => 'EST_ENTREGABLE',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_ENTREGABLE', 'DES_ENTREGABLE', 'NUM_REVISION', 'COD_INFORME', 'FEC_INFORME', 'IDE_REC_REVISADO', 'IDE_REC_VALIDADO',
+            'IDE_REC_APROBADO', 'DES_OBSERV_INFORME', 'CAN_OBSERVACIONES', 'EST_ENTREGABLE'],
+        'campos' => [
+            'DES_ENTREGABLE' => ['Entregable', 'texto', ['oculto' => true, 'grilla' => true]],
+            //COMO SU BUSQUEDA ACTUAL: CUALQUIER ENTREGABLE DE NIVEL 1, SIN FILTRAR POR LA FASE - COMPONENTE DEL CONTRATO
+            'IDE_ENTREGABLE' => ['Entregable', 'buscador', ['requerido' => true, 'texto' => 'DES_ENTREGABLE', 'rellena' => ['DES_ENTREGABLE' => 'DES_ENTREGABLE'],
+                'lista' => ['dbo.GEN_ENTREGABLE', 'IDE_ENTREGABLE', 'DES_ENTREGABLE', 'EST_ENTREGABLE', ['NUM_NIVEL' => 1]]]],
+            'NUM_REVISION' => ['N.º de revisión', 'numero', ['requerido' => true, 'entero' => 999, 'grilla' => true, 'buscar' => true]],
+            'COD_INFORME' => ['Código de informe', 'texto', ['requerido' => true, 'max' => 50, 'grilla' => true]],
+            'FEC_INFORME' => ['Fecha de informe', 'fecha', ['requerido' => true, 'grilla' => true, 'buscar' => true]],
+            'IDE_REC_REVISADO' => ['Administrador del contrato', 'combo', ['requerido' => true, 'lista' => $personalEjecutor]],
+            'IDE_REC_VALIDADO' => ['Personal que validó', 'combo', ['lista' => $personalEjecutor]],
+            'IDE_REC_APROBADO' => ['Personal que aprobó', 'combo', ['lista' => $personalEjecutor]],
+            //EN LA GRILLA VAN COMO EXPRESION PARA BUSCAR POR EL NOMBRE, COMO EN EL SISTEMA ACTUAL
+            'ADMINISTRADOR' => ['Administrador del contrato', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $nombreRecurso('IDE_REC_REVISADO')]],
+            'VALIDADOR' => ['Personal que validó', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $nombreRecurso('IDE_REC_VALIDADO')]],
+            'APROBADOR' => ['Personal que aprobó', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $nombreRecurso('IDE_REC_APROBADO')]],
+            'DES_OBSERV_INFORME' => ['Comentarios', 'area', ['max' => 1500]],
+            'CAN_OBSERVACIONES' => ['N.º de observaciones', 'numero', ['entero' => 999, 'grilla' => true, 'buscar' => true]],
+            'EST_ENTREGABLE' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '86', 'excluir' => [2]]],
+        ],
+        //LA TABLA 86 SOLO TIENE CONFORME Y OBSERVADO: EL ESTADO SE ELIGE AL REGISTRAR
+        'nuevo_valores' => ['EST_ENTREGABLE' => ''],
+        'principal' => 'IDE_ENTREGABLE',
+        'acciones' => [
+            ['Contenido', 'fa-list-check', 'gr-azul', 'Contenido observado del entregable', ['catalogo' => 'CONT_CAL_CONTENIDO']],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del entregable', ['archivos' => 'CONT_CALIDAD']],
+        ],
+        'orden' => [['IDE_CONT_CALIDAD', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONT_CAL_CONTENIDO' => [
+        'titulo' => 'Contenido observado del entregable', 'icono' => 'fa-list-check', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONT_CAL_CONTENIDO', 'id' => 'IDE_CAL_CONTENIDO', 'sp' => 'dbo.SP_CONT_CAL_CONTENIDO', 'estado' => 'EST_CAL_CONTENIDO',
+        'de' => ['tabla' => 'dbo.CONT_CALIDAD', 'id' => 'IDE_CONT_CALIDAD', 'columna' => 'IDE_CONT_CALIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_INFORME)), ' · ', X.DES_ENTREGABLE)"],
+        'parametros' => ['IDE_CONT_CALIDAD', 'IDE_ENTREGABLE', 'DES_OBSERV_CONTENIDO', 'EST_CAL_CONTENIDO'],
+        'campos' => [
+            //LOS SUB-ENTREGABLES DEL ENTREGABLE QUE SE REVISA
+            'IDE_ENTREGABLE' => ['Contenido', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_ENTREGABLE', 'IDE_ENTREGABLE', 'DES_ENTREGABLE', 'EST_ENTREGABLE'],
+                'filtro_sql' => ['GEN_IDE_ENTREGABLE = ? AND NUM_NIVEL = 2', ['{de.IDE_ENTREGABLE}']]]],
+            'DES_OBSERV_CONTENIDO' => ['Observación', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'EST_CAL_CONTENIDO' => $estado,
+        ],
+        'orden' => [['IDE_CAL_CONTENIDO', 'asc']],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 
@@ -1060,6 +1194,222 @@ return [
         'orden' => [['IDE_SEGUIMIENTO', 'asc']],
         'acciones' => [
             ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del seguimiento', ['archivos' => 'PROY_SEGUIMIENTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //UN PROYECTO SE ASOCIA A UN SOLO PIP. SU GRILLA ACTUAL OCULTA EDITAR Y ELIMINAR. SNIP Y CODIGO UNICO SALEN DEL
+    //PIP ELEGIDO; 50 DE 72 FILAS NO TIENEN IDE_PIP PORQUE VIENEN DE UNA CARGA Y LOS TRAEN EN LA PROPIA TABLA
+    'PROY_PIP' => [
+        'titulo' => 'Proyecto de inversión', 'icono' => 'fa-sack-dollar', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_PIP', 'id' => 'IDE_PROY_PIP', 'sp' => 'dbo.SP_PROY_PIP', 'estado' => 'EST_PROY_PIP',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO'],
+        'parametros' => ['IDE_PIP', 'IDE_PROYECTO', 'COD_SNIP', 'COD_UNICO', 'COD_INFOBRAS', 'COD_INTERNO', 'EST_PROY_SNIP', 'CHK', 'EST_PROY_PIP'],
+        'principal' => 'IDE_PIP',
+        'campos' => [
+            'IDE_PIP' => ['Proyecto de inversión', 'buscador', ['requerido' => true,
+                'lista' => ['dbo.GEN_PIP', 'IDE_PIP', "CONCAT_WS(' · ', NULLIF(LTRIM(RTRIM(ISNULL(NULLIF(LTRIM(RTRIM(COD_UNICO)), ''), COD_PROYECTO))), ''), NULLIF(LTRIM(RTRIM(COD_SNIP)), ''), DES_PIP)", 'EST_PIP']]],
+            'VER_SNIP' => ['Código SNIP', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => "ISNULL((SELECT NULLIF(LTRIM(RTRIM(P.COD_SNIP)), '') FROM dbo.GEN_PIP P WHERE P.IDE_PIP = T.IDE_PIP), T.COD_SNIP)"]],
+            'VER_UNICO' => ['Código único', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => "ISNULL((SELECT NULLIF(LTRIM(RTRIM(P.COD_UNICO)), '') FROM dbo.GEN_PIP P WHERE P.IDE_PIP = T.IDE_PIP), T.COD_UNICO)"]],
+            'VER_PIP' => ['Proyecto de inversión', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT P.DES_PIP FROM dbo.GEN_PIP P WHERE P.IDE_PIP = T.IDE_PIP)']],
+            'EST_PROY_PIP' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'acciones' => [
+            ['SNIP', 'fa-arrow-up-right-from-square', 'gr-verde', 'Ver la ficha SNIP en el MEF', ['plantilla' => 'http://ofi5.mef.gob.pe/invierte/formato/verFichaSNIP/{valor}/0/0', 'valor' => 'VER_SNIP', 'si' => '/^\d+$/']],
+            ['Código único', 'fa-landmark', 'gr-azul', 'Ver el código único en el MEF', ['plantilla' => 'https://ofi5.mef.gob.pe/invierte/formato/verProyectoCU/{valor}', 'valor' => 'VER_UNICO', 'si' => '/^\d+$/']],
+        ],
+        'unico_por_de' => true, 'registrar' => App\Support\ProyectoInversion::class,
+        'nuevo' => true, 'editar' => false, 'eliminar' => false,
+    ],
+
+    'PROY_COMUNICACION' => [
+        'titulo' => 'Comunicaciones', 'icono' => 'fa-comments', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COMUNICACION', 'id' => 'IDE_COMUNICACION', 'sp' => 'dbo.SP_PROY_COMUNICACION', 'estado' => 'EST_COMUNICACION',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO'],
+        'parametros' => ['IDE_PROYECTO', 'DES_COMUNICACION', 'FEC_INICIO', 'FEC_TERMINO', 'TIP_DIRECCION_EMISOR_RECEPTOR', 'TIP_FRECUENCIA', 'TIP_COMPLEJIDAD_COMUNICACION',
+            'TIP_METODO_COMUNICACION', 'TIP_MEDIO_COMUNICACION', 'DES_GLOSARIO_TERMINOS', 'EST_COMUNICACION'],
+        'campos' => [
+            'DES_COMUNICACION' => ['Descripción de la comunicación', 'area', ['requerido' => true, 'max' => 400, 'grilla' => true, 'buscar' => true]],
+            //HAY FECHAS DE TERMINO ANTERIORES AL INICIO: NO SE VALIDA EL ORDEN, COMO EN EL SISTEMA ACTUAL
+            'FEC_INICIO' => ['Inicio', 'fecha', ['requerido' => true, 'grilla' => true]],
+            'FEC_TERMINO' => ['Término', 'fecha', ['grilla' => true]],
+            'TIP_DIRECCION_EMISOR_RECEPTOR' => ['Dirección de emisor', 'combo', ['tabla' => '87']],
+            'TIP_FRECUENCIA' => ['Frecuencia', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '88']],
+            'TIP_COMPLEJIDAD_COMUNICACION' => ['Complejidad', 'combo', ['tabla' => '89']],
+            'TIP_METODO_COMUNICACION' => ['Método', 'combo', ['grilla' => true, 'tabla' => '90']],
+            'TIP_MEDIO_COMUNICACION' => ['Medio', 'combo', ['grilla' => true, 'tabla' => '91']],
+            'DES_GLOSARIO_TERMINOS' => ['Glosario de términos', 'area', ['max' => 2000]],
+            'EST_COMUNICACION' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'acciones' => [
+            ['Interesados', 'fa-users', 'gr-violeta', 'Interesados de la comunicación', ['catalogo' => 'PROY_COM_INTERESADOS']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //SU BUSCADOR ACTUAL NO FILTRA POR EL PROYECTO (EL JS ENVIA Proyecto = 0): AQUI SALEN LOS DEL MISMO CODIGO UNICO
+    'PROY_COM_INTERESADOS' => [
+        'titulo' => 'Interesados de la comunicación', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_COM_INTERESADOS', 'id' => 'IDE_PROY_COM_INTERESADO', 'sp' => 'dbo.SP_PROY_COM_INTERESADOS', 'estado' => 'EST_PROY_COM_INTERESADO',
+        'de' => ['tabla' => 'dbo.PROY_COMUNICACION', 'id' => 'IDE_COMUNICACION', 'columna' => 'IDE_COMUNICACION', 'titulo' => 'X.DES_COMUNICACION'],
+        'parametros' => ['IDE_COMUNICACION', 'IDE_CONT_INTERESADO', 'TIP_RESPONSABILIDAD', 'DES_COMENTARIO', 'EST_PROY_COM_INTERESADO'],
+        'campos' => [
+            'IDE_CONT_INTERESADO' => ['Interesado', 'combo', ['requerido' => true] + $interesadoDelProyecto],
+            'DES_RECURSO' => ['Recurso', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_RECURSO', 'INNER JOIN dbo.GEN_RECURSO R ON R.IDE_RECURSO = CI.IDE_RECURSO')]],
+            'DES_CARGO' => ['Cargo', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('C.DES_CARGO', 'INNER JOIN dbo.GEN_CARGO C ON C.IDE_CARGO = CI.IDE_PUESTO')]],
+            'DES_ROL' => ['Rol', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_ROL', 'INNER JOIN dbo.GEN_ROLES R ON R.IDE_ROL = CI.IDE_ROL')]],
+            'TIP_RESPONSABILIDAD' => ['Responsabilidad', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '92']],
+            'DES_COMENTARIO' => ['Comentario', 'area', ['max' => 4000, 'grilla' => true, 'buscar' => true]],
+            'EST_PROY_COM_INTERESADO' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '99', 'excluir' => ['2']]],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //EN IDE_PROYECTO_ACTIVIDAD SE GUARDA EL IDE_PROYECTO (SU CLAVE FORANEA APUNTA A PROYECTO)
+    'PROY_ACT_UBIGEO' => [
+        'titulo' => 'Lugares beneficiados (UBIGEO)', 'icono' => 'fa-location-dot', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_ACT_UBIGEO', 'id' => 'IDE_PROY_ACT_UBIGEO', 'sp' => 'dbo.SP_PROY_ACT_UBIGEO', 'estado' => 'EST_PROY_ACT_UBIGEO',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO_ACTIVIDAD'],
+        'parametros' => ['IDE_PROYECTO_ACTIVIDAD', 'COD_UBIGEO', 'GEO_LONGITUD_UBICACION', 'GEO_LATITUD_UBICACION', 'EST_PROY_ACT_UBIGEO'],
+        'campos' => [
+            //SE PUEDE ELEGIR CUALQUIER NIVEL DEL UBIGEO, COMO EN SU BUSQUEDA ACTUAL (HAY LUGARES A NIVEL DE PROVINCIA)
+            'COD_UBIGEO' => ['UBIGEO', 'buscador', ['requerido' => true, 'grilla' => true, 'buscar' => true,
+                'lista' => ['dbo.GEN_UBIGEO', 'COD_UBIGEO', "CONCAT(LTRIM(RTRIM(COD_UBIGEO)), ' · ', CONCAT_WS(' - ', NULLIF(LTRIM(RTRIM(DES_DEPARTAMENTO)), ''), NULLIF(LTRIM(RTRIM(DES_PROVINCIA)), ''), NULLIF(LTRIM(RTRIM(DES_DISTRITO)), '')))", 'EST_UBIGEO'],
+                'rellena' => ['GEO_LONGITUD_UBICACION' => 'GEO_LONGITUD', 'GEO_LATITUD_UBICACION' => 'GEO_LATITUD']]],
+            'DES_DEPARTAMENTO' => ['Región', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delUbigeo('DES_DEPARTAMENTO')]],
+            'DES_PROVINCIA' => ['Provincia', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delUbigeo('DES_PROVINCIA')]],
+            'DES_DISTRITO' => ['Distrito', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delUbigeo('DES_DISTRITO')]],
+            'GEO_LONGITUD_UBICACION' => ['Longitud geográfica', 'texto', ['max' => 30, 'grilla' => true]],
+            'GEO_LATITUD_UBICACION' => ['Latitud geográfica', 'texto', ['max' => 30, 'grilla' => true]],
+            'EST_PROY_ACT_UBIGEO' => $estado,
+        ],
+        'principal' => 'COD_UBIGEO',
+        'orden' => [['IDE_PROY_ACT_UBIGEO', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_GESTION_SOCIAL' => [
+        'titulo' => 'Gestión social (beneficiarios)', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_SOCIAL', 'id' => 'IDE_GESTION_SOCIAL', 'sp' => 'dbo.SP_PROY_GESTION_SOCIAL', 'estado' => 'EST_GESTION_SOCIAL',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO'],
+        //DES_UNIDAD_BENEFICIARIO NO ESTA EN EL FORMULARIO ACTUAL: SE CONSERVA
+        'parametros' => ['IDE_PROYECTO', 'IDE_COMUNIDAD', 'IDE_ETAPA_CONTRATO', 'NUM_BENEFICIARIOS', 'TIP_UNIDAD_BENEFICIARIO', 'DES_UNIDAD_BENEFICIARIO',
+            'EST_MATRIZ_RC', 'EST_ACTA_APROBACION', 'EST_GESTION_SOCIAL'],
+        'campos' => [
+            'DES_COMUNIDAD' => ['Comunidad / CC.PP.', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT TOP 1 C.DES_COMUNIDAD FROM dbo.GEN_COMUNIDAD C WHERE C.IDE_COMUNIDAD = T.IDE_COMUNIDAD)']],
+            'DES_INTERVENCION' => ['Fase - Componente', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT TOP 1 I.DES_INTERVENCION FROM dbo.GEN_INTERVENCION I WHERE I.IDE_INTERVENCION = T.IDE_ETAPA_CONTRATO)']],
+            'IDE_COMUNIDAD' => ['Comunidad / CC.PP.', 'buscador', ['requerido' => true,
+                'lista' => ['dbo.GEN_COMUNIDAD', 'IDE_COMUNIDAD', "CONCAT(LTRIM(RTRIM(DES_COMUNIDAD)), ' · ', (SELECT TOP 1 CONCAT_WS(' - ', NULLIF(LTRIM(RTRIM(U.DES_DEPARTAMENTO)), ''), NULLIF(LTRIM(RTRIM(U.DES_PROVINCIA)), ''), NULLIF(LTRIM(RTRIM(U.DES_DISTRITO)), '')) FROM dbo.GEN_UBIGEO U WHERE U.COD_UBIGEO = dbo.GEN_COMUNIDAD.COD_UBIGEO))", 'EST_COMUNIDAD']]],
+            'IDE_ETAPA_CONTRATO' => ['Fase - Componente', 'combo', ['requerido' => true,
+                'lista' => ['dbo.GEN_INTERVENCION', 'IDE_INTERVENCION', 'DES_INTERVENCION', 'EST_INTERVENCION', ['NUM_NIVEL' => '3', 'IDE_SECTOR' => '14']]]],
+            'NUM_BENEFICIARIOS' => ['Número de beneficiarios', 'numero', ['grilla' => true]],
+            'TIP_UNIDAD_BENEFICIARIO' => ['Tipo de beneficiarios', 'combo', ['requerido' => true, 'tabla' => '73']],
+            'EST_MATRIZ_RC' => ['Mapa de actores sociales', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '98']],
+            'EST_ACTA_APROBACION' => ['Existencia de actas', 'combo', ['requerido' => true, 'tabla' => '98']],
+            'EST_GESTION_SOCIAL' => $estado,
+        ],
+        'principal' => 'IDE_COMUNIDAD',
+        'orden' => [['IDE_GESTION_SOCIAL', 'asc']],
+        'acciones' => [
+            ['Beneficios', 'fa-thumbs-up', 'gr-verde', 'Beneficios de la comunidad', ['catalogo' => 'PROY_GESTION_BENEFICIOS']],
+            ['Interesados', 'fa-users', 'gr-violeta', 'Interesados de la comunidad', ['catalogo' => 'PROY_INTERESADOS_SOCIAL']],
+            ['Quejas', 'fa-thumbs-down', 'gr-rojo', 'Quejas de la comunidad', ['catalogo' => 'PROY_GESTION_QUEJAS']],
+            ['Actividades', 'fa-calendar-days', 'gr-azul', 'Actividades de la comunidad', ['catalogo' => 'PROY_GESTION_ACTIVIDADES']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //SU ESTADO SALE DE LA TABLA 106 (IMPLEMENTADO, EN EJECUCION...): AL REGISTRAR SE ELIGE, NO HAY UNO POR DEFECTO
+    'PROY_GESTION_BENEFICIOS' => [
+        'titulo' => 'Beneficios de la comunidad', 'icono' => 'fa-thumbs-up', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_BENEFICIOS', 'id' => 'IDE_BENEF_SOCIAL', 'sp' => 'dbo.SP_PROY_GESTION_BENEFICIOS', 'estado' => 'EST_BENEF_SOCIAL',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'IDE_CONCEPTO', 'CAN_CONCEPTO', 'FEC_INICIO', 'FEC_TERMINO', 'EST_BENEF_SOCIAL', 'DES_ACTIVIDAD'],
+        'nuevo_valores' => ['EST_BENEF_SOCIAL' => ''],
+        'campos' => [
+            'GRUPO' => ['Grupo de actividad', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT TOP 1 C.DES_CONCEPTO FROM dbo.GEN_CONCEPTO_SOCIAL C WHERE C.IDE_CONCEPTO = T.IDE_CONCEPTO)']],
+            'IDE_CONCEPTO' => ['Grupo de actividad', 'combo', ['requerido' => true,
+                'lista' => ['dbo.GEN_CONCEPTO_SOCIAL', 'IDE_CONCEPTO', 'DES_CONCEPTO', 'EST_CONCEPTO', ['NUM_NIVEL' => 12]]]],
+            'DES_ACTIVIDAD' => ['Actividad', 'area', ['requerido' => true, 'max' => 200, 'grilla' => true]],
+            'CAN_CONCEPTO' => ['Cantidad', 'numero', ['requerido' => true, 'grilla' => true]],
+            'FEC_INICIO' => ['Fecha de inicio', 'fecha', ['grilla' => true]],
+            'FEC_TERMINO' => ['Fecha de término', 'fecha', ['grilla' => true]],
+            'EST_BENEF_SOCIAL' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '106', 'excluir' => [2]]],
+        ],
+        'orden' => [['IDE_BENEF_SOCIAL', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del beneficio', ['archivos' => 'PROY_GESTION_BENEFICIOS']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //LOS DATOS DEL INTERESADO SE MANTIENEN EN LOS INTERESADOS DEL CONTRATO (CONT_INTERESADOS)
+    'PROY_INTERESADOS_SOCIAL' => [
+        'titulo' => 'Interesados de la comunidad', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_INTERESADOS_SOCIAL', 'id' => 'IDE_INTERESADO_SOCIAL', 'sp' => 'dbo.SP_PROY_INTERESADOS_SOCIAL', 'estado' => 'EST_INTERESADO_SOCIAL',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'IDE_CONT_INTERESADO', 'EST_INTERESADO_SOCIAL'],
+        'campos' => [
+            'IDE_CONT_INTERESADO' => ['Interesado', 'combo', ['requerido' => true] + $interesadoDelProyecto],
+            'DES_RECURSO' => ['Personal', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_RECURSO', 'INNER JOIN dbo.GEN_RECURSO R ON R.IDE_RECURSO = CI.IDE_RECURSO')]],
+            'DES_ROL' => ['Rol', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_ROL', 'INNER JOIN dbo.GEN_ROLES R ON R.IDE_ROL = CI.IDE_ROL')]],
+            'DES_CARGO' => ['Cargo', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('C.DES_CARGO', 'INNER JOIN dbo.GEN_CARGO C ON C.IDE_CARGO = CI.IDE_PUESTO')]],
+            'DES_LOCALIZACION' => ['Localización', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('CI.DES_LOCALIZACION')]],
+            'DES_TELEFONO' => ['Teléfono', 'texto', ['grilla' => true, 'expresion' => $delInteresado('CI.DES_TELEFONO')]],
+            'DES_REQUERIMIENTOS' => ['Requerimientos', 'texto', ['grilla' => true, 'expresion' => $delInteresado('CI.DES_REQUERIMIENTOS_PRIMORDIALES')]],
+            'DES_EXPECTATIVAS' => ['Expectativas', 'texto', ['grilla' => true, 'expresion' => $delInteresado('CI.DES_EXPECTATIVAS_PRINCIPALES')]],
+            'DES_TIPO' => ['Tipo', 'texto', ['grilla' => true, 'expresion' => $delInteresado('G.DES_ITEM', "INNER JOIN dbo.GEN_TABLAS G ON G.COD_TABLA = '71' AND G.COD_ITEM = CI.TIP_CLASIFICACION")]],
+            'EST_INTERESADO_SOCIAL' => $estado,
+        ],
+        'orden' => [['IDE_INTERESADO_SOCIAL', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //IDE_CENCOSTO_ASIGNADO NO ESTA EN EL FORMULARIO ACTUAL: SE CONSERVA
+    'PROY_GESTION_QUEJAS' => [
+        'titulo' => 'Quejas de la comunidad', 'icono' => 'fa-thumbs-down', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_QUEJAS', 'id' => 'IDE_GESTION_QUEJAS', 'sp' => 'dbo.SP_PROY_GESTION_QUEJAS', 'estado' => 'EST_QUEJA',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'DES_QUEJA', 'TIP_IMPACTO', 'TIP_CANALIZA', 'IDE_CENCOSTO_ASIGNADO', 'IDE_CONT_INTERESADO', 'FEC_QUEJA', 'EST_ATENDIDO',
+            'FEC_ATENDIDO', 'DES_RESPUESTA', 'EST_QUEJA'],
+        'campos' => [
+            'DES_RECURSO' => ['Interesado del contrato', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_RECURSO', 'INNER JOIN dbo.GEN_RECURSO R ON R.IDE_RECURSO = CI.IDE_RECURSO')]],
+            'IDE_CONT_INTERESADO' => ['Interesado del contrato', 'combo', ['requerido' => true] + $interesadoDelProyecto],
+            'DES_QUEJA' => ['Descripción de la queja', 'area', ['requerido' => true, 'max' => 2000, 'grilla' => true]],
+            'TIP_IMPACTO' => ['Tipo de impacto', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '76']],
+            'TIP_CANALIZA' => ['Tipo de canalización', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '77']],
+            'FEC_QUEJA' => ['Fecha de la queja', 'fecha', ['grilla' => true]],
+            'DES_RESPUESTA' => ['Acción de respuesta', 'area', ['max' => 4000, 'seccion' => 'Atención']],
+            'EST_ATENDIDO' => ['Estado de atención', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '78', 'seccion' => 'Atención']],
+            'FEC_ATENDIDO' => ['Fecha de atención', 'fecha', ['grilla' => true, 'seccion' => 'Atención']],
+            'EST_QUEJA' => ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true, 'seccion' => 'Atención']],
+        ],
+        'orden' => [['IDE_GESTION_QUEJAS', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //LA ACTIVIDAD PROGRAMADA SOLO SE LLENA CUANDO EL TIPO ES "ACTIVIDAD PROGRAMADA"
+    'PROY_GESTION_ACTIVIDADES' => [
+        'titulo' => 'Actividades de la comunidad', 'icono' => 'fa-calendar-days', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_ACTIVIDADES', 'id' => 'IDE_GESTION_ACTIVIDAD', 'sp' => 'dbo.SP_PROY_GESTION_ACTIVIDADES', 'estado' => 'EST_ACTIVIDAD',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'TIP_ACTIVIDAD', 'DES_ACTIV_PROGRAMADA', 'FEC_ACTIV_PROGRAMADA', 'DES_ACTIV_REALIZADA', 'FEC_ACTIV_REALIZADA', 'EST_ACTIVIDAD'],
+        'campos' => [
+            'TIP_ACTIVIDAD' => ['Tipo', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '75']],
+            'DES_ACTIV_PROGRAMADA' => ['Actividad programada', 'area', ['max' => 1000, 'grilla' => true]],
+            'FEC_ACTIV_PROGRAMADA' => ['Fecha programada', 'fecha', ['grilla' => true]],
+            'DES_ACTIV_REALIZADA' => ['Actividad realizada', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'FEC_ACTIV_REALIZADA' => ['Fecha realizada', 'fecha', ['grilla' => true]],
+            'EST_ACTIVIDAD' => $estado,
+        ],
+        'segun' => ['campo' => 'TIP_ACTIVIDAD', 'casos' => [
+            '1' => ['DES_ACTIV_PROGRAMADA' => '', 'FEC_ACTIV_PROGRAMADA' => ''],
+            '2' => [],
+        ]],
+        'principal' => 'DES_ACTIV_REALIZADA',
+        'orden' => [['IDE_GESTION_ACTIVIDAD', 'asc']],
+        'acciones' => [
+            ['Acta', 'fa-paperclip', 'gr-teal', 'Actas de la actividad', ['archivos' => 'PROY_GESTION_ACTIVIDADES']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
