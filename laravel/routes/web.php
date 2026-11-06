@@ -4,6 +4,7 @@ use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\CatalogosController;
 use App\Http\Controllers\IngresoController;
 use App\Http\Controllers\InicioController;
+use App\Http\Controllers\MigrarControlController;
 use App\Http\Controllers\ProyectoContratosController;
 use App\Http\Controllers\ProyectosController;
 use App\Http\Controllers\SeguridadController;
@@ -26,6 +27,7 @@ Route::middleware(['auth', 'gepro'])->group(function () {
     Route::get('/archivos/{tabla}/{registro}', [ArchivosController::class, 'index'])->where('tabla', '[A-Za-z_]+')->whereNumber('registro')->name('archivos.index');
     Route::get('/archivos/{archivo}/descargar', [ArchivosController::class, 'descargar'])->whereNumber('archivo')->name('archivos.descargar');
     Route::get('/proyectos/{proyecto}/contratos', [ProyectoContratosController::class, 'index'])->whereNumber('proyecto')->name('proyectos.contratos');
+    Route::get('/contratos/{contrato}/migrar-control', [MigrarControlController::class, 'index'])->whereNumber('contrato')->name('contratos.migrar-control');
 });
 
 //SISTEMA DE SEGURIDAD (ANTES sisSeguridad): USUARIO CON PERFIL DE ADMINISTRACION EN ESE SISTEMA

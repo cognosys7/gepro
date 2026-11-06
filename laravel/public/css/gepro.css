@@ -731,3 +731,19 @@ body.gp-embebido { background: #fff; }
     .op-hija { flex-wrap: wrap; padding-left: 20px; }
     .op-destino { flex-basis: 100%; order: 3; }
 }
+
+/* MIGRAR CONTROL DE ETAPAS */
+.mg-pantalla { display: grid; gap: 14px; max-width: 760px; margin: 0 auto; padding: 14px 20px 24px; }
+.mg-cuerpo { display: grid; gap: 12px; padding: 12px 14px 14px; }
+.mg-archivo { display: flex; align-items: center; gap: 12px; }
+.mg-archivo > i { color: #1f7a3d; font-size: 28px; }
+.mg-archivo > div { display: grid; gap: 2px; min-width: 0; }
+.mg-archivo strong { overflow-wrap: anywhere; }
+.mg-archivo span { color: var(--texto-suave); font-size: 12px; }
+.mg-vacio { margin: 0; color: var(--texto-suave); }
+.mg-acciones { display: flex; flex-wrap: wrap; gap: 8px; }
+.mg-acciones a.fm-boton { text-decoration: none; }
+.mg-lista { display: grid; gap: 6px; margin: 0; padding-left: 18px; line-height: 1.45; }
+.mg-confirma { display: flex; align-items: flex-start; gap: 8px; padding-top: 10px; border-top: 1px solid var(--borde); cursor: pointer; }
+.mg-confirma input { margin-top: 3px; }
+.mg-pie { display: flex; justify-content: flex-end; }

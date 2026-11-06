@@ -62,6 +62,7 @@ return [
             'CONT_DOCUMENTACION' => ['ContratoDocumentos', 'Documentos del contrato', 'dbo.CONT_DOCUMENTACION', 'IDE_CONT_DOCUM'],
             'CONT_CALIDAD' => ['ContratoEntregables', 'Entregables del contrato', 'dbo.CONT_CALIDAD', 'IDE_CONT_CALIDAD'],
             'PROY_CONT_COMP_CONTROL_DET' => ['ContratoControlDetalle', 'Control mensual del contrato', 'dbo.PROY_CONT_COMP_CONTROL_DET', 'IDE_CONT_ETAPA_CONTROL_DET'],
+            'migrar_CONT_ETAPA_CONTROL' => ['etl_FichaTecnica', 'Excel de control de etapas del contrato', 'dbo.PROYECTO_ACTIVIDAD', 'IDE_PROYECTO_ACTIVIDAD'],
             'PROY_CONT_AMPLIACION' => ['ContratoAmpliacion', 'Ampliación de plazo del contrato', 'dbo.PROY_CONT_AMPLIACION', 'IDE_CONT_AMPLIACION'],
             'PROY_COMP_SEGUIMIENTO' => ['ContratoComponenteSeguimiento', 'Seguimiento de la etapa del contrato', 'dbo.PROY_COMP_SEGUIMIENTO', 'IDE_SEGUIMIENTO'],
             'PROY_SEGUIMIENTO' => ['ProyectoSeguimiento', 'Seguimiento del proyecto', 'dbo.PROY_SEGUIMIENTO', 'IDE_SEGUIMIENTO'],

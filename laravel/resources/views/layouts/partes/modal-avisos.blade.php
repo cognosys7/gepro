@@ -23,7 +23,10 @@
         var cerrar = function () {
             if (modal.open) modal.close();
         };
-        modal.addEventListener('close', function () { marco.src = 'about:blank'; });
+        modal.addEventListener('close', function () {
+            marco.src = 'about:blank';
+            if (window.Livewire) Livewire.dispatch('gepro-modal-cerrada');
+        });
         document.getElementById('gp-modal-cerrar').addEventListener('click', cerrar);
         document.addEventListener('click', function (e) {
             var boton = e.target.closest('[data-modal-url]');
