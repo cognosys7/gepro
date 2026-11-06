@@ -151,6 +151,10 @@ class Seguridad
         if (preg_match('#(^|/)sisSeguridad/#i', $enlace)) {
             return route('seguridad.inicio');
         }
+        //GUIA DE USUARIO: EL ENLACE GUARDADO APUNTA AL PDF PUBLICADO EN EL SITIO DEL SISTEMA ACTUAL
+        if (preg_match('#SGPAM_archivos/Manual/#i', $enlace)) {
+            return route('guia.usuario');
+        }
         if (preg_match('/[?&]Pagina=([A-Za-z0-9_]+)/', $enlace, $m)) {
             //CATALOGOS (config/catalogos.php): TODOS EN LA MISMA PANTALLA DE LARAVEL
             if (Catalogo::existe($m[1])) {
@@ -159,6 +163,10 @@ class Seguridad
             //TABLEROS DE POWER BI (config/tableros.php)
             if (is_string(config('tableros.'.$m[1]))) {
                 return route('tableros.index', ['pagina' => $m[1]]);
+            }
+            //DESCARGAS DE EXCEL (config/descargas.php)
+            if (is_string(config('descargas.'.$m[1]))) {
+                return route('descargas.index', ['pagina' => $m[1]]);
             }
             $ruta = config('gepro.paginas_migradas.'.$m[1]);
             if ($ruta) {

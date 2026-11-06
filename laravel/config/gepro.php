@@ -52,6 +52,9 @@ return [
 
     // Archivos adjuntos (GEN_ARCHIVO): los mismos del sistema actual, en SGPAM_archivos/<carpeta>/.
     // Tabla => [carpeta, titulo, tabla de la base, clave]. Se suben con el prefijo DDMMAAAA_HHMMSS_.
+    // Guia de usuario del menu: PDF relativo a la carpeta de archivos (la de AMSAC; cada cliente pone la suya)
+    'guia_usuario' => env('GEPRO_GUIA_USUARIO', 'Manual/E0010_AMSAC_MANUAL_DE_USUARIO.pdf'),
+
     'archivos' => [
         'raiz' => env('GEPRO_ARCHIVOS', dirname(base_path()).DIRECTORY_SEPARATOR.'SGPAM_archivos'),
         'max_kb' => (int) env('GEPRO_ARCHIVOS_MAX_KB', 51200),
