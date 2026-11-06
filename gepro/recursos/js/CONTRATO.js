@@ -209,11 +209,3 @@ function AbrirContratoConcepto (PIDE, PIDE2)
 //    $.colorbox({width:"98%", height:"98%", iframe:true, escKey: false,overlayClose: false, href:"mainpage.php?Pagina=CONTRATO&Accion=GeneraForm&AccionLocal=1&PIDE="+PIDE+"&PIDE2="+PIDE2+"&SeleccionarID=1" });
     $('#cboxClose').remove();
 }
-
-
-function AbrirBIDM_GASTO_CONSOLIDA (PIDE, PIDE2)
-{
-    OcultaBOx();
-    $.colorbox({width:"100%", height:"100%", iframe:true, escKey: false,overlayClose: false, href:"mainpage.php?Pagina=BIDM_GASTO_CONSOLIDA&Accion=muestraVista&AccionLocal=2&PIDE="+PIDE });
-    $('#cboxClose').remove();
-}
