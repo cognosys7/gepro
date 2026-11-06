@@ -172,6 +172,9 @@ class ProyectosTabla extends Component
             return config('gepro.enlaces.ficha_tecnica').(int) $fila->IDE_PROYECTO.'.php';
         }
         [, , , $pagina, $parametros] = self::ACCIONES[$accion];
+        if ($accion === 'migrar') {
+            return route('proyectos.migrar-interesados', ['proyecto' => (int) $fila->IDE_PROYECTO, 'opcion' => $this->opcion]);
+        }
         //CONTRATOS DEL PROYECTO: YA ESTAN EN LARAVEL (ProyectoContratosTabla)
         if ($pagina === 'PROYECTO_ACTIVIDAD') {
             return route('proyectos.contratos', ['proyecto' => (int) $fila->IDE_PROYECTO, 'opcion' => $this->opcion, 'tipo' => (int) $parametros['Pfiltro']]);

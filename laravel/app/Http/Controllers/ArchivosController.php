@@ -25,7 +25,8 @@ class ArchivosController extends Controller
         $t = Archivos::tabla($tabla);
         abort_unless($t, 404);
         [, $titulo, $tablaBase, $clave] = $t;
-        abort_unless(DB::table($tablaBase)->where($clave, $registro)->exists(), 404);
+        //SIN TABLA BASE: ARCHIVO GENERAL DE LA ENTIDAD, SIEMPRE CON EL REGISTRO 1
+        abort_unless($tablaBase ? DB::table($tablaBase)->where($clave, $registro)->exists() : $registro === '1', 404);
 
         return view('archivos.index', ['tabla' => $tabla, 'registro' => $registro, 'titulo' => $titulo]);
     }

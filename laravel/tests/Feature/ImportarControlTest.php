@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Livewire\MigrarControlEtapas;
 use App\Support\Archivos;
+use App\Support\ExcelEtl;
 use App\Support\ImportarControl;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
@@ -130,7 +131,7 @@ class ImportarControlTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage('No se aplicó ningún cambio');
-        (new \ReflectionMethod(ImportarControl::class, 'ejecutarSp'))->invoke(null, 'sp_que_no_existe');
+        ExcelEtl::ejecutarSp('sp_que_no_existe');
     }
 
     public function test_la_pantalla_revisa_antes_de_migrar(): void

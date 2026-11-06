@@ -3,12 +3,7 @@
 namespace App\Support;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use PDOException;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use RuntimeException;
-use Throwable;
 
 /**
  * Importa el Excel de control de un contrato (antes migrar_Importar_SQLSERVERvista.php): las hojas 1, 2 y 3
@@ -41,70 +36,19 @@ class ImportarControl
     /** Los importes se guardan como numeric(18,4) */
     private const MAX_IMPORTE = 1.0E14;
 
-    /** Filas por INSERT: SQL Server admite 2100 parametros y la hoja Real tiene 26 columnas */
-    private const FILAS_POR_INSERT = 50;
-
     /** Lee las tres hojas: clave => filas [numero de fila => columna => texto]; omite las que no tienen contrato */
     public static function leer(string $ruta): array
     {
-        try {
-            $lector = IOFactory::createReaderForFile($ruta);
-            $nombres = $lector->listWorksheetNames($ruta);
-        } catch (Throwable $e) {
-            throw new RuntimeException('No se pudo abrir el archivo: no es un Excel válido.');
-        }
-        if (count($nombres) < 3) {
-            throw new RuntimeException('El archivo debe tener al menos tres hojas: programado, real y reprogramado.');
-        }
-        $lector->setReadDataOnly(true);
-        $lector->setLoadSheetsOnly(array_slice($nombres, 0, 3));
-        try {
-            $libro = $lector->load($ruta);
-        } catch (Throwable $e) {
-            throw new RuntimeException('No se pudo leer el archivo.');
-        }
-
-        $datos = [];
-        foreach (array_keys(self::HOJAS) as $i => $clave) {
-            $datos[$clave] = self::leerHoja($libro->getSheetByNameOrThrow($nombres[$i]), $clave, $nombres[$i]);
-        }
-        $libro->disconnectWorksheets();
-
-        return $datos;
-    }
-
-    private static function leerHoja(Worksheet $hoja, string $clave, string $nombre): array
-    {
-        $titulo = fn (string $c) => strtoupper(trim(strtok((string) $hoja->getCell($c)->getValue(), "\n") ?: ''));
-        if ($titulo('A1') !== 'CARGAR' || $titulo('C1') !== 'CONTRATO') {
-            throw new RuntimeException('La hoja "'.$nombre.'" no tiene el formato esperado: A1 debe ser CARGAR y C1 CONTRATO.');
-        }
-        $columnas = array_merge(self::COMUNES, self::HOJAS[$clave][3]);
-        $filas = [];
-        for ($n = 2, $ultima = $hoja->getHighestDataRow(); $n <= $ultima; $n++) {
-            $fila = [];
-            foreach ($columnas as $i => $columna) {
-                $fila[$columna] = self::texto($hoja, chr(65 + $i).$n);
+        $claves = array_keys(self::HOJAS);
+        $filas = ExcelEtl::leerHojas($ruta, 3, function ($hoja, $i, $nombre) use ($claves) {
+            if (ExcelEtl::titulo($hoja, 'A1') !== 'CARGAR' || ExcelEtl::titulo($hoja, 'C1') !== 'CONTRATO') {
+                throw new RuntimeException('La hoja "'.$nombre.'" no tiene el formato esperado: A1 debe ser CARGAR y C1 CONTRATO.');
             }
-            if ($fila['CONTRATO'] !== '') {
-                $filas[$n] = $fila;
-            }
-        }
 
-        return $filas;
-    }
+            return ExcelEtl::filas($hoja, array_merge(self::COMUNES, self::HOJAS[$claves[$i]][3]), 'CONTRATO');
+        });
 
-    /** Valor de la celda como texto: en las formulas, el que Excel dejo calculado */
-    private static function texto(Worksheet $hoja, string $celda): string
-    {
-        $c = $hoja->getCell($celda);
-        $valor = $c->isFormula() ? $c->getOldCalculatedValue() : $c->getValue();
-        if (is_float($valor)) {
-            //SIN NOTACION CIENTIFICA: LOS SP LO CONVIERTEN A numeric(18,4)
-            return rtrim(rtrim(sprintf('%.10F', $valor), '0'), '.');
-        }
-
-        return trim((string) $valor);
+        return array_combine($claves, $filas);
     }
 
     /**
@@ -227,11 +171,11 @@ class ImportarControl
 
         return DB::transaction(function () use ($datos, $revision) {
             foreach (self::HOJAS as $clave => [, $tabla, , $importes]) {
-                self::cargarEtl($tabla, $datos[$clave], array_merge(self::COMUNES, $importes));
+                ExcelEtl::cargar($tabla, $datos[$clave], array_merge(self::COMUNES, $importes));
             }
             foreach ([1, 2] as $pasada) {
                 foreach (self::HOJAS as [, , $sp]) {
-                    self::ejecutarSp($sp);
+                    ExcelEtl::ejecutarSp($sp);
                 }
             }
 
@@ -250,34 +194,5 @@ class ImportarControl
 
             return $resultado;
         });
-    }
-
-    private static function cargarEtl(string $tabla, array $filas, array $columnas): void
-    {
-        DB::statement('TRUNCATE TABLE dbo.'.$tabla);
-        $vacia = array_fill_keys($columnas, '');
-        foreach (array_chunk($filas, self::FILAS_POR_INSERT) as $grupo) {
-            DB::table('dbo.'.$tabla)->insert(array_map(fn ($f) => array_intersect_key($f, $vacia) + $vacia, $grupo));
-        }
-    }
-
-    /** El SP captura sus errores y deja abierta su transaccion: asi se nota que fallo */
-    private static function ejecutarSp(string $sp): void
-    {
-        $antes = (int) DB::selectOne('SELECT @@TRANCOUNT AS n')->n;
-        try {
-            $sentencia = DB::connection()->getPdo()->prepare('SET NOCOUNT ON; EXEC dbo.'.$sp);
-            $sentencia->execute();
-            while ($sentencia->nextRowset()) {
-            }
-            $correcto = (int) DB::selectOne('SELECT @@TRANCOUNT AS n')->n === $antes;
-        } catch (PDOException $e) {
-            //SQL SERVER AVISA AQUI CUANDO EL SP DEJO ABIERTA SU TRANSACCION
-            Log::error('Importar control: '.$sp, ['error' => $e->getMessage()]);
-            $correcto = false;
-        }
-        if (! $correcto) {
-            throw new RuntimeException('No se aplicó ningún cambio: el proceso de carga falló en la base de datos.');
-        }
     }
 }
