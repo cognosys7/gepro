@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Services\Seguridad;
-use App\Support\PuenteSesionLegado;
 use Illuminate\Http\Request;
 
 /**
@@ -20,8 +19,6 @@ class TablerosController extends Controller
         $perfil = $request->attributes->get('perfilGepro');
         $menu = $seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], $pagina);
         abort_unless($menu, 403, 'Su perfil no tiene acceso a esta opción.');
-        PuenteSesionLegado::marcarOpcion($menu['padre'], $menu['id'], $perfil['perfil'], (int) $seguridad->sistema());
-
         $grupo = $menu['padre'] !== $menu['id'] ? $seguridad->nombreOpcion($menu['padre']) : null;
 
         return view('tableros.index', [

@@ -134,12 +134,9 @@ class Seguridad
     }
 
     /**
-     * URL de una opcion: si su pagina ya esta en Laravel (config gepro.paginas_migradas) la ruta de
-     * Laravel, con los demas parametros del enlace (Opcion=110 -> ?opcion=110); si no, la del sistema
-     * actual. Los enlaces guardados son relativos a gepro/Vista/ ("Antirefresh.php?Pagina=X",
-     * "../../SisSeguridad/...") y, como en su menu (ConfigPages.php), las opciones de primer nivel
-     * llevan &Op=<opcion> y las de los niveles siguientes &Op=<grupo>&Oc=<opcion>: cada pagina del
-     * sistema actual valida el acceso con Oc.
+     * URL de una opcion: los enlaces guardados son del sistema anterior ("Antirefresh.php?Pagina=X"),
+     * asi que cada pagina se traduce a su ruta de Laravel, con los demas parametros del enlace
+     * (Opcion=110 -> ?opcion=110). Null si la opcion no abre nada (los grupos del menu).
      */
     public function url(object $o): ?string
     {
@@ -151,7 +148,7 @@ class Seguridad
         if (preg_match('#(^|/)sisSeguridad/#i', $enlace)) {
             return route('seguridad.inicio');
         }
-        //GUIA DE USUARIO: EL ENLACE GUARDADO APUNTA AL PDF PUBLICADO EN EL SITIO DEL SISTEMA ACTUAL
+        //GUIA DE USUARIO: EL ENLACE GUARDADO APUNTA AL PDF DE LA CARPETA DE ARCHIVOS
         if (preg_match('#SGPAM_archivos/Manual/#i', $enlace)) {
             return route('guia.usuario');
         }
@@ -176,28 +173,21 @@ class Seguridad
                 return route($ruta, array_change_key_case($parametros, CASE_LOWER));
             }
         }
-        if ((int) $o->OpcTipoEnlace === 1) {
-            $enlace .= (int) $o->OpcNivel === 1
-                ? '&Op='.(int) $o->IdOpcion
-                : '&Op='.(int) $o->OpcPadre.'&Oc='.(int) $o->IdOpcion;
-        }
-        if (preg_match('#^https?://#i', $enlace)) {
-            return $enlace;
-        }
-
-        return $this->urlLegado($enlace);
+        return preg_match('#^https?://#i', $enlace) ? $enlace : null;
     }
 
     /**
      * URL de una opcion del menu del sistema de seguridad: sus paginas (config gepro.seguridad.paginas) y
-     * su tablero de Power BI estan en Laravel; la descarga de la auditoria es un archivo externo; lo demas
-     * (la guia de usuario) es relativo a sisSeguridad/Vista/.
+     * su tablero de Power BI estan en Laravel; la descarga de la auditoria es un archivo externo.
      */
     public function urlSeguridad(object $o): ?string
     {
         $enlace = $this->enlace($o);
         if ($enlace === '') {
             return null;
+        }
+        if (preg_match('#SGPAM_archivos/Manual/#i', $enlace)) {
+            return route('seguridad.guia');
         }
         if (preg_match('/[?&]Pagina=([A-Za-z0-9_]+)/', $enlace, $m)) {
             if (in_array($m[1], (array) config('gepro.seguridad.paginas'), true)) {
@@ -211,11 +201,7 @@ class Seguridad
                 return $descarga;
             }
         }
-        if (preg_match('#^https?://#i', $enlace)) {
-            return $enlace;
-        }
-
-        return $this->urlLegado($enlace, (string) config('gepro.seguridad.legado_vista'));
+        return preg_match('#^https?://#i', $enlace) ? $enlace : null;
     }
 
     /**
@@ -259,25 +245,6 @@ class Seguridad
     public function nombreOpcion(int $id): string
     {
         return trim((string) DB::table('seguridad.tsopcion')->where('IdOpcion', $id)->value('OpcDescripcion'));
-    }
-
-    /**
-     * Resuelve un enlace relativo a gepro/Vista/ (u otra carpeta $base) del sistema actual
-     * ("../../SisSeguridad/x" -> /SisSeguridad/x)
-     */
-    public function urlLegado(string $relativo, ?string $base = null): string
-    {
-        $partes = explode('/', trim($base ?? config('gepro.legado_vista'), '/'));
-        [$ruta, $consulta] = array_pad(explode('?', $relativo, 2), 2, null);
-        foreach (explode('/', $ruta) as $p) {
-            if ($p === '..') {
-                array_pop($partes);
-            } elseif ($p !== '' && $p !== '.') {
-                $partes[] = $p;
-            }
-        }
-
-        return config('gepro.legado_url').'/'.implode('/', $partes).($consulta !== null ? '?'.$consulta : '');
     }
 
     /** Icono (Font Awesome 6) del grupo del menu segun su nombre */

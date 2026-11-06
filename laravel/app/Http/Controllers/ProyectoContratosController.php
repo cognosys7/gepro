@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Livewire\ProyectoContratosTabla;
 use App\Services\Seguridad;
-use App\Support\PuenteSesionLegado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -27,8 +26,6 @@ class ProyectoContratosController extends Controller
         $fila = DB::table('dbo.PROYECTO')->where('IDE_PROYECTO', $proyecto)->where('EST_PROYECTO', '<>', '2')
             ->first(['IDE_PROYECTO', 'COD_INTERNO', 'COD_UNICO', 'DES_LARGA_PROYECTO']);
         abort_unless($fila, 404);
-
-        PuenteSesionLegado::marcarOpcion($menu['padre'], $menu['id'], $perfil['perfil'], (int) $seguridad->sistema());
 
         return view('proyectos.contratos', [
             'titulo' => 'Contratos del proyecto',

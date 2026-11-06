@@ -1,5 +1,5 @@
 {{-- Ventana modal (iframe) y avisos flotantes: los usan layouts/app y layouts/embebido --}}
-{{-- VENTANA MODAL PARA LAS PANTALLAS DEL SISTEMA ACTUAL (botones con data-modal-url) --}}
+{{-- VENTANA MODAL PARA LAS PANTALLAS EMBEBIDAS (botones con data-modal-url) --}}
 <dialog class="gp-modal" id="gp-modal" aria-labelledby="gp-modal-titulo">
     <div class="gp-modal-cabecera">
         <span class="gp-modal-icono"><i class="fa-solid fa-window-restore"></i></span>
@@ -16,7 +16,7 @@
 
 <script>
     //VENTANA MODAL: ABRE EN UN IFRAME LAS PANTALLAS DEL SISTEMA ACTUAL. ESTAS SE CIERRAN CON SU PROPIO
-    //BOTON ENVIANDO postMessage('gepro:cerrar') (recursosAPP/recursos/js/ventana-modal.js)
+    //BOTON ENVIANDO postMessage('gepro:cerrar') (layouts/embebido)
     (function () {
         var modal = document.getElementById('gp-modal');
         var marco = document.getElementById('gp-modal-marco');

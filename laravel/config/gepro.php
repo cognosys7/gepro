@@ -4,10 +4,8 @@
 |--------------------------------------------------------------------------
 | GEPRO en Laravel
 |--------------------------------------------------------------------------
-| Mientras dure la migracion por modulos, Laravel convive con el sistema actual (PHP) sobre la
-| misma base BDGEPRO. Las opciones del menu que aun no estan en Laravel se abren en el sistema
-| actual, y el puente de sesion (App\Support\PuenteSesionLegado) mantiene al usuario dentro de
-| los dos sin volver a pedir la clave.
+| Los enlaces del menu guardados en seguridad.tsopcion son del sistema anterior: Seguridad::url() los
+| traduce a las rutas de Laravel.
 */
 
 return [
@@ -15,19 +13,7 @@ return [
     // seguridad.tssistema.sisabreviatura del sistema (el menu y los perfiles salen de ahi)
     'sistema' => 'GEPRO',
 
-    // Sistema actual: URL base (sin barra final) y carpeta de sus paginas
-    'legado_url' => rtrim((string) env('GEPRO_LEGADO_URL', 'http://localhost:8086'), '/'),
-    'legado_vista' => '/gepro/Vista/',
-
-    // Puente de sesion con el sistema actual (se apaga en las pruebas automaticas)
-    'puente' => (bool) env('GEPRO_PUENTE', true),
-
-    // Sesion del sistema actual: nombre de la cookie (session.name) y carpeta de las sesiones
-    'legado_sesion' => env('GEPRO_LEGADO_SESION', 'GEPROSESSID'),
-    'legado_sesion_ruta' => env('GEPRO_LEGADO_SESION_RUTA', ini_get('session.save_path') ?: null),
-
-    // Paginas ya migradas: Pagina del sistema actual => nombre de la ruta de Laravel.
-    // El menu las abre en Laravel; las demas siguen en el sistema actual.
+    // Pagina del menu => nombre de la ruta de Laravel (las demas salen de catalogos, tableros y descargas)
     'paginas_migradas' => [
         'PROYECTO' => 'proyectos.index',
     ],
@@ -37,7 +23,8 @@ return [
     'seguridad' => [
         'sistema' => env('GEPRO_SEGURIDAD_SISTEMA', 'GESUSU'),
         'perfiles' => ['ADMINISTRADOR', 'GESTOR DE USUARIOS'],
-        'legado_vista' => '/sisSeguridad/Vista/',
+        // Guia de usuario del menu de seguridad: PDF relativo a la carpeta de archivos
+        'guia' => env('GEPRO_SEGURIDAD_GUIA', 'Manual/AMSAC_Manual_Usuario_SGPAM-Seguridad.pdf'),
         // Paginas del menu de seguridad que ya estan en Laravel (/seguridad/{Pagina})
         'paginas' => ['Usuarios', 'Perfil', 'Acceso', 'Opcion', 'Sistema'],
         // Opciones del menu que solo descargan un archivo (PEX_SEG_AUDITORIA: Excel publicado por AMSAC)

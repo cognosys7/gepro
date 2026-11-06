@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Auth\LegadoUserProvider;
 use App\Services\Seguridad;
-use App\Support\PuenteSesionLegado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -61,11 +60,11 @@ class IngresoController extends Controller
             throw ValidationException::withMessages(['usuario' => 'Su usuario no tiene un perfil activo en GEPRO.']);
         }
 
-        //CLAVE IGUAL AL USUARIO: EL SISTEMA ACTUAL OBLIGA A CAMBIARLA (PANTALLA "Clave" DE intranet)
-        $cambiarClave = LegadoUserProvider::usuarioIngresado($datos['usuario']) === LegadoUserProvider::limpiar($datos['clave']);
-        PuenteSesionLegado::abrir($usuario, $cambiarClave);
-        if ($cambiarClave) {
-            return redirect()->away(config('gepro.legado_url').'/intranet/Vista/AntiRefresh.php?Pagina=Clave');
+        //CLAVE IGUAL AL USUARIO: HAY QUE CAMBIARLA ANTES DE SEGUIR (middleware ClaveObligatoria)
+        if (LegadoUserProvider::usuarioIngresado($datos['usuario']) === LegadoUserProvider::limpiar($datos['clave'])) {
+            $request->session()->put('cambiar_clave', true);
+
+            return redirect()->route('clave');
         }
 
         return redirect()->intended(route('inicio'));
@@ -76,7 +75,6 @@ class IngresoController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        PuenteSesionLegado::cerrar();
 
         return redirect()->route('login');
     }

@@ -112,14 +112,7 @@ class CatalogoTabla extends Component
         if (isset($accion['catalogo'])) {
             return route('catalogos.index', ['pagina' => $accion['catalogo'], 'de' => $id]);
         }
-        [$pagina, $parametros] = $accion['legado'];
-        $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2];
-        foreach ($parametros as $nombre => $valor) {
-            $consulta[$nombre] = str_replace(['{id}', '{de}'], [$id, (string) $this->de], (string) $valor);
-        }
-        $consulta['vmSinCabecera'] = 1;
-
-        return app(Seguridad::class)->urlLegado('mainpage.php?'.http_build_query($consulta));
+        return '';
     }
 
     public function def(): array

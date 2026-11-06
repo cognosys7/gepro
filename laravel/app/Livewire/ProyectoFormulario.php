@@ -131,20 +131,13 @@ class ProyectoFormulario extends Component
         $this->resetValidation();
     }
 
-    /** URL de una pantalla relacionada del sistema actual para el proyecto que se edita */
+    /** URL de una pantalla relacionada (config/catalogos.php) para el proyecto que se edita */
     public function urlRelacionada(string $pagina): ?string
     {
         if ($this->idProyecto === null || ! array_key_exists($pagina, self::RELACIONADAS)) {
             return null;
         }
-        //LAS QUE YA ESTAN EN LARAVEL (config/catalogos.php)
-        if (\App\Support\Catalogo::existe($pagina)) {
-            return route('catalogos.index', ['pagina' => $pagina, 'de' => $this->idProyecto]);
-        }
-
-        return app(Seguridad::class)->urlLegado('mainpage.php?'.http_build_query([
-            'Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2, 'PIDE' => $this->idProyecto, 'vmSinCabecera' => 1,
-        ]));
+        return route('catalogos.index', ['pagina' => $pagina, 'de' => $this->idProyecto]);
     }
 
     public function bloqueado(string $campo): bool
