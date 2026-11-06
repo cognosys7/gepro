@@ -41,6 +41,8 @@ El funcionamiento de las páginas (Antirefresh, mainpage, LN/Vista, `Accion` vs 
 **Menú (sistema 30, `/gepro`):** 60 páginas activas de 136 vistas. Cuatro opciones del menú no tienen vista (`GEN_INTERVENCION`, `GEN_INTERVENCION_COMP`, `GEN_MODO_EJECUCION`, `X`); las tres primeras ya están en Laravel como catálogos. `RPT_INTERVENCIONES` no está en el menú. Las vistas `migrar_*` se borraron (2026-11-06): esas importaciones ya están en Laravel.
 - Las vistas `PEX_*` descargan Excel desde `http://sgpam.amsac.pe/SGPAM_archivos/...` (dominio de AMSAC): las activas ya están en `laravel/config/descargas.php`; cambiar para Chancay.
 
+**Limpieza de `gepro/` (2026-11-06):** se borraron 131 archivos sin ningún enlace; 107 páginas dieron la misma respuesta en el puerto 8086 antes y después. Laravel ya no abre ninguna página antigua (`DescargasTest` lo comprueba en el menú), pero lo demás sigue porque el menú del sitio antiguo aún la enlaza: se borra al apagarlo. Las alertas `Controlador/LogicaNegocio/email/ALERTA_CONTRATO_*` (con sus `.bat`) no están en Laravel; hay que confirmar si el servidor del cliente las ejecuta.
+
 ## Plan (cada etapa en su rama y PR)
 
 1. Diagnóstico (este archivo).
