@@ -23,7 +23,9 @@
 |   automatico solo corre en los valores de 'calcular'. Combo con 'una_vez' => [valores]: cada valor
 |   lo puede tener un solo registro del mismo "de" (p. ej. el plazo contractual de un contrato).
 | - tipo buscador: para listas largas; se busca al escribir en 'lista' y se elige un resultado. Con
-|   'rellena' => [columna del formulario => columna de la lista] copia datos de la fila elegida.
+|   'rellena' => [columna del formulario => columna de la lista] copia datos de la fila elegida (si la
+|   columna es 'oculto', la copia el servidor al grabar). Con 'texto' => columna, muestra el texto guardado.
+| - numero con 'entero' => N: numero entero entre 0 y N (la capacidad de la columna).
 | - principal: dato que identifica el registro en la cabecera del formulario (por defecto, el primer texto).
 | - nuevo / editar / eliminar: lo que permite el sistema actual (botones y columnas de su grilla).
 | - unico_por_de: cada registro "de" admite uno solo vigente; despues no se ofrece Nuevo.
@@ -33,6 +35,10 @@
 */
 
 $estado = ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true]];
+
+//PERSONAL DEL EJECUTOR (GEN_RECURSO TIPO 3) Y SU NOMBRE EN UNA GRILLA
+$personalEjecutor = ['dbo.GEN_RECURSO', 'IDE_RECURSO', 'DES_RECURSO', 'EST_RECURSO', ['TIP_RECURSO' => '3']];
+$nombreRecurso = fn (string $columna) => '(SELECT R.DES_RECURSO FROM dbo.GEN_RECURSO R WHERE R.IDE_RECURSO = T.'.$columna.')';
 
 //GESTION SOCIAL: PROYECTO DE LA CABECERA Y DATOS DEL INTERESADO DE LA FILA
 $deProyecto = ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"];
@@ -894,6 +900,62 @@ return [
         'acciones' => [
             ['Contenido', 'fa-paperclip', 'gr-teal', 'Ver el contenido', ['campo' => 'DES_DOCUMENTO']],
         ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //IDE_CONTRATO GUARDA EL IDE_PROYECTO_ACTIVIDAD (ASI LO GRABA EL SISTEMA ACTUAL). EL NOMBRE DEL ENTREGABLE SE GUARDA EN LA
+    //FILA Y MANDA SOBRE EL DEL CATALOGO: 14 DE LAS 52 FILAS CONSERVAN UN TEXTO QUE YA NO COINCIDE CON GEN_ENTREGABLE
+    'CONT_CALIDAD' => [
+        'titulo' => 'Calidad de entregables', 'icono' => 'fa-thumbs-up', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONT_CALIDAD', 'id' => 'IDE_CONT_CALIDAD', 'sp' => 'dbo.SP_CONT_CALIDAD', 'estado' => 'EST_ENTREGABLE',
+        'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_CONTRATO',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],
+        'parametros' => ['IDE_CONTRATO', 'IDE_ENTREGABLE', 'DES_ENTREGABLE', 'NUM_REVISION', 'COD_INFORME', 'FEC_INFORME', 'IDE_REC_REVISADO', 'IDE_REC_VALIDADO',
+            'IDE_REC_APROBADO', 'DES_OBSERV_INFORME', 'CAN_OBSERVACIONES', 'EST_ENTREGABLE'],
+        'campos' => [
+            'DES_ENTREGABLE' => ['Entregable', 'texto', ['oculto' => true, 'grilla' => true]],
+            //COMO SU BUSQUEDA ACTUAL: CUALQUIER ENTREGABLE DE NIVEL 1, SIN FILTRAR POR LA FASE - COMPONENTE DEL CONTRATO
+            'IDE_ENTREGABLE' => ['Entregable', 'buscador', ['requerido' => true, 'texto' => 'DES_ENTREGABLE', 'rellena' => ['DES_ENTREGABLE' => 'DES_ENTREGABLE'],
+                'lista' => ['dbo.GEN_ENTREGABLE', 'IDE_ENTREGABLE', 'DES_ENTREGABLE', 'EST_ENTREGABLE', ['NUM_NIVEL' => 1]]]],
+            'NUM_REVISION' => ['N.º de revisión', 'numero', ['requerido' => true, 'entero' => 999, 'grilla' => true, 'buscar' => true]],
+            'COD_INFORME' => ['Código de informe', 'texto', ['requerido' => true, 'max' => 50, 'grilla' => true]],
+            'FEC_INFORME' => ['Fecha de informe', 'fecha', ['requerido' => true, 'grilla' => true, 'buscar' => true]],
+            'IDE_REC_REVISADO' => ['Administrador del contrato', 'combo', ['requerido' => true, 'lista' => $personalEjecutor]],
+            'IDE_REC_VALIDADO' => ['Personal que validó', 'combo', ['lista' => $personalEjecutor]],
+            'IDE_REC_APROBADO' => ['Personal que aprobó', 'combo', ['lista' => $personalEjecutor]],
+            //EN LA GRILLA VAN COMO EXPRESION PARA BUSCAR POR EL NOMBRE, COMO EN EL SISTEMA ACTUAL
+            'ADMINISTRADOR' => ['Administrador del contrato', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $nombreRecurso('IDE_REC_REVISADO')]],
+            'VALIDADOR' => ['Personal que validó', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $nombreRecurso('IDE_REC_VALIDADO')]],
+            'APROBADOR' => ['Personal que aprobó', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $nombreRecurso('IDE_REC_APROBADO')]],
+            'DES_OBSERV_INFORME' => ['Comentarios', 'area', ['max' => 1500]],
+            'CAN_OBSERVACIONES' => ['N.º de observaciones', 'numero', ['entero' => 999, 'grilla' => true, 'buscar' => true]],
+            'EST_ENTREGABLE' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '86', 'excluir' => [2]]],
+        ],
+        //LA TABLA 86 SOLO TIENE CONFORME Y OBSERVADO: EL ESTADO SE ELIGE AL REGISTRAR
+        'nuevo_valores' => ['EST_ENTREGABLE' => ''],
+        'principal' => 'IDE_ENTREGABLE',
+        'acciones' => [
+            ['Contenido', 'fa-list-check', 'gr-azul', 'Contenido observado del entregable', ['catalogo' => 'CONT_CAL_CONTENIDO']],
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del entregable', ['archivos' => 'CONT_CALIDAD']],
+        ],
+        'orden' => [['IDE_CONT_CALIDAD', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'CONT_CAL_CONTENIDO' => [
+        'titulo' => 'Contenido observado del entregable', 'icono' => 'fa-list-check', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.CONT_CAL_CONTENIDO', 'id' => 'IDE_CAL_CONTENIDO', 'sp' => 'dbo.SP_CONT_CAL_CONTENIDO', 'estado' => 'EST_CAL_CONTENIDO',
+        'de' => ['tabla' => 'dbo.CONT_CALIDAD', 'id' => 'IDE_CONT_CALIDAD', 'columna' => 'IDE_CONT_CALIDAD',
+            'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_INFORME)), ' · ', X.DES_ENTREGABLE)"],
+        'parametros' => ['IDE_CONT_CALIDAD', 'IDE_ENTREGABLE', 'DES_OBSERV_CONTENIDO', 'EST_CAL_CONTENIDO'],
+        'campos' => [
+            //LOS SUB-ENTREGABLES DEL ENTREGABLE QUE SE REVISA
+            'IDE_ENTREGABLE' => ['Contenido', 'combo', ['requerido' => true, 'grilla' => true, 'lista' => ['dbo.GEN_ENTREGABLE', 'IDE_ENTREGABLE', 'DES_ENTREGABLE', 'EST_ENTREGABLE'],
+                'filtro_sql' => ['GEN_IDE_ENTREGABLE = ? AND NUM_NIVEL = 2', ['{de.IDE_ENTREGABLE}']]]],
+            'DES_OBSERV_CONTENIDO' => ['Observación', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'EST_CAL_CONTENIDO' => $estado,
+        ],
+        'orden' => [['IDE_CAL_CONTENIDO', 'asc']],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
 

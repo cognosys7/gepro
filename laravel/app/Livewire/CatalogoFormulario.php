@@ -191,8 +191,14 @@ class CatalogoFormulario extends Component
     public function etiquetaBuscador(string $campo): string
     {
         $valor = trim((string) ($this->datos[$campo] ?? ''));
+        $c = $this->def()['campos'][$campo];
+        //'texto': EL NOMBRE GUARDADO EN LA FILA MANDA SOBRE EL DE LA LISTA (P. EJ. EL ENTREGABLE DE UNA REVISION)
+        $guardado = trim((string) ($this->datos[$c[2]['texto'] ?? ''] ?? ''));
+        if ($valor === '') {
+            return '';
+        }
 
-        return $valor === '' ? '' : Catalogo::etiquetaLista($this->def()['campos'][$campo], $valor);
+        return $guardado !== '' ? $guardado : Catalogo::etiquetaLista($c, $valor);
     }
 
     public function elegir(string $campo, string $clave): void
@@ -342,6 +348,25 @@ class CatalogoFormulario extends Component
         $this->resetValidation();
     }
 
+    /** 'rellena' hacia una columna oculta: no viene del navegador; si cambio la eleccion, se copia de la lista */
+    private function copiasOcultas(array $parametros, array $base): array
+    {
+        $campos = $this->def()['campos'];
+        foreach ($campos as $campo => $c) {
+            if ($c[1] !== 'buscador' || empty($c[2]['rellena']) || (string) ($parametros[$campo] ?? '') === (string) ($base[$campo] ?? '')) {
+                continue;
+            }
+            $fila = DB::table($c[2]['lista'][0])->where($c[2]['lista'][1], $parametros[$campo])->first();
+            foreach ($c[2]['rellena'] as $destino => $origen) {
+                if (! empty($campos[$destino][2]['oculto']) && array_key_exists($destino, $parametros)) {
+                    $parametros[$destino] = trim((string) ($fila->{$origen} ?? ''));
+                }
+            }
+        }
+
+        return $parametros;
+    }
+
     public function guardar(): void
     {
         if (! $this->puedeGrabar()) {
@@ -368,6 +393,7 @@ class CatalogoFormulario extends Component
             $editable = isset($def['campos'][$p]) && (! $this->bloqueado($p) || (in_array($p, $autoCalculados, true) && $this->puedeGrabar()));
             $parametros[$p] = $editable ? trim((string) ($this->datos[$p] ?? '')) : ($base[$p] ?? '');
         }
+        $parametros = $this->copiasOcultas($parametros, $base);
         //AL REGISTRAR, LA JERARQUIA Y EL REGISTRO "de" FIJAN SUS COLUMNAS (AL EDITAR SE CONSERVAN)
         if ($this->idRegistro === null) {
             foreach ($this->valoresJerarquia() as $columna => $valor) {
@@ -393,6 +419,9 @@ class CatalogoFormulario extends Component
             $r = [! empty($o['requerido']) && $this->visible($campo) ? 'required' : 'nullable'];
             if ($tipo === 'numero') {
                 $r[] = 'numeric';
+                if (! empty($o['entero'])) {
+                    array_push($r, 'integer', 'between:0,'.$o['entero']);
+                }
             } elseif ($tipo === 'fecha') {
                 $r[] = 'date_format:Y-m-d';
             } elseif ($tipo === 'combo') {
