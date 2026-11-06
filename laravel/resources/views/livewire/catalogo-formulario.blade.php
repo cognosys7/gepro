@@ -2,8 +2,10 @@
     @if ($abierto)
         @php
             $puede = $this->puedeGrabar();
-            $tipos = ['texto' => 'text', 'area' => 'textarea', 'numero' => 'number', 'combo' => 'select', 'fecha' => 'date'];
-            $principal = collect($def['campos'])->filter(fn ($c) => in_array($c[1], ['texto', 'area'], true))->keys()->first();
+            $tipos = ['texto' => 'text', 'area' => 'textarea', 'numero' => 'number', 'combo' => 'select', 'fecha' => 'date', 'buscador' => 'buscador'];
+            //DATO QUE IDENTIFICA EL REGISTRO EN LA CABECERA: 'principal' O EL PRIMER TEXTO DEL FORMULARIO
+            $principal = $def['principal'] ?? collect($def['campos'])->filter(fn ($c) => in_array($c[1], ['texto', 'area'], true) && \App\Support\Catalogo::esColumna($c))->keys()->first();
+            $resumen = ($def['campos'][$principal ?? ''][1] ?? '') === 'buscador' ? $this->etiquetaBuscador($principal) : ($datos[$principal ?? ''] ?? '');
             //CAMPOS DEL FORMULARIO AGRUPADOS POR SECCION ('seccion' en el campo; por defecto "Datos")
             $secciones = [];
             foreach ($def['campos'] as $campo => $c) {
@@ -22,7 +24,7 @@
                     <span class="fm-panel-icono"><i class="fa-solid {{ ! $puede ? 'fa-eye' : ($idRegistro ? 'fa-pen-to-square' : 'fa-plus') }}"></i></span>
                     <div>
                         <h2>{{ $def['titulo'] }}</h2>
-                        <small>{{ ! $puede ? 'Solo consulta' : ($idRegistro ? \Illuminate\Support\Str::limit($datos[$principal] ?? '', 90) : 'Nuevo registro · los campos con * son obligatorios') }}</small>
+                        <small>{{ ! $puede ? 'Solo consulta' : ($idRegistro ? \Illuminate\Support\Str::limit($resumen, 90) : 'Nuevo registro · los campos con * son obligatorios') }}</small>
                     </div>
                     <button type="button" class="fm-panel-cerrar" wire:click="cerrar" title="Cerrar (Esc)">&times;</button>
                 </div>
@@ -51,7 +53,7 @@
                                             'opciones' => $combos[$campo] ?? null,
                                             'maxlength' => $o['max'] ?? null,
                                             'step' => $tipo === 'numero' ? 'any' : null,
-                                            'clase' => $tipo === 'area' ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),
+                                            'clase' => in_array($tipo, ['area', 'buscador'], true) ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),
                                             'live' => ($conCalculo && in_array($tipo, ['numero', 'combo', 'fecha'], true)) || $campo === $campoSegun ? true : null,
                                             'auto' => ! empty($o['auto']) && $this->bloqueado($campo) && $puede ? true : null,
                                         ], fn ($v) => $v !== null),

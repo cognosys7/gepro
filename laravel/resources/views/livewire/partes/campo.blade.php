@@ -22,6 +22,32 @@
                 <option value="{{ $valor }}">{{ $texto }}</option>
             @endforeach
         </select>
+    @elseif ($c['tipo'] === 'buscador')
+        {{-- LISTAS LARGAS: SE BUSCA AL ESCRIBIR Y SE ELIGE UN RESULTADO --}}
+        @if (trim((string) ($datos[$nombre] ?? '')) !== '')
+            <div class="fm-elegido">
+                <span>{{ $this->etiquetaBuscador($nombre) }}</span>
+                @unless ($bloqueado)
+                    <button type="button" wire:click="quitar('{{ $nombre }}')" title="Cambiar"><i class="fa-solid fa-xmark"></i></button>
+                @endunless
+            </div>
+        @elseif (! $bloqueado)
+            @php($resultados = $this->resultados($nombre))
+            @php($escrito = trim((string) ($buscando[$nombre] ?? '')))
+            <input id="{{ $id }}" type="search" autocomplete="off" placeholder="Escriba para buscar…"
+                wire:model.live.debounce.300ms="buscando.{{ $nombre }}" wire:keydown.enter.prevent>
+            @if (mb_strlen($escrito) >= 2)
+                <ul class="fm-resultados">
+                    @forelse ($resultados as $clave => $texto)
+                        <li wire:key="res-{{ $nombre }}-{{ $clave }}">
+                            <button type="button" wire:click="elegir('{{ $nombre }}', {{ \Illuminate\Support\Js::from((string) $clave) }})">{{ $texto }}</button>
+                        </li>
+                    @empty
+                        <li class="fm-sin-resultados">Sin resultados.</li>
+                    @endforelse
+                </ul>
+            @endif
+        @endif
     @else
         <input id="{{ $id }}" type="{{ $c['tipo'] }}" {{ $modelo }}="datos.{{ $nombre }}" @disabled($bloqueado)
             @isset($extra['maxlength']) maxlength="{{ $extra['maxlength'] }}" @endisset

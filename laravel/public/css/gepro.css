@@ -556,6 +556,16 @@ a { color: var(--azul); }
 .fm-campo { min-width: 0; }
 .fm-campo.fm-ancho { grid-column: span 2; }
 .fm-campo.fm-completo { grid-column: 1 / -1; }
+/* Campo con busqueda al escribir (listas largas: UBIGEO, comunidades) */
+.fm-elegido { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 7px 10px; border: 1px solid var(--borde); border-radius: 4px; background: #f4f8fb; }
+.fm-elegido span { min-width: 0; overflow-wrap: anywhere; }
+.fm-elegido button { flex: none; width: 24px; height: 24px; border: 0; border-radius: 4px; background: transparent; color: var(--texto-suave); cursor: pointer; }
+.fm-elegido button:hover { background: #e3ebf2; color: var(--texto); }
+.fm-resultados { max-height: 220px; margin: 4px 0 0; padding: 0; overflow-y: auto; border: 1px solid var(--borde); border-radius: 4px; background: #fff; list-style: none; }
+.fm-resultados button { display: block; width: 100%; padding: 7px 10px; border: 0; background: transparent; color: var(--texto); font: inherit; text-align: left; cursor: pointer; }
+.fm-resultados button:hover,
+.fm-resultados button:focus { background: #e8f4fb; }
+.fm-sin-resultados { padding: 7px 10px; color: var(--texto-suave); }
 .fm-campo label { display: block; margin-bottom: 5px; font-size: 12px; font-weight: 700; color: var(--texto); }
 .fm-campo .fm-candado { margin-left: 4px; font-size: 10px; color: #9aa7b4; }
 .fm-campo input,

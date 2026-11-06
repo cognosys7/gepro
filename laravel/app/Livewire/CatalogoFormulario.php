@@ -22,6 +22,7 @@ use RuntimeException;
  * - en las pantallas que dependen de otro registro ('de'), su columna toma el id de ese registro;
  * - 'calculo' => clase con calcular(datos, de): recalcula montos al escribir (p. ej. control mensual);
  * - 'segun': campos que se muestran (y su etiqueta) segun el valor de otro campo (p. ej. el tipo de ampliacion);
+ * - tipo 'buscador': listas largas en las que se busca al escribir; 'rellena' copia columnas de la fila elegida;
  * - el perfil "CONSULTA TOTAL" o un catalogo sin edicion abren el formulario solo para ver.
  */
 class CatalogoFormulario extends Component
@@ -35,6 +36,9 @@ class CatalogoFormulario extends Component
     public ?string $idRegistro = null;
 
     public array $datos = [];
+
+    /** Texto escrito en los campos 'buscador': campo => texto */
+    public array $buscando = [];
 
     /** Catalogos jerarquicos: registro padre bajo el que se registra (null = raiz) */
     #[Locked]
@@ -167,6 +171,55 @@ class CatalogoFormulario extends Component
         return $opciones;
     }
 
+    /** Definicion del campo si es un 'buscador' que se puede cambiar */
+    private function buscador(string $campo): ?array
+    {
+        $c = $this->def()['campos'][$campo] ?? null;
+
+        return $c && $c[1] === 'buscador' && ! $this->bloqueado($campo) ? $c : null;
+    }
+
+    /** Filas que coinciden con lo escrito en un campo 'buscador' (desde dos letras) */
+    public function resultados(string $campo): array
+    {
+        $c = $this->buscador($campo);
+        $texto = trim((string) ($this->buscando[$campo] ?? ''));
+
+        return $c && mb_strlen($texto) >= 2 ? Catalogo::buscarLista($c, $texto, $this->filaDe()) : [];
+    }
+
+    public function etiquetaBuscador(string $campo): string
+    {
+        $valor = trim((string) ($this->datos[$campo] ?? ''));
+
+        return $valor === '' ? '' : Catalogo::etiquetaLista($this->def()['campos'][$campo], $valor);
+    }
+
+    public function elegir(string $campo, string $clave): void
+    {
+        $c = $this->buscador($campo);
+        if (! $c || ! Catalogo::enLista($c, $clave, $this->filaDe())) {
+            return;
+        }
+        $this->datos[$campo] = $clave;
+        $this->buscando[$campo] = '';
+        $this->resetValidation('datos.'.$campo);
+        //COLUMNAS QUE SE COPIAN DE LA FILA ELEGIDA (P. EJ. LAS COORDENADAS DEL UBIGEO)
+        if (! empty($c[2]['rellena'])) {
+            $fila = DB::table($c[2]['lista'][0])->where($c[2]['lista'][1], $clave)->first();
+            foreach ($c[2]['rellena'] as $destino => $origen) {
+                $this->datos[$destino] = trim((string) ($fila->{$origen} ?? ''));
+            }
+        }
+    }
+
+    public function quitar(string $campo): void
+    {
+        if ($this->buscador($campo)) {
+            $this->datos[$campo] = '';
+        }
+    }
+
     public function bloqueado(string $campo): bool
     {
         $c = $this->def()['campos'][$campo] ?? null;
@@ -192,6 +245,7 @@ class CatalogoFormulario extends Component
         $this->resetValidation();
         $this->idRegistro = null;
         $this->autoCalcular = true;
+        $this->buscando = [];
         $this->datos = array_fill_keys(array_keys($def['campos']), '');
         $this->datos[$def['estado']] = '1';
         //VALORES INICIALES Y LOS QUE PONE LA JERARQUIA (P. EJ. EL RUBRO SUPERIOR)
@@ -225,6 +279,7 @@ class CatalogoFormulario extends Component
         $this->resetValidation();
         $this->idRegistro = $id;
         $this->autoCalcular = true;
+        $this->buscando = [];
         $this->datos = $this->valores($fila, array_keys(array_filter($this->def()['campos'], fn ($c) => Catalogo::esColumna($c))));
         $this->abierto = true;
     }
@@ -342,6 +397,16 @@ class CatalogoFormulario extends Component
                 $r[] = 'date_format:Y-m-d';
             } elseif ($tipo === 'combo') {
                 $r[] = Rule::in(array_map('strval', array_keys($this->opcionesCampo($campo, $base[$campo] ?? null))));
+            } elseif ($tipo === 'buscador') {
+                //EL VALOR QUE YA TENIA EL REGISTRO SE CONSERVA AUNQUE HOY NO SE PUEDA ELEGIR
+                $c = $def['campos'][$campo];
+                $actual = (string) ($base[$campo] ?? '');
+                $de = $this->filaDe();
+                $r[] = function ($atributo, $valor, $falla) use ($c, $actual, $de) {
+                    if ((string) $valor !== $actual && ! Catalogo::enLista($c, (string) $valor, $de)) {
+                        $falla('El valor elegido no es válido.');
+                    }
+                };
             } else {
                 $r[] = 'string';
                 if (! empty($o['max'])) {

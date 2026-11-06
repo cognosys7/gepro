@@ -218,7 +218,7 @@ class CatalogoTabla extends Component
                             $q->orWhere('T.'.$columna, 'like', $patron);
                         } elseif (! empty($c[2]['buscar'])) {
                             //CODIGOS NUMERICOS QUE TAMBIEN SE BUSCAN (P. EJ. EL CODIGO DEL PROCESO)
-                            $q->orWhereRaw('CAST('.$this->expresion($columna, $c).' AS varchar(40)) LIKE ?', [$patron]);
+                            $q->orWhereRaw('CAST('.$this->expresion($columna, $c).' AS varchar(300)) LIKE ?', [$patron]);
                         }
                     }
                 });

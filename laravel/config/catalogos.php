@@ -22,10 +22,24 @@
 |   los campos de algun caso solo se muestran en el valor elegido de X (con esa etiqueta), y el calculo
 |   automatico solo corre en los valores de 'calcular'. Combo con 'una_vez' => [valores]: cada valor
 |   lo puede tener un solo registro del mismo "de" (p. ej. el plazo contractual de un contrato).
+| - tipo buscador: para listas largas; se busca al escribir en 'lista' y se elige un resultado. Con
+|   'rellena' => [columna del formulario => columna de la lista] copia datos de la fila elegida.
+| - principal: dato que identifica el registro en la cabecera del formulario (por defecto, el primer texto).
 | - nuevo / editar / eliminar: lo que permite el sistema actual (botones y columnas de su grilla).
 */
 
 $estado = ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true]];
+
+//GESTION SOCIAL: PROYECTO DE LA CABECERA Y DATOS DEL INTERESADO DE LA FILA
+$deProyecto = ['tabla' => 'dbo.PROYECTO', 'id' => 'IDE_PROYECTO', 'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_UNICO)), ' · ', X.DES_LARGA_PROYECTO)"];
+$deGestionSocial = ['tabla' => 'dbo.PROY_GESTION_SOCIAL', 'id' => 'IDE_GESTION_SOCIAL', 'columna' => 'IDE_GESTION_SOCIAL',
+    'titulo' => "CONCAT((SELECT TOP 1 C.DES_COMUNIDAD FROM dbo.GEN_COMUNIDAD C WHERE C.IDE_COMUNIDAD = X.IDE_COMUNIDAD), ' · ', (SELECT TOP 1 I.DES_INTERVENCION FROM dbo.GEN_INTERVENCION I WHERE I.IDE_INTERVENCION = X.IDE_ETAPA_CONTRATO))"];
+$delInteresado = fn (string $columna, string $union = '') => '(SELECT TOP 1 '.$columna.' FROM dbo.CONT_INTERESADOS CI '.$union.' WHERE CI.IDE_CONT_INTERESADO = T.IDE_CONT_INTERESADO)';
+$delUbigeo = fn (string $columna) => '(SELECT TOP 1 G.'.$columna.' FROM dbo.GEN_UBIGEO G WHERE G.COD_UBIGEO = T.COD_UBIGEO)';
+//INTERESADOS DE TODOS LOS CONTRATOS DE LOS PROYECTOS CON EL MISMO CODIGO UNICO (COMO SU BUSQUEDA ACTUAL)
+$interesadoDelProyecto = ['lista' => ['dbo.CONT_INTERESADOS', 'IDE_CONT_INTERESADO',
+        "CONCAT((SELECT TOP 1 R.DES_RECURSO FROM dbo.GEN_RECURSO R WHERE R.IDE_RECURSO = dbo.CONT_INTERESADOS.IDE_RECURSO), ' · ', DES_LOCALIZACION)", 'EST_CONT_INTERESADO'],
+    'filtro_sql' => ['IDE_CONTRATO IN (SELECT PA.IDE_PROYECTO_ACTIVIDAD FROM dbo.PROYECTO_ACTIVIDAD PA INNER JOIN dbo.PROYECTO P ON P.IDE_PROYECTO = PA.IDE_PROYECTO WHERE P.COD_UNICO = (SELECT Y.COD_UNICO FROM dbo.PROYECTO Y WHERE Y.IDE_PROYECTO = ?))', ['{de.IDE_PROYECTO}']]];
 
 return [
 
@@ -1060,6 +1074,155 @@ return [
         'orden' => [['IDE_SEGUIMIENTO', 'asc']],
         'acciones' => [
             ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del seguimiento', ['archivos' => 'PROY_SEGUIMIENTO']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //EN IDE_PROYECTO_ACTIVIDAD SE GUARDA EL IDE_PROYECTO (SU CLAVE FORANEA APUNTA A PROYECTO)
+    'PROY_ACT_UBIGEO' => [
+        'titulo' => 'Lugares beneficiados (UBIGEO)', 'icono' => 'fa-location-dot', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_ACT_UBIGEO', 'id' => 'IDE_PROY_ACT_UBIGEO', 'sp' => 'dbo.SP_PROY_ACT_UBIGEO', 'estado' => 'EST_PROY_ACT_UBIGEO',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO_ACTIVIDAD'],
+        'parametros' => ['IDE_PROYECTO_ACTIVIDAD', 'COD_UBIGEO', 'GEO_LONGITUD_UBICACION', 'GEO_LATITUD_UBICACION', 'EST_PROY_ACT_UBIGEO'],
+        'campos' => [
+            //SE PUEDE ELEGIR CUALQUIER NIVEL DEL UBIGEO, COMO EN SU BUSQUEDA ACTUAL (HAY LUGARES A NIVEL DE PROVINCIA)
+            'COD_UBIGEO' => ['UBIGEO', 'buscador', ['requerido' => true, 'grilla' => true, 'buscar' => true,
+                'lista' => ['dbo.GEN_UBIGEO', 'COD_UBIGEO', "CONCAT(LTRIM(RTRIM(COD_UBIGEO)), ' · ', CONCAT_WS(' - ', NULLIF(LTRIM(RTRIM(DES_DEPARTAMENTO)), ''), NULLIF(LTRIM(RTRIM(DES_PROVINCIA)), ''), NULLIF(LTRIM(RTRIM(DES_DISTRITO)), '')))", 'EST_UBIGEO'],
+                'rellena' => ['GEO_LONGITUD_UBICACION' => 'GEO_LONGITUD', 'GEO_LATITUD_UBICACION' => 'GEO_LATITUD']]],
+            'DES_DEPARTAMENTO' => ['Región', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delUbigeo('DES_DEPARTAMENTO')]],
+            'DES_PROVINCIA' => ['Provincia', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delUbigeo('DES_PROVINCIA')]],
+            'DES_DISTRITO' => ['Distrito', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delUbigeo('DES_DISTRITO')]],
+            'GEO_LONGITUD_UBICACION' => ['Longitud geográfica', 'texto', ['max' => 30, 'grilla' => true]],
+            'GEO_LATITUD_UBICACION' => ['Latitud geográfica', 'texto', ['max' => 30, 'grilla' => true]],
+            'EST_PROY_ACT_UBIGEO' => $estado,
+        ],
+        'principal' => 'COD_UBIGEO',
+        'orden' => [['IDE_PROY_ACT_UBIGEO', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    'PROY_GESTION_SOCIAL' => [
+        'titulo' => 'Gestión social (beneficiarios)', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_SOCIAL', 'id' => 'IDE_GESTION_SOCIAL', 'sp' => 'dbo.SP_PROY_GESTION_SOCIAL', 'estado' => 'EST_GESTION_SOCIAL',
+        'de' => $deProyecto + ['columna' => 'IDE_PROYECTO'],
+        //DES_UNIDAD_BENEFICIARIO NO ESTA EN EL FORMULARIO ACTUAL: SE CONSERVA
+        'parametros' => ['IDE_PROYECTO', 'IDE_COMUNIDAD', 'IDE_ETAPA_CONTRATO', 'NUM_BENEFICIARIOS', 'TIP_UNIDAD_BENEFICIARIO', 'DES_UNIDAD_BENEFICIARIO',
+            'EST_MATRIZ_RC', 'EST_ACTA_APROBACION', 'EST_GESTION_SOCIAL'],
+        'campos' => [
+            'DES_COMUNIDAD' => ['Comunidad / CC.PP.', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT TOP 1 C.DES_COMUNIDAD FROM dbo.GEN_COMUNIDAD C WHERE C.IDE_COMUNIDAD = T.IDE_COMUNIDAD)']],
+            'DES_INTERVENCION' => ['Fase - Componente', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT TOP 1 I.DES_INTERVENCION FROM dbo.GEN_INTERVENCION I WHERE I.IDE_INTERVENCION = T.IDE_ETAPA_CONTRATO)']],
+            'IDE_COMUNIDAD' => ['Comunidad / CC.PP.', 'buscador', ['requerido' => true,
+                'lista' => ['dbo.GEN_COMUNIDAD', 'IDE_COMUNIDAD', "CONCAT(LTRIM(RTRIM(DES_COMUNIDAD)), ' · ', (SELECT TOP 1 CONCAT_WS(' - ', NULLIF(LTRIM(RTRIM(U.DES_DEPARTAMENTO)), ''), NULLIF(LTRIM(RTRIM(U.DES_PROVINCIA)), ''), NULLIF(LTRIM(RTRIM(U.DES_DISTRITO)), '')) FROM dbo.GEN_UBIGEO U WHERE U.COD_UBIGEO = dbo.GEN_COMUNIDAD.COD_UBIGEO))", 'EST_COMUNIDAD']]],
+            'IDE_ETAPA_CONTRATO' => ['Fase - Componente', 'combo', ['requerido' => true,
+                'lista' => ['dbo.GEN_INTERVENCION', 'IDE_INTERVENCION', 'DES_INTERVENCION', 'EST_INTERVENCION', ['NUM_NIVEL' => '3', 'IDE_SECTOR' => '14']]]],
+            'NUM_BENEFICIARIOS' => ['Número de beneficiarios', 'numero', ['grilla' => true]],
+            'TIP_UNIDAD_BENEFICIARIO' => ['Tipo de beneficiarios', 'combo', ['requerido' => true, 'tabla' => '73']],
+            'EST_MATRIZ_RC' => ['Mapa de actores sociales', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '98']],
+            'EST_ACTA_APROBACION' => ['Existencia de actas', 'combo', ['requerido' => true, 'tabla' => '98']],
+            'EST_GESTION_SOCIAL' => $estado,
+        ],
+        'principal' => 'IDE_COMUNIDAD',
+        'orden' => [['IDE_GESTION_SOCIAL', 'asc']],
+        'acciones' => [
+            ['Beneficios', 'fa-thumbs-up', 'gr-verde', 'Beneficios de la comunidad', ['catalogo' => 'PROY_GESTION_BENEFICIOS']],
+            ['Interesados', 'fa-users', 'gr-violeta', 'Interesados de la comunidad', ['catalogo' => 'PROY_INTERESADOS_SOCIAL']],
+            ['Quejas', 'fa-thumbs-down', 'gr-rojo', 'Quejas de la comunidad', ['catalogo' => 'PROY_GESTION_QUEJAS']],
+            ['Actividades', 'fa-calendar-days', 'gr-azul', 'Actividades de la comunidad', ['catalogo' => 'PROY_GESTION_ACTIVIDADES']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //SU ESTADO SALE DE LA TABLA 106 (IMPLEMENTADO, EN EJECUCION...): AL REGISTRAR SE ELIGE, NO HAY UNO POR DEFECTO
+    'PROY_GESTION_BENEFICIOS' => [
+        'titulo' => 'Beneficios de la comunidad', 'icono' => 'fa-thumbs-up', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_BENEFICIOS', 'id' => 'IDE_BENEF_SOCIAL', 'sp' => 'dbo.SP_PROY_GESTION_BENEFICIOS', 'estado' => 'EST_BENEF_SOCIAL',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'IDE_CONCEPTO', 'CAN_CONCEPTO', 'FEC_INICIO', 'FEC_TERMINO', 'EST_BENEF_SOCIAL', 'DES_ACTIVIDAD'],
+        'nuevo_valores' => ['EST_BENEF_SOCIAL' => ''],
+        'campos' => [
+            'GRUPO' => ['Grupo de actividad', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => '(SELECT TOP 1 C.DES_CONCEPTO FROM dbo.GEN_CONCEPTO_SOCIAL C WHERE C.IDE_CONCEPTO = T.IDE_CONCEPTO)']],
+            'IDE_CONCEPTO' => ['Grupo de actividad', 'combo', ['requerido' => true,
+                'lista' => ['dbo.GEN_CONCEPTO_SOCIAL', 'IDE_CONCEPTO', 'DES_CONCEPTO', 'EST_CONCEPTO', ['NUM_NIVEL' => 12]]]],
+            'DES_ACTIVIDAD' => ['Actividad', 'area', ['requerido' => true, 'max' => 200, 'grilla' => true]],
+            'CAN_CONCEPTO' => ['Cantidad', 'numero', ['requerido' => true, 'grilla' => true]],
+            'FEC_INICIO' => ['Fecha de inicio', 'fecha', ['grilla' => true]],
+            'FEC_TERMINO' => ['Fecha de término', 'fecha', ['grilla' => true]],
+            'EST_BENEF_SOCIAL' => ['Estado', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '106', 'excluir' => [2]]],
+        ],
+        'orden' => [['IDE_BENEF_SOCIAL', 'asc']],
+        'acciones' => [
+            ['Archivo', 'fa-paperclip', 'gr-teal', 'Archivos adjuntos del beneficio', ['archivos' => 'PROY_GESTION_BENEFICIOS']],
+        ],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //LOS DATOS DEL INTERESADO SE MANTIENEN EN LOS INTERESADOS DEL CONTRATO (CONT_INTERESADOS)
+    'PROY_INTERESADOS_SOCIAL' => [
+        'titulo' => 'Interesados de la comunidad', 'icono' => 'fa-users', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_INTERESADOS_SOCIAL', 'id' => 'IDE_INTERESADO_SOCIAL', 'sp' => 'dbo.SP_PROY_INTERESADOS_SOCIAL', 'estado' => 'EST_INTERESADO_SOCIAL',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'IDE_CONT_INTERESADO', 'EST_INTERESADO_SOCIAL'],
+        'campos' => [
+            'IDE_CONT_INTERESADO' => ['Interesado', 'combo', ['requerido' => true] + $interesadoDelProyecto],
+            'DES_RECURSO' => ['Personal', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_RECURSO', 'INNER JOIN dbo.GEN_RECURSO R ON R.IDE_RECURSO = CI.IDE_RECURSO')]],
+            'DES_ROL' => ['Rol', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_ROL', 'INNER JOIN dbo.GEN_ROLES R ON R.IDE_ROL = CI.IDE_ROL')]],
+            'DES_CARGO' => ['Cargo', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('C.DES_CARGO', 'INNER JOIN dbo.GEN_CARGO C ON C.IDE_CARGO = CI.IDE_PUESTO')]],
+            'DES_LOCALIZACION' => ['Localización', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('CI.DES_LOCALIZACION')]],
+            'DES_TELEFONO' => ['Teléfono', 'texto', ['grilla' => true, 'expresion' => $delInteresado('CI.DES_TELEFONO')]],
+            'DES_REQUERIMIENTOS' => ['Requerimientos', 'texto', ['grilla' => true, 'expresion' => $delInteresado('CI.DES_REQUERIMIENTOS_PRIMORDIALES')]],
+            'DES_EXPECTATIVAS' => ['Expectativas', 'texto', ['grilla' => true, 'expresion' => $delInteresado('CI.DES_EXPECTATIVAS_PRINCIPALES')]],
+            'DES_TIPO' => ['Tipo', 'texto', ['grilla' => true, 'expresion' => $delInteresado('G.DES_ITEM', "INNER JOIN dbo.GEN_TABLAS G ON G.COD_TABLA = '71' AND G.COD_ITEM = CI.TIP_CLASIFICACION")]],
+            'EST_INTERESADO_SOCIAL' => $estado,
+        ],
+        'orden' => [['IDE_INTERESADO_SOCIAL', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //IDE_CENCOSTO_ASIGNADO NO ESTA EN EL FORMULARIO ACTUAL: SE CONSERVA
+    'PROY_GESTION_QUEJAS' => [
+        'titulo' => 'Quejas de la comunidad', 'icono' => 'fa-thumbs-down', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_QUEJAS', 'id' => 'IDE_GESTION_QUEJAS', 'sp' => 'dbo.SP_PROY_GESTION_QUEJAS', 'estado' => 'EST_QUEJA',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'DES_QUEJA', 'TIP_IMPACTO', 'TIP_CANALIZA', 'IDE_CENCOSTO_ASIGNADO', 'IDE_CONT_INTERESADO', 'FEC_QUEJA', 'EST_ATENDIDO',
+            'FEC_ATENDIDO', 'DES_RESPUESTA', 'EST_QUEJA'],
+        'campos' => [
+            'DES_RECURSO' => ['Interesado del contrato', 'texto', ['grilla' => true, 'buscar' => true, 'expresion' => $delInteresado('R.DES_RECURSO', 'INNER JOIN dbo.GEN_RECURSO R ON R.IDE_RECURSO = CI.IDE_RECURSO')]],
+            'IDE_CONT_INTERESADO' => ['Interesado del contrato', 'combo', ['requerido' => true] + $interesadoDelProyecto],
+            'DES_QUEJA' => ['Descripción de la queja', 'area', ['requerido' => true, 'max' => 2000, 'grilla' => true]],
+            'TIP_IMPACTO' => ['Tipo de impacto', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '76']],
+            'TIP_CANALIZA' => ['Tipo de canalización', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '77']],
+            'FEC_QUEJA' => ['Fecha de la queja', 'fecha', ['grilla' => true]],
+            'DES_RESPUESTA' => ['Acción de respuesta', 'area', ['max' => 4000, 'seccion' => 'Atención']],
+            'EST_ATENDIDO' => ['Estado de atención', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '78', 'seccion' => 'Atención']],
+            'FEC_ATENDIDO' => ['Fecha de atención', 'fecha', ['grilla' => true, 'seccion' => 'Atención']],
+            'EST_QUEJA' => ['Estado', 'combo', ['requerido' => true, 'tabla' => '99', 'grilla' => true, 'seccion' => 'Atención']],
+        ],
+        'orden' => [['IDE_GESTION_QUEJAS', 'asc']],
+        'nuevo' => true, 'editar' => true, 'eliminar' => true,
+    ],
+
+    //LA ACTIVIDAD PROGRAMADA SOLO SE LLENA CUANDO EL TIPO ES "ACTIVIDAD PROGRAMADA"
+    'PROY_GESTION_ACTIVIDADES' => [
+        'titulo' => 'Actividades de la comunidad', 'icono' => 'fa-calendar-days', 'acceso' => 'PROYECTO',
+        'tabla' => 'dbo.PROY_GESTION_ACTIVIDADES', 'id' => 'IDE_GESTION_ACTIVIDAD', 'sp' => 'dbo.SP_PROY_GESTION_ACTIVIDADES', 'estado' => 'EST_ACTIVIDAD',
+        'de' => $deGestionSocial,
+        'parametros' => ['IDE_GESTION_SOCIAL', 'TIP_ACTIVIDAD', 'DES_ACTIV_PROGRAMADA', 'FEC_ACTIV_PROGRAMADA', 'DES_ACTIV_REALIZADA', 'FEC_ACTIV_REALIZADA', 'EST_ACTIVIDAD'],
+        'campos' => [
+            'TIP_ACTIVIDAD' => ['Tipo', 'combo', ['requerido' => true, 'grilla' => true, 'tabla' => '75']],
+            'DES_ACTIV_PROGRAMADA' => ['Actividad programada', 'area', ['max' => 1000, 'grilla' => true]],
+            'FEC_ACTIV_PROGRAMADA' => ['Fecha programada', 'fecha', ['grilla' => true]],
+            'DES_ACTIV_REALIZADA' => ['Actividad realizada', 'area', ['requerido' => true, 'max' => 1000, 'grilla' => true]],
+            'FEC_ACTIV_REALIZADA' => ['Fecha realizada', 'fecha', ['grilla' => true]],
+            'EST_ACTIVIDAD' => $estado,
+        ],
+        'segun' => ['campo' => 'TIP_ACTIVIDAD', 'casos' => [
+            '1' => ['DES_ACTIV_PROGRAMADA' => '', 'FEC_ACTIV_PROGRAMADA' => ''],
+            '2' => [],
+        ]],
+        'principal' => 'DES_ACTIV_REALIZADA',
+        'orden' => [['IDE_GESTION_ACTIVIDAD', 'asc']],
+        'acciones' => [
+            ['Acta', 'fa-paperclip', 'gr-teal', 'Actas de la actividad', ['archivos' => 'PROY_GESTION_ACTIVIDADES']],
         ],
         'nuevo' => true, 'editar' => true, 'eliminar' => true,
     ],
