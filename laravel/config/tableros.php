@@ -18,7 +18,8 @@ return [
     // Tab.Fin. Detallado: GEPRO - Gastos_Costos_Proyectos publicado por Cognosys
     'PBI_FINANCIERO_DETALLADO' => env('GEPRO_PBI_FINANCIERO_DETALLADO', 'https://app.powerbi.com/view?r=eyJrIjoiOWY4MDg4YjEtNjIyMS00NjEzLTk4ZjgtOWVlMzg3ODJkNDU1IiwidCI6IjljOTkwMDYyLTFmMDEtNDE0MC1iY2U2LTcxNDlmMjRkMmM4YSIsImMiOjR9'),
     'PBI_PRY_3GESTION_SOCIAL' => env('GEPRO_PBI_PRY_3GESTION_SOCIAL', 'https://app.powerbi.com/view?r=eyJrIjoiMzQ1MTYxNGItNmRhYi00MmQ1LTk5ZWEtNWIwY2M2ODFiNzdkIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
-    'PBI_TABLEROS_SEGUIMIENTO' => env('GEPRO_PBI_TABLEROS_SEGUIMIENTO', 'https://app.powerbi.com/view?r=eyJrIjoiMDU0MzdjZGUtMzc4Zi00MzgzLTkwYjktNDYyMjI5ZTU5M2MzIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9&pageName=ReportSection'),
+    // Tableros Financieros: GEPRO - Reporte_Financiero_SIAF publicado por Cognosys
+    'PBI_TABLEROS_SEGUIMIENTO' => env('GEPRO_PBI_TABLEROS_SEGUIMIENTO', 'https://app.powerbi.com/view?r=eyJrIjoiZGEyMjFkYTMtYmY2Zi00YWU4LThhYjYtYTM1YmRkODlkNmU3IiwidCI6IjljOTkwMDYyLTFmMDEtNDE0MC1iY2U2LTcxNDlmMjRkMmM4YSIsImMiOjR9'),
     'PBI_PRY_CONT_21ETAPAS' => env('GEPRO_PBI_PRY_CONT_21ETAPAS', 'https://app.powerbi.com/view?r=eyJrIjoiYjhmMTc5MDYtMTJjNi00ZjdjLTk5OWMtNWI0MDU3ZmUwYjgxIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
     // Formatos F1, F2, F6: el tablero Tableros_BI/GEPRO_FORMATOS publicado por Cognosys, no el de AMSAC
     'PBI_PRY_2CONTRATOS' => env('GEPRO_PBI_PRY_2CONTRATOS', 'https://app.powerbi.com/view?r=eyJrIjoiNDU4NTgxY2EtOWVlNi00ZTUwLThmMGYtNTU4N2MwMWMzNThlIiwidCI6IjljOTkwMDYyLTFmMDEtNDE0MC1iY2U2LTcxNDlmMjRkMmM4YSIsImMiOjR9'),
