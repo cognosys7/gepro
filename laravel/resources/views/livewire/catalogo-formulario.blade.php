@@ -31,9 +31,10 @@
 
                 <div class="fm-panel-cuerpo">
                     @error('general')<p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}</p>@enderror
-                    @if ($errors->any() && ! $errors->has('general'))
-                        <p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> Revise los campos marcados.</p>
+                    @if (! empty($def['descripcion']) && ! $idRegistro)
+                        <p class="fm-intro"><i class="fa-solid fa-circle-info"></i> {{ $def['descripcion'] }}</p>
                     @endif
+                    @include('livewire.partes.resumen-errores', ['etiquetas' => collect($def['campos'])->keys()->mapWithKeys(fn ($c) => [$c => $this->etiqueta($c)])->all()])
                     @foreach ($secciones as $nombreSeccion => $camposSeccion)
                         <section class="fm-seccion">
                             <h3>
@@ -51,6 +52,7 @@
                                         'tipo' => $tipos[$tipo],
                                         'extra' => array_filter([
                                             'opciones' => $combos[$campo] ?? null,
+                                            'ayuda' => $o['ayuda'] ?? null,
                                             'maxlength' => $o['max'] ?? null,
                                             'step' => $tipo === 'numero' ? 'any' : null,
                                             'clase' => in_array($tipo, ['area', 'buscador'], true) ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),

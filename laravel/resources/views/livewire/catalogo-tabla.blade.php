@@ -101,7 +101,7 @@
                     <tr>
                         <td colspan="{{ count($columnas) + ($conAcciones ? 1 : 0) }}" class="gp-vacio">
                             <i class="fa-regular fa-folder-open"></i>
-                            {{ $noDisponible ?? ($buscar !== '' ? 'No hay registros que coincidan con la búsqueda.' : 'No hay registros.') }}
+                            {{ $noDisponible ?? ($buscar !== '' ? 'No hay registros que coincidan con la búsqueda.' : (empty($def['vacio']) || ! $this->puede('nuevo') ? 'No hay registros.' : $def['vacio'])) }}
                         </td>
                     </tr>
                 @endforelse

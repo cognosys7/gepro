@@ -19,9 +19,10 @@
 
                 <div class="fm-panel-cuerpo">
                     @error('general')<p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}</p>@enderror
-                    @if ($errors->any() && ! $errors->has('general'))
-                        <p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> Revise los campos marcados.</p>
+                    @if (! $idProyecto)
+                        <p class="fm-intro"><i class="fa-solid fa-circle-info"></i> Reúne en un solo lugar los datos, la ubicación y el seguimiento del proyecto.</p>
                     @endif
+                    @include('livewire.partes.resumen-errores', ['etiquetas' => $this->etiquetasError()])
                     @if ($idProyecto && $estado !== \App\Livewire\ProyectoFormulario::ESTADO_PROPIO)
                         <p class="fm-aviso"><i class="fa-solid fa-lock"></i> Los datos de origen del proyecto (códigos, descripción, montos, fechas y centro de costo) no se pueden modificar.</p>
                     @endif
@@ -31,34 +32,34 @@
                         <h3><i class="fa-solid fa-folder-open"></i> Datos generales</h3>
                         <div class="fm-campos">
                             @include('livewire.partes.campo', ['c' => $campo('COD_INTERNO', 'Código de proyecto', 'text', ['maxlength' => 12])])
-                            @include('livewire.partes.campo', ['c' => $campo('DES_LARGA_PROYECTO', 'Descripción larga *', 'textarea', ['maxlength' => 500, 'clase' => 'fm-completo'])])
-                            @include('livewire.partes.campo', ['c' => $campo('IDE_ETAPA_CONTRATO', 'Fase - componente *', 'select', ['opciones' => $combos['IDE_ETAPA_CONTRATO'], 'clase' => 'fm-ancho'])])
+                            @include('livewire.partes.campo', ['c' => $campo('DES_LARGA_PROYECTO', 'Nombre completo del proyecto *', 'textarea', ['ayuda' => 'El nombre oficial, tal como figura en el expediente.', 'maxlength' => 500, 'clase' => 'fm-completo'])])
+                            @include('livewire.partes.campo', ['c' => $campo('IDE_ETAPA_CONTRATO', 'Etapa actual del proyecto *', 'select', ['opciones' => $combos['IDE_ETAPA_CONTRATO'], 'clase' => 'fm-ancho'])])
                             <div class="fm-campo">
                                 <label>Estado</label>
                                 <input type="text" value="{{ $combos['EST_PROYECTO'][$estado] ?? $estado }}" disabled>
                             </div>
-                            @include('livewire.partes.campo', ['c' => $campo('IDE_PORTAFOLIO', 'Portafolio *', 'select', ['opciones' => $combos['IDE_PORTAFOLIO']])])
-                            @include('livewire.partes.campo', ['c' => $campo('IDE_PROGRAMA', 'Programa', 'select', ['opciones' => $combos['IDE_PROGRAMA'], 'clase' => 'fm-ancho'])])
+                            @include('livewire.partes.campo', ['c' => $campo('IDE_PORTAFOLIO', 'Portafolio *', 'select', ['ayuda' => 'Agrupa proyectos relacionados de una misma intervención.', 'opciones' => $combos['IDE_PORTAFOLIO']])])
+                            @include('livewire.partes.campo', ['c' => $campo('IDE_PROGRAMA', 'Programa', 'select', ['ayuda' => 'Conjunto mayor al que pertenece el proyecto. Ej.: una cuenca.', 'opciones' => $combos['IDE_PROGRAMA'], 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('IDE_CENCOSTO', 'Centro de costo', 'select', ['opciones' => $combos['IDE_CENCOSTO'], 'clase' => 'fm-ancho'])])
                         </div>
                     </section>
 
                     {{-- I. DESCRIPCION DEL PROYECTO --}}
                     <section class="fm-seccion">
-                        <h3><i class="fa-solid fa-location-dot"></i> I. Descripción del proyecto <small>Ubicación, área de intervención, cuenca hidrográfica, número de PAM's, stakeholder</small></h3>
+                        <h3><i class="fa-solid fa-location-dot"></i> Ubicación y alcance <small>Ubicación, área de intervención, cuenca hidrográfica, número de PAM's, stakeholder</small></h3>
                         <div class="fm-campos">
                             @include('livewire.partes.campo', ['c' => $campo('DES_UBICACION_PROYECTO', 'Ubicación del proyecto', 'textarea', ['maxlength' => 1000, 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('DES_AREA_INTERVENCION', 'Área de intervención ambiental (m²)', 'textarea', ['maxlength' => 1000, 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('DES_CUENCA_HIDROGRAFICA', 'Cuenca hidrográfica', 'textarea', ['maxlength' => 1000, 'clase' => 'fm-ancho'])])
-                            @include('livewire.partes.campo', ['c' => $campo('DES_STAKEHOLDER', 'Stakeholder', 'textarea', ['maxlength' => 1000, 'clase' => 'fm-ancho'])])
+                            @include('livewire.partes.campo', ['c' => $campo('DES_STAKEHOLDER', 'Actores clave del proyecto', 'textarea', ['ayuda' => 'Personas o grupos a los que afecta el proyecto. Ej.: Comunidad campesina de Quiulacocha.', 'maxlength' => 1000, 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('NUM_PAMS', 'N° de pasivos a remediar', 'number', ['min' => 0, 'step' => 1])])
-                            @include('livewire.partes.campo', ['c' => $campo('DES_ESTATUS', 'Componentes de remediación', 'textarea', ['maxlength' => 4000, 'filas' => 3, 'clase' => 'fm-completo'])])
+                            @include('livewire.partes.campo', ['c' => $campo('DES_ESTATUS', 'Componentes de remediación', 'textarea', ['ayuda' => 'Qué se va a remediar. Ej.: 28 bocaminas, 25 desmontes.', 'maxlength' => 4000, 'filas' => 3, 'clase' => 'fm-completo'])])
                         </div>
                     </section>
 
                     {{-- II. GESTION SOCIAL --}}
                     <section class="fm-seccion">
-                        <h3><i class="fa-solid fa-users"></i> II. Gestión social</h3>
+                        <h3><i class="fa-solid fa-users"></i> Gestión social</h3>
                         <div class="fm-campos">
                             @include('livewire.partes.campo', ['c' => $campo('DES_ACCION_GESTION_SOCIAL', 'Objetivo general de la gestión social', 'textarea', ['maxlength' => 4000, 'clase' => 'fm-completo'])])
                         </div>
@@ -66,7 +67,7 @@
 
                     {{-- III. PANTALLAS RELACIONADAS (SE ABREN EN LA VENTANA MODAL, ENCIMA DEL FORMULARIO) --}}
                     <section class="fm-seccion">
-                        <h3><i class="fa-solid fa-list-check"></i> III. Objetivos, acciones, oportunidades, costos y seguimiento <small>Describir los objetivos específicos, acciones, oportunidades de mejora, costos y seguimiento</small></h3>
+                        <h3><i class="fa-solid fa-list-check"></i> Seguimiento del proyecto <small>Describir los objetivos específicos, acciones, oportunidades de mejora, costos y seguimiento</small></h3>
                         @if ($idProyecto)
                             <div class="fm-enlaces">
                                 @foreach (\App\Livewire\ProyectoFormulario::RELACIONADAS as $pagina => [$titulo, $icono])
@@ -83,9 +84,9 @@
 
                     {{-- PROYECTO DE INVERSION PUBLICA --}}
                     <section class="fm-seccion">
-                        <h3><i class="fa-solid fa-briefcase"></i> Detalles del proyecto de inversión pública</h3>
+                        <h3><i class="fa-solid fa-briefcase"></i> Inversión pública</h3>
                         <div class="fm-campos">
-                            @include('livewire.partes.campo', ['c' => $campo('COD_UNICO', 'Código único', 'text', ['maxlength' => 10])])
+                            @include('livewire.partes.campo', ['c' => $campo('COD_UNICO', 'Código único', 'text', ['ayuda' => 'CUI del Banco de Inversiones.', 'maxlength' => 10])])
                             @include('livewire.partes.campo', ['c' => $campo('COD_SNIP', 'Código SNIP', 'text', ['maxlength' => 10])])
                             @include('livewire.partes.campo', ['c' => $campo('TIP_PROYECTO', 'Tipo de proyecto', 'select', ['opciones' => $combos['TIP_PROYECTO'], 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('IMP_APROBADO_LOC', 'Monto aprobado (S/)', 'number', ['min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])

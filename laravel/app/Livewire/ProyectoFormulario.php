@@ -179,12 +179,18 @@ class ProyectoFormulario extends Component
     {
         return [
             'datos.COD_INTERNO' => 'código', 'datos.COD_UNICO' => 'código único', 'datos.COD_SNIP' => 'código SNIP',
-            'datos.DES_LARGA_PROYECTO' => 'descripción larga', 'datos.DES_PROYECTO_ENGLISH' => 'descripción en inglés',
-            'datos.IDE_ETAPA_CONTRATO' => 'fase - componente', 'datos.IDE_PORTAFOLIO' => 'portafolio', 'datos.IDE_PROGRAMA' => 'programa',
+            'datos.DES_LARGA_PROYECTO' => 'nombre completo', 'datos.DES_PROYECTO_ENGLISH' => 'descripción en inglés',
+            'datos.IDE_ETAPA_CONTRATO' => 'etapa actual', 'datos.IDE_PORTAFOLIO' => 'portafolio', 'datos.IDE_PROGRAMA' => 'programa',
             'datos.IDE_CENCOSTO' => 'centro de costo', 'datos.TIP_PROYECTO' => 'tipo de proyecto', 'datos.NUM_PAMS' => 'número de pasivos',
             'datos.NUM_BENEFICIARIOS' => 'número de beneficiarios', 'datos.IMP_APROBADO_LOC' => 'monto aprobado',
             'datos.FEC_APROBACION' => 'fecha de aprobación', 'datos.FEC_INICIO_PROY' => 'fecha de inicio', 'datos.FEC_TERMINO_PROY' => 'fecha de término',
         ];
+    }
+
+    /** Nombre de cada campo para el resumen de lo que falta revisar */
+    public function etiquetasError(): array
+    {
+        return collect($this->nombres())->mapWithKeys(fn ($v, $k) => [substr($k, 6) => \Illuminate\Support\Str::ucfirst($v)])->all();
     }
 
     public function guardar(): void
@@ -225,7 +231,7 @@ class ProyectoFormulario extends Component
         try {
             if ($this->idProyecto === null) {
                 Procedimiento::grabar('dbo.SP_PROYECTO', 'Insert', $parametros);
-                $mensaje = 'Proyecto registrado.';
+                $mensaje = 'Proyecto registrado. Ahora puedes agregar sus contratos y su seguimiento.';
             } else {
                 Procedimiento::grabar('dbo.SP_PROYECTO', 'Update', ['pCodigo' => $this->idProyecto] + $parametros);
                 $mensaje = 'Proyecto actualizado.';

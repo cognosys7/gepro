@@ -54,5 +54,6 @@
             @isset($extra['min']) min="{{ $extra['min'] }}" @endisset
             @isset($extra['step']) step="{{ $extra['step'] }}" @endisset>
     @endif
+    @if (! empty($extra['ayuda']))<p class="fm-ayuda">{{ $extra['ayuda'] }}</p>@endif
     @if ($error)<p class="fm-error">{{ $error }}</p>@endif
 </div>

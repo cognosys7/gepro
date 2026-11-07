@@ -466,10 +466,10 @@ class CatalogoFormulario extends Component
                 } else {
                     Procedimiento::grabar($def['sp'], 'Insert', $codigo + $parametros);
                 }
-                $mensaje = 'Registro creado.';
+                $mensaje = $def['mensajes']['creado'] ?? 'Registro creado.';
             } else {
                 Procedimiento::grabar($def['sp'], 'Update', ['pCodigo' => $this->idRegistro] + $parametros);
-                $mensaje = 'Registro actualizado.';
+                $mensaje = $def['mensajes']['actualizado'] ?? 'Registro actualizado.';
             }
         } catch (RuntimeException $e) {
             throw ValidationException::withMessages(['general' => 'No se pudo grabar: '.$e->getMessage()]);

@@ -37,7 +37,12 @@ class Catalogo
     /** Campos que se muestran en la grilla */
     public static function columnasGrilla(array $def): array
     {
-        return array_filter($def['campos'], fn ($c) => ! empty($c[2]['grilla']));
+        //'en_grilla': TITULO CORTO DE LA COLUMNA CUANDO LA ETIQUETA DEL FORMULARIO ES UNA PREGUNTA
+        return array_map(function ($c) {
+            $c[0] = $c[2]['en_grilla'] ?? $c[0];
+
+            return $c;
+        }, array_filter($def['campos'], fn ($c) => ! empty($c[2]['grilla'])));
     }
 
     /** Con 'unico_por_de': si el registro "de" ya tiene el suyo vigente */
