@@ -22,8 +22,11 @@
 			DesviacionAutomatica ,
 			AccionCorrectiva ,
 			AccionEstado,
-			Componente 
-         FROM BIBD_PROY_ACCION_CORRECTIVA order by 1");	
+			T105.DES_ITEM AS Componente
+         FROM BIBD_PROY_ACCION_CORRECTIVA AS V
+         LEFT JOIN dbo.PROY_ACCION_CORRECTIVA AS T ON T.IDE_PROY_ACCION_CORRECTIVA = V.AccionIde
+         LEFT JOIN dbo.GEN_TABLAS AS T105 ON T105.COD_TABLA = 105 AND T105.COD_ITEM = T.TIP_COMPONENTE
+         order by 1");	
 		$stmt->execute();
 		$filas = $stmt->fetchAll(PDO::FETCH_ASSOC);			
 		$arreglo = array();

@@ -29,8 +29,11 @@
 			ValoracionDesc ,
 			AccionProcesoDesc ,
 			RiesgoEstado,
-			Componente 
-         FROM BIBD_PROY_OPORTUNIDAD_RIESGO order by 1");	
+			T105.DES_ITEM AS Componente
+         FROM BIBD_PROY_OPORTUNIDAD_RIESGO AS V
+         LEFT JOIN dbo.PROY_OPORTUNIDAD_RIESGO AS T ON T.IDE_PROY_OPORTUNIDAD = V.RiesgoIde
+         LEFT JOIN dbo.GEN_TABLAS AS T105 ON T105.COD_TABLA = 105 AND T105.COD_ITEM = T.TIP_COMPONENTE
+         order by 1");	
 		$stmt->execute();
 		$filas = $stmt->fetchAll(PDO::FETCH_ASSOC);			
 		$arreglo = array();

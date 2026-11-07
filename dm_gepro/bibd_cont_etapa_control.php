@@ -23,6 +23,8 @@
 			CtlEstado ,
 			CtlDetAnio ,
 			CtlDetMes ,
+			CtlDetMesProvision ,
+			CtlDetAnioProvision ,
 			CtlDetConceptoPago ,
 			CtlDetPorcentajeAvance ,
 			CtlDetMontoBruto ,
@@ -55,6 +57,8 @@
 				$elemento['CtlEstado'] = $fila['CtlEstado'];  
 				$elemento['CtlDetAnio'] = $fila['CtlDetAnio'];  
 				$elemento['CtlDetMes'] = $fila['CtlDetMes'];  
+				$elemento['CtlDetMesProvision'] = $fila['CtlDetMesProvision'];
+				$elemento['CtlDetAnioProvision'] = $fila['CtlDetAnioProvision'];
 				$elemento['CtlDetConceptoPago'] = $fila['CtlDetConceptoPago'];  
 				$elemento['CtlDetPorcentajeAvance'] = $fila['CtlDetPorcentajeAvance'];  
 				$elemento['CtlDetMontoBruto'] = $fila['CtlDetMontoBruto'];  
