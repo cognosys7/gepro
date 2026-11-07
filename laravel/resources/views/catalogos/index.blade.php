@@ -18,7 +18,7 @@
                             @endif
                         @endforeach
                     @else
-                        {{ $def['titulo'] }}.
+                        {{ $def['descripcion'] ?? $def['titulo'].'.' }}
                         @if (empty($def['nuevo']) && empty($def['editar']))
                             Solo consulta: estos datos no se registran desde GEPRO.
                         @endif

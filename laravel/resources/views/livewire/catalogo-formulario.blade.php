@@ -16,7 +16,9 @@
             $conCalculo = ! empty($def['calculo']);
             //CON 'segun', LOS CAMPOS SE MUESTRAN AL ELEGIR (LA LISTA DE 'segun' ENVIA SU VALOR AL MOMENTO)
             $campoSegun = $def['segun']['campo'] ?? null;
-            $ancho = count($def['campos']) > 10 ? '' : 'fm-panel-angosto';
+            //MODAL ANCHO SI TIENE MUCHOS CAMPOS O ADMITE TEXTOS LARGOS
+            $textoLargo = collect($def['campos'])->contains(fn ($c) => $c[1] === 'area' && (int) ($c[2]['max'] ?? 0) >= 500);
+            $ancho = count($def['campos']) > 10 || $textoLargo ? '' : 'fm-panel-angosto';
         @endphp
         <div class="fm-fondo" wire:keydown.escape="cerrar">
             <form class="fm-panel {{ $ancho }}" wire:submit="guardar" novalidate>

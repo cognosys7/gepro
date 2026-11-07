@@ -231,7 +231,7 @@ class ProyectoFormulario extends Component
         try {
             if ($this->idProyecto === null) {
                 Procedimiento::grabar('dbo.SP_PROYECTO', 'Insert', $parametros);
-                $mensaje = 'Proyecto registrado. Ahora puedes agregar sus contratos y su seguimiento.';
+                $mensaje = 'Proyecto registrado. Ahora puede agregar sus contratos y su seguimiento.';
             } else {
                 Procedimiento::grabar('dbo.SP_PROYECTO', 'Update', ['pCodigo' => $this->idProyecto] + $parametros);
                 $mensaje = 'Proyecto actualizado.';

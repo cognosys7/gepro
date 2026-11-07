@@ -152,7 +152,7 @@
                                 @error('datos.destino')<p class="fm-error">{{ $message }}</p>@enderror
                             </div>
                             <div @class(['fm-campo', 'fm-con-error' => $errors->has('datos.lightbox')])>
-                                <label>Lightbox *</label>
+                                <label>Abrir en ventana emergente *</label>
                                 <div class="fm-opciones">
                                     <label><input type="radio" wire:model="datos.lightbox" value="1"> Sí</label>
                                     <label><input type="radio" wire:model="datos.lightbox" value="0"> No</label>

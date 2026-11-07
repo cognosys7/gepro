@@ -823,9 +823,9 @@ return [
 
     'PROY_RIESGO_PROBLEMA' => [
         'titulo' => 'Riesgos del contrato', 'icono' => 'fa-triangle-exclamation', 'acceso' => 'PROYECTO',
-        'descripcion' => 'Anticipa lo que puede retrasar o encarecer el contrato y define cómo responder.',
-        'vacio' => 'Aún no hay riesgos registrados. Registra el primero para empezar a controlarlos.',
-        'mensajes' => ['creado' => 'Riesgo registrado. Para asignarle responsables, usa «Recursos del riesgo» en su fila.', 'actualizado' => 'Riesgo actualizado.'],
+        'descripcion' => 'Anticipe lo que puede retrasar o encarecer el contrato y defina cómo responder.',
+        'vacio' => 'Aún no hay riesgos registrados. Registre el primero para empezar a controlarlos.',
+        'mensajes' => ['creado' => 'Riesgo registrado. Para asignarle responsables, use «Recursos del riesgo» en su fila.', 'actualizado' => 'Riesgo actualizado.'],
         'tabla' => 'dbo.PROY_RIESGO_PROBLEMA', 'id' => 'IDE_RIESGO_PROB', 'sp' => 'dbo.SP_PROY_RIESGO_PROBLEMA', 'estado' => 'EST_RIESGO',
         'de' => ['tabla' => 'dbo.PROYECTO_ACTIVIDAD', 'id' => 'IDE_PROYECTO_ACTIVIDAD', 'columna' => 'IDE_PROYECTO_ACTIVIDAD',
             'titulo' => "CONCAT(LTRIM(RTRIM(X.COD_PROYECTO)), ' · ', X.DES_PROYECTO)"],

@@ -265,7 +265,7 @@ class Usuarios extends Component
 
                     return;
                 }
-                $mensaje = 'Usuario registrado. Su clave es su DNI; asígnele sus perfiles.';
+                $mensaje = 'Usuario registrado. Su clave inicial es su DNI. Asígnele sus perfiles desde su fila.';
             }
         } catch (RuntimeException $e) {
             $this->addError('general', 'No se pudo grabar: '.$e->getMessage());

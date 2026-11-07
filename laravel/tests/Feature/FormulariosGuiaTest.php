@@ -34,7 +34,7 @@ class FormulariosGuiaTest extends TestCase
 
         Livewire::test(CatalogoFormulario::class, ['pagina' => 'PROY_RIESGO_PROBLEMA', 'de' => $this->contrato(false)])
             ->call('nuevo')
-            ->assertSee('Anticipa lo que puede retrasar')
+            ->assertSee('Anticipe lo que puede retrasar')
             ->assertSee('¿Qué podría pasar?')
             ->assertSee('Identificador corto dentro del contrato')
             ->assertSee('Evitar: eliminar la causa')
@@ -79,6 +79,87 @@ class FormulariosGuiaTest extends TestCase
             ->assertDontSee('Revise los campos marcados');
     }
 
+    public function test_cada_texto_guia_apunta_a_algo_que_existe(): void
+    {
+        foreach (config('formularios') as $pagina => $guia) {
+            $this->assertArrayHasKey($pagina, config('catalogos'), "{$pagina} no es un catálogo");
+            $def = config('catalogos.'.$pagina);
+            foreach ($guia['campos'] ?? [] as $campo => $texto) {
+                $this->assertArrayHasKey($campo, $def['campos'], "{$pagina}.{$campo} no existe");
+                //CON 'segun' LA ETIQUETA CAMBIA CON LO ELEGIDO Y NO SE PUEDE REEMPLAZAR AQUI
+                $this->assertFalse(! empty($def['segun']) && is_array($texto) && isset($texto['etiqueta']), "{$pagina}.{$campo}");
+            }
+            //LOS PASOS SIGUIENTES CITAN ACCIONES REALES DE LA GRILLA
+            preg_match_all('/«([^»]+)»/u', $guia['siguiente'] ?? '', $m);
+            $acciones = array_map(fn ($a) => $a[3] ?? '', $def['acciones'] ?? []);
+            foreach ($m[1] as $accion) {
+                $this->assertContains($accion, $acciones, $pagina);
+            }
+        }
+    }
+
+    public function test_todas_las_pantallas_explican_para_que_sirven(): void
+    {
+        foreach (array_keys(config('catalogos')) as $pagina) {
+            $def = Catalogo::definicion($pagina);
+            $this->assertNotEmpty($def['descripcion'] ?? null, "{$pagina} sin descripción");
+            if (! empty($def['nuevo']) || ! empty($def['editar'])) {
+                $this->assertNotEmpty($def['mensajes']['actualizado'] ?? null, "{$pagina} sin mensajes");
+            }
+        }
+    }
+
+    public function test_arma_los_mensajes_con_el_genero_correcto(): void
+    {
+        $this->assertSame('Queja actualizada.', Catalogo::definicion('PROY_GESTION_QUEJAS')['mensajes']['actualizado']);
+        $this->assertSame('Banco actualizado.', Catalogo::definicion('GEN_BANCO')['mensajes']['actualizado']);
+        $this->assertStringContainsString('Registre la primera', Catalogo::definicion('PROY_GESTION_QUEJAS')['vacio']);
+        $this->assertStringContainsString('Agregue sus postores', Catalogo::definicion('PROC_ITEM')['mensajes']['creado']);
+    }
+
+    public function test_cambiar_una_etiqueta_no_cambia_el_titulo_de_la_grilla(): void
+    {
+        $def = Catalogo::definicion('CONTRATO');
+
+        $this->assertSame('Código de orden', $def['campos']['COD_UNICO_ORDEN'][0]);
+        $this->assertSame('Cód. orden', Catalogo::columnasGrilla($def)['COD_UNICO_ORDEN'][0]);
+    }
+
+    public function test_el_contrato_del_proyecto_dice_que_falta(): void
+    {
+        $proyecto = (int) DB::table('dbo.PROYECTO')->where('EST_PROYECTO', '<>', '2')->value('IDE_PROYECTO');
+        $this->actingAs($this->usuarioGepro(false, 'PROYECTO'));
+
+        Livewire::test(\App\Livewire\ProyectoContratoFormulario::class, ['proyecto' => $proyecto, 'opcion' => 211])
+            ->call('nuevo')
+            ->call('guardar')
+            ->assertSee('Falta revisar')
+            ->assertDontSee('Revise los campos marcados');
+    }
+
+    public function test_un_texto_largo_se_abre_mostrando_su_contenido_en_un_modal_ancho(): void
+    {
+        $fila = DB::table('dbo.PROY_ACCION_GESTION')->where('EST_ACCION', '<>', '2')->orderByRaw('LEN(DES_ACCION) DESC')->first();
+        $this->assertGreaterThan(1600, mb_strlen($fila->DES_ACCION));
+        $this->actingAs($this->usuarioGepro(false, 'PROYECTO'));
+
+        Livewire::test(CatalogoFormulario::class, ['pagina' => 'PROY_ACCION_GESTION', 'de' => (int) $fila->IDE_PROYECTO])
+            ->call('editar', (int) $fila->IDE_PROY_ACCION_GESTION)
+            ->assertSeeHtml('rows="16"')
+            ->assertDontSeeHtml('fm-panel-angosto');
+    }
+
+    public function test_un_texto_corto_no_estira_el_campo_ni_el_modal(): void
+    {
+        $fila = DB::table('dbo.GEN_CARGO')->where('EST_CARGO', '<>', '2')->orderByRaw('LEN(DES_CARGO)')->first();
+        $this->actingAs($this->usuarioGepro(false, 'GEN_CARGO'));
+
+        Livewire::test(CatalogoFormulario::class, ['pagina' => 'GEN_CARGO'])
+            ->call('editar', (int) $fila->IDE_CARGO)
+            ->assertSeeHtml('rows="2"')
+            ->assertSeeHtml('fm-panel-angosto');
+    }
+
     public function test_la_grilla_conserva_titulos_cortos(): void
     {
         $columnas = Catalogo::columnasGrilla(Catalogo::definicion('PROY_RIESGO_PROBLEMA'));
@@ -92,7 +173,7 @@ class FormulariosGuiaTest extends TestCase
         $this->actingAs($this->usuarioGepro(false, 'PROYECTO'));
 
         Livewire::test(CatalogoTabla::class, ['pagina' => 'PROY_RIESGO_PROBLEMA', 'de' => $this->contrato(false)])
-            ->assertSee('Registra el primero');
+            ->assertSee('Registre el primero');
     }
 
     public function test_quien_solo_consulta_no_recibe_la_invitacion(): void
@@ -105,7 +186,7 @@ class FormulariosGuiaTest extends TestCase
 
         Livewire::test(CatalogoTabla::class, ['pagina' => 'PROY_RIESGO_PROBLEMA', 'de' => $this->contrato(false)])
             ->assertSee('No hay registros.')
-            ->assertDontSee('Registra el primero');
+            ->assertDontSee('Registre el primero');
     }
 
     public function test_el_formulario_de_proyecto_usa_el_lenguaje_nuevo(): void

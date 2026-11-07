@@ -20,7 +20,7 @@
                 <div class="fm-panel-cuerpo">
                     @error('general')<p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}</p>@enderror
                     @if (! $idProyecto)
-                        <p class="fm-intro"><i class="fa-solid fa-circle-info"></i> Reúne en un solo lugar los datos, la ubicación y el seguimiento del proyecto.</p>
+                        <p class="fm-intro"><i class="fa-solid fa-circle-info"></i> Reúna en un solo lugar los datos, la ubicación y el seguimiento del proyecto.</p>
                     @endif
                     @include('livewire.partes.resumen-errores', ['etiquetas' => $this->etiquetasError()])
                     @if ($idProyecto && $estado !== \App\Livewire\ProyectoFormulario::ESTADO_PROPIO)

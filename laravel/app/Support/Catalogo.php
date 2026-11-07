@@ -16,6 +16,39 @@ class Catalogo
         return preg_match('/^[A-Za-z0-9_]+$/', $pagina) && is_array(config('catalogos.'.$pagina));
     }
 
+    /** Suma a la definicion los textos guia de config/formularios.php */
+    private static function conGuia(array $def, string $pagina): array
+    {
+        $guia = config('formularios.'.$pagina);
+        if (! is_array($guia)) {
+            return $def;
+        }
+        $def['descripcion'] ??= $guia['descripcion'] ?? null;
+        if (! empty($guia['singular'])) {
+            $f = ! empty($guia['femenino']);
+            $hecho = fn (string $raiz) => $guia['singular'].' '.$raiz.($f ? 'a' : 'o').'.';
+            $def['vacio'] ??= 'Aún no hay '.$guia['plural'].' registrad'.($f ? 'as' : 'os').'. Registre '.($f ? 'la primera' : 'el primero').' desde el botón Nuevo.';
+            $def['mensajes'] ??= [
+                'creado' => trim($hecho('registrad').' '.($guia['siguiente'] ?? '')),
+                'actualizado' => $hecho('actualizad'),
+            ];
+        }
+        foreach ($guia['campos'] ?? [] as $campo => $texto) {
+            if (! isset($def['campos'][$campo])) {
+                continue;
+            }
+            $texto = is_array($texto) ? $texto : ['ayuda' => $texto];
+            if (isset($texto['etiqueta'])) {
+                $texto['en_grilla'] ??= $def['campos'][$campo][0];
+                $def['campos'][$campo][0] = $texto['etiqueta'];
+            }
+            unset($texto['etiqueta']);
+            $def['campos'][$campo][2] = $texto + $def['campos'][$campo][2];
+        }
+
+        return $def;
+    }
+
     public static function definicion(string $pagina): array
     {
         abort_unless(self::existe($pagina), 404);
@@ -24,6 +57,7 @@ class Catalogo
         if (! empty($def['base'])) {
             $def = array_merge(config('catalogos.'.$def['base']), $def);
         }
+        $def = self::conGuia($def, $pagina);
 
         return $def;
     }
