@@ -57,7 +57,7 @@ class IngresoTest extends TestCase
         $menu = app(Seguridad::class)->menu($perfil['perfil'], $perfil['modulo']);
 
         $respuesta = $this->actingAs($usuario)->get('/')->assertOk()
-            ->assertSee('Ciclo de vida del proyecto')
+            ->assertSeeText('Ciclo de vida del proyecto')
             ->assertSee($usuario->nombreVisible());
         foreach ($menu as $opcion) {
             if ($opcion['hijos'] || $opcion['url']) {
