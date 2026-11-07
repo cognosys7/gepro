@@ -186,6 +186,22 @@ class ProyectoContratoFormulario extends Component
         return $id > 0 ? DB::table('dbo.CONTRATO')->where('IDE_CONTRATO', $id)->value('COD_CONTRATO_ENTIDAD') : null;
     }
 
+    protected function nombres(): array
+    {
+        return [
+            'datos.COD_PROYECTO' => 'número de orden', 'datos.DES_PROYECTO' => 'descripción del servicio', 'datos.IDE_INTERVENCION' => 'etapa del proyecto',
+            'datos.TIP_PROYECTO_ACTIVIDAD' => 'modalidad de gestión', 'datos.DES_PROYECTO_ABREV' => 'descripción abreviada',
+            'datos.DES_UBICACION' => 'ubicación', 'datos.IMP_INVERSION' => 'monto de inversión', 'datos.IMP_FINANCIADO' => 'monto financiado',
+            'datos.IMP_VALOR_REFERENCIAL' => 'valor referencial', 'datos.IMP_COSTO_ACTUAL' => 'costo actual',
+        ];
+    }
+
+    /** Nombre de cada campo para el resumen de lo que falta revisar */
+    public function etiquetasError(): array
+    {
+        return collect($this->nombres())->mapWithKeys(fn ($v, $k) => [substr($k, 6) => \Illuminate\Support\Str::ucfirst($v)])->all();
+    }
+
     public function guardar(): void
     {
         if (! $this->puede($this->idContrato === null ? 'nuevo' : 'editar')) {
@@ -236,12 +252,7 @@ class ProyectoContratoFormulario extends Component
             'datos.IMP_FINANCIADO' => array_merge(['required'], array_slice($monto, 1)),
             'datos.IMP_VALOR_REFERENCIAL' => $monto,
             'datos.IMP_COSTO_ACTUAL' => array_merge(['required'], array_slice($monto, 1)),
-        ], [], [
-            'datos.COD_PROYECTO' => 'número', 'datos.DES_PROYECTO' => 'descripción del servicio', 'datos.IDE_INTERVENCION' => 'fase - componente',
-            'datos.TIP_PROYECTO_ACTIVIDAD' => 'modalidad de gestión', 'datos.DES_PROYECTO_ABREV' => 'descripción abreviada',
-            'datos.DES_UBICACION' => 'ubicación', 'datos.IMP_INVERSION' => 'monto de inversión', 'datos.IMP_FINANCIADO' => 'monto financiado',
-            'datos.IMP_VALOR_REFERENCIAL' => 'valor referencial', 'datos.IMP_COSTO_ACTUAL' => 'costo actual',
-        ]);
+        ], [], $this->nombres());
 
         $parametros = [];
         foreach (self::PARAMETROS as $campo) {
@@ -252,7 +263,7 @@ class ProyectoContratoFormulario extends Component
         try {
             if ($this->idContrato === null) {
                 Procedimiento::grabar('dbo.SP_PROYECTO_ACTIVIDAD', 'Insert', $parametros);
-                $mensaje = 'Contrato registrado.';
+                $mensaje = 'Contrato registrado. Ya puede completar su información desde su fila.';
             } else {
                 Procedimiento::grabar('dbo.SP_PROYECTO_ACTIVIDAD', 'Update', ['pCodigo' => $this->idContrato] + $parametros);
                 $mensaje = 'Contrato actualizado.';

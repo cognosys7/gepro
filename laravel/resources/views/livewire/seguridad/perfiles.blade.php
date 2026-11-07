@@ -24,7 +24,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr><td colspan="5" class="gp-vacio"><i class="fa-regular fa-folder-open"></i> No hay registros.</td></tr>
+                    <tr><td colspan="5" class="gp-vacio"><i class="fa-regular fa-folder-open"></i> Aún no hay perfiles registrados.</td></tr>
                 @endforelse
             </tbody>
         </table>

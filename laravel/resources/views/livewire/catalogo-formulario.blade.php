@@ -16,7 +16,9 @@
             $conCalculo = ! empty($def['calculo']);
             //CON 'segun', LOS CAMPOS SE MUESTRAN AL ELEGIR (LA LISTA DE 'segun' ENVIA SU VALOR AL MOMENTO)
             $campoSegun = $def['segun']['campo'] ?? null;
-            $ancho = count($def['campos']) > 10 ? '' : 'fm-panel-angosto';
+            //MODAL ANCHO SI TIENE MUCHOS CAMPOS O ADMITE TEXTOS LARGOS
+            $textoLargo = collect($def['campos'])->contains(fn ($c) => $c[1] === 'area' && (int) ($c[2]['max'] ?? 0) >= 500);
+            $ancho = count($def['campos']) > 10 || $textoLargo ? '' : 'fm-panel-angosto';
         @endphp
         <div class="fm-fondo" wire:keydown.escape="cerrar">
             <form class="fm-panel {{ $ancho }}" wire:submit="guardar" novalidate>
@@ -31,9 +33,10 @@
 
                 <div class="fm-panel-cuerpo">
                     @error('general')<p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}</p>@enderror
-                    @if ($errors->any() && ! $errors->has('general'))
-                        <p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> Revise los campos marcados.</p>
+                    @if (! empty($def['descripcion']) && ! $idRegistro)
+                        <p class="fm-intro"><i class="fa-solid fa-circle-info"></i> {{ $def['descripcion'] }}</p>
                     @endif
+                    @include('livewire.partes.resumen-errores', ['etiquetas' => collect($def['campos'])->keys()->mapWithKeys(fn ($c) => [$c => $this->etiqueta($c)])->all()])
                     @foreach ($secciones as $nombreSeccion => $camposSeccion)
                         <section class="fm-seccion">
                             <h3>
@@ -51,6 +54,7 @@
                                         'tipo' => $tipos[$tipo],
                                         'extra' => array_filter([
                                             'opciones' => $combos[$campo] ?? null,
+                                            'ayuda' => $o['ayuda'] ?? null,
                                             'maxlength' => $o['max'] ?? null,
                                             'step' => $tipo === 'numero' ? 'any' : null,
                                             'clase' => in_array($tipo, ['area', 'buscador'], true) ? 'fm-completo' : ($tipo === 'numero' ? 'fm-numero' : null),

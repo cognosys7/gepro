@@ -17,9 +17,10 @@
 
                 <div class="fm-panel-cuerpo">
                     @error('general')<p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> {{ $message }}</p>@enderror
-                    @if ($errors->any() && ! $errors->has('general'))
-                        <p class="fm-aviso fm-aviso-error"><i class="fa-solid fa-triangle-exclamation"></i> Revise los campos marcados.</p>
+                    @if (! $idContrato)
+                        <p class="fm-intro"><i class="fa-solid fa-circle-info"></i> Enlace el contrato al proyecto para controlar sus etapas, riesgos y documentos.</p>
                     @endif
+                    @include('livewire.partes.resumen-errores', ['etiquetas' => $this->etiquetasError()])
                     @if ($idContrato && $estado !== \App\Livewire\ProyectoContratoFormulario::ESTADO_PROPIO)
                         <p class="fm-aviso"><i class="fa-solid fa-lock"></i> El contrato enlazado, la descripción y el costo actual vienen del contrato y no se pueden modificar.</p>
                     @endif
@@ -53,7 +54,7 @@
                                     @endif
                                 </div>
                             @endunless
-                            @include('livewire.partes.campo', ['c' => $campo('COD_PROYECTO', 'Número (cód. orden detalle) *', 'text', ['maxlength' => 30])])
+                            @include('livewire.partes.campo', ['c' => $campo('COD_PROYECTO', 'Número de orden *', 'text', ['maxlength' => 30])])
                             <div class="fm-campo">
                                 <label>Contrato enlazado</label>
                                 <input type="text" value="{{ $enlazado ?? 'Sin contrato' }}" disabled>
@@ -69,10 +70,10 @@
                     <section class="fm-seccion">
                         <h3><i class="fa-solid fa-folder-open"></i> Datos del servicio</h3>
                         <div class="fm-campos">
-                            @include('livewire.partes.campo', ['c' => $campo('DES_PROYECTO', 'Descripción del servicio *', 'textarea', ['maxlength' => 1000, 'filas' => 3, 'clase' => 'fm-completo'])])
-                            @include('livewire.partes.campo', ['c' => $campo('IDE_INTERVENCION', 'Fase - componente *', 'select', ['opciones' => $combos['IDE_INTERVENCION'], 'clase' => 'fm-ancho'])])
+                            @include('livewire.partes.campo', ['c' => $campo('DES_PROYECTO', 'Descripción del servicio *', 'textarea', ['ayuda' => 'Qué cubre el contrato, en una frase clara.', 'maxlength' => 1000, 'filas' => 3, 'clase' => 'fm-completo'])])
+                            @include('livewire.partes.campo', ['c' => $campo('IDE_INTERVENCION', 'Etapa del proyecto *', 'select', ['opciones' => $combos['IDE_INTERVENCION'], 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('TIP_PROYECTO_ACTIVIDAD', 'Modalidad de gestión', 'select', ['opciones' => $combos['TIP_PROYECTO_ACTIVIDAD'], 'clase' => 'fm-ancho'])])
-                            @include('livewire.partes.campo', ['c' => $campo('DES_PROYECTO_ABREV', 'Descripción abreviada', 'text', ['maxlength' => 120, 'clase' => 'fm-ancho'])])
+                            @include('livewire.partes.campo', ['c' => $campo('DES_PROYECTO_ABREV', 'Descripción abreviada', 'text', ['ayuda' => 'Nombre corto para las listas y los reportes.', 'maxlength' => 120, 'clase' => 'fm-ancho'])])
                             @include('livewire.partes.campo', ['c' => $campo('DES_UBICACION', 'Ubicación', 'textarea', ['maxlength' => 500, 'clase' => 'fm-ancho'])])
                         </div>
                     </section>
@@ -81,10 +82,10 @@
                     <section class="fm-seccion">
                         <h3><i class="fa-solid fa-sack-dollar"></i> Montos (S/)</h3>
                         <div class="fm-campos">
-                            @include('livewire.partes.campo', ['c' => $campo('IMP_INVERSION', 'Monto de inversión *', 'number', ['min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])
+                            @include('livewire.partes.campo', ['c' => $campo('IMP_INVERSION', 'Monto de inversión *', 'number', ['ayuda' => 'Monto total previsto.', 'min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])
                             @include('livewire.partes.campo', ['c' => $campo('IMP_FINANCIADO', 'Monto financiado *', 'number', ['min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])
                             @include('livewire.partes.campo', ['c' => $campo('IMP_VALOR_REFERENCIAL', 'Valor referencial', 'number', ['min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])
-                            @include('livewire.partes.campo', ['c' => $campo('IMP_COSTO_ACTUAL', 'Costo actual *', 'number', ['min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])
+                            @include('livewire.partes.campo', ['c' => $campo('IMP_COSTO_ACTUAL', 'Costo actual *', 'number', ['ayuda' => 'Costo vigente, con las modificaciones aprobadas.', 'min' => 0, 'step' => '0.01', 'clase' => 'fm-numero'])])
                         </div>
                     </section>
                 </div>
