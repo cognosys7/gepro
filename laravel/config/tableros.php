@@ -13,8 +13,10 @@ return [
 
     'PBI_GASTOS_HISTORICOS' => env('GEPRO_PBI_GASTOS_HISTORICOS', 'https://app.powerbi.com/view?r=eyJrIjoiNDEyN2Y2OTktNzE4OS00YjhjLWI3OTMtOWNiMTY5NDFmY2E5IiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
     'PBI_CONTRATO_ORDENES' => env('GEPRO_PBI_CONTRATO_ORDENES', 'https://app.powerbi.com/view?r=eyJrIjoiZmQ1MjFhNzMtMDAwOC00N2I3LWE0MWUtY2FjMzA2Y2IzOWJiIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
-    'PBI_FINANCIERO_CONSOLIDADO' => env('GEPRO_PBI_FINANCIERO_CONSOLIDADO', 'https://app.powerbi.com/view?r=eyJrIjoiNjk1ZDg3MjQtOGVhMS00MjE5LTg4YTQtNjkzODY1ODE3MjkyIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9&pageName=ReportSectiona5825f4a19be50dbeca0'),
-    'PBI_FINANCIERO_DETALLADO' => env('GEPRO_PBI_FINANCIERO_DETALLADO', 'https://app.powerbi.com/view?r=eyJrIjoiNDhhYjJkMmItNWYzMC00MWNhLTgwODItYzY0MzhiMTNiM2I4IiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9&pageName=ReportSectionaaefc3dc98a61b867ace'),
+    // Tab.Fin. Consolidado: GEPRO - Gastos_Costos_Proyectos_Consolidado publicado por Cognosys
+    'PBI_FINANCIERO_CONSOLIDADO' => env('GEPRO_PBI_FINANCIERO_CONSOLIDADO', 'https://app.powerbi.com/view?r=eyJrIjoiNDJjZWEyMjItMjhlMi00NTUyLWFmYWYtMzMxYjMzMjg3MGY0IiwidCI6IjljOTkwMDYyLTFmMDEtNDE0MC1iY2U2LTcxNDlmMjRkMmM4YSIsImMiOjR9'),
+    // Tab.Fin. Detallado: GEPRO - Gastos_Costos_Proyectos publicado por Cognosys
+    'PBI_FINANCIERO_DETALLADO' => env('GEPRO_PBI_FINANCIERO_DETALLADO', 'https://app.powerbi.com/view?r=eyJrIjoiOWY4MDg4YjEtNjIyMS00NjEzLTk4ZjgtOWVlMzg3ODJkNDU1IiwidCI6IjljOTkwMDYyLTFmMDEtNDE0MC1iY2U2LTcxNDlmMjRkMmM4YSIsImMiOjR9'),
     'PBI_PRY_3GESTION_SOCIAL' => env('GEPRO_PBI_PRY_3GESTION_SOCIAL', 'https://app.powerbi.com/view?r=eyJrIjoiMzQ1MTYxNGItNmRhYi00MmQ1LTk5ZWEtNWIwY2M2ODFiNzdkIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
     'PBI_TABLEROS_SEGUIMIENTO' => env('GEPRO_PBI_TABLEROS_SEGUIMIENTO', 'https://app.powerbi.com/view?r=eyJrIjoiMDU0MzdjZGUtMzc4Zi00MzgzLTkwYjktNDYyMjI5ZTU5M2MzIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9&pageName=ReportSection'),
     'PBI_PRY_CONT_21ETAPAS' => env('GEPRO_PBI_PRY_CONT_21ETAPAS', 'https://app.powerbi.com/view?r=eyJrIjoiYjhmMTc5MDYtMTJjNi00ZjdjLTk5OWMtNWI0MDU3ZmUwYjgxIiwidCI6IjhkNmE0OTg0LThlZTAtNGEzNi1iNDA1LWQ2NzhmNDdmZGE5MSIsImMiOjR9'),
