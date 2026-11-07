@@ -1,0 +1,1229 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "ce79624867c7cd97e27e",
+  "position": {
+    "x": 9.7568988173455971,
+    "y": 1319.8423127463864,
+    "z": 12000,
+    "height": 268.7582128777924,
+    "width": 1277.2667542706965,
+    "tabOrder": 12000
+  },
+  "visual": {
+    "visualType": "tableEx",
+    "query": {
+      "queryState": {
+        "Values": {
+          "projections": [
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "NumOrden"
+                }
+              },
+              "queryRef": "Sum(bibd_cont_ampliacion.NumOrden)",
+              "displayName": "Ord"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "AmpNumAmpliacion"
+                }
+              },
+              "queryRef": "Sum(bibd_cont_ampliacion.AmpNumAmpliacion)",
+              "displayName": "Nº de ampliación"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "Plazo Numero"
+                }
+              },
+              "queryRef": "bibd_cont_ampliacion.Plazo Numero",
+              "displayName": "Causal de ampliación"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "AmpResolucion"
+                }
+              },
+              "queryRef": "bibd_cont_ampliacion.AmpResolucion",
+              "displayName": "N º de documento"
+            },
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "bibd_cont_ampliacion"
+                        }
+                      },
+                      "Property": "AmpCantDiasCalendario"
+                    }
+                  },
+                  "Function": 0
+                }
+              },
+              "queryRef": "bibd_cont_ampliacion.AmpCantDiasCalendario",
+              "displayName": "Dias Calendario"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "AmpFecTermino"
+                }
+              },
+              "queryRef": "bibd_cont_ampliacion.AmpFecTermino",
+              "displayName": "Nueva fecha de termino"
+            },
+            {
+              "field": {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion_archivo"
+                    }
+                  },
+                  "Property": "VerDocumento"
+                }
+              },
+              "queryRef": "bibd_cont_ampliacion_archivo.VerDocumento",
+              "displayName": "Documento"
+            }
+          ],
+          "showAll": true
+        }
+      },
+      "sortDefinition": {
+        "sort": [
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "bibd_cont_ampliacion"
+                  }
+                },
+                "Property": "NumOrden"
+              }
+            },
+            "direction": "Ascending"
+          },
+          {
+            "field": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "bibd_cont_ampliacion"
+                  }
+                },
+                "Property": "AmpFecTermino"
+              }
+            },
+            "direction": "Ascending"
+          }
+        ]
+      }
+    },
+    "objects": {
+      "columnWidth": [
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "350.2860106113983D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bi_proyecto.ProyNombre"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "72.42861306110554D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bi_conformidad.ConformFecDocumento"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "75.14291102025423D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bi_conformidad.ConformFecConformidad"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "77.14294530587055D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bi_conformidad.ConformMontoConImpuesto"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "57D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "bi_gastos_costos"
+                          }
+                        },
+                        "Property": "Año-Mes"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'2020-11'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "195D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_contrato.ContModalidadGestion"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "308D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_contrato.GrupoModalidadGestion"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "368D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_contrato.ContGeneNombreCorta"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "173D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_contrato.ContGeneUbicacion"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "97D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_contrato.ContMontoTotal)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "115D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "bibd_cont_etapa_control"
+                          }
+                        },
+                        "Property": "GrupoPlan"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Adelantos'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "107.9004818315997D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_cont_etapa_control.CtlDetMontoNeto)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "90.9054984159918D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_etapa_control..Adelantos"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "109.43108262376606D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_cont_etapa_control.CtlDetMontoIGV)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "106.18920346094454D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_etapa_control.Año-Mes"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "114.71878015562017D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "bibd_cont_etapa_control"
+                          }
+                        },
+                        "Property": "GrupoPlan"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'LineaBase'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "137.18920346094453D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "scopeId": {
+                  "Comparison": {
+                    "ComparisonKind": 0,
+                    "Left": {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Entity": "bibd_cont_etapa_control"
+                          }
+                        },
+                        "Property": "GrupoPlan"
+                      }
+                    },
+                    "Right": {
+                      "Literal": {
+                        "Value": "'Valorización'"
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "186.41927917450994D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI FORMATO_2.% AvaFisicoAcumPV ini"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "203.5349423950644D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI FORMATO_2.Acum(PV ini) Corte"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "152.27470014881686D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI FORMATO_2.% AvaFisicoAcumEV ini"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "175.33253175909408D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "KPI FORMATO_2.Acum(AC) Corte"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "266.71084194861385D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_ampliacion.Plazo Numero"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "228.76386411345558D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_ampliacion.AmpResolucion"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "165.66746824090592D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_ampliacion.AmpFecTermino"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "54.78313146146038D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_cont_ampliacion.NumOrden)"
+          }
+        },
+        {
+          "properties": {
+            "value": {
+              "expr": {
+                "Literal": {
+                  "Value": "112.85542097430692D"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_cont_ampliacion.AmpNumAmpliacion)"
+          }
+        }
+      ],
+      "values": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI'', wf_segoe-ui_normal, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "backColorSecondary": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "webURL": {
+              "expr": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "bibd_cont_ampliacion_archivo"
+                        }
+                      },
+                      "Property": "ArchHipervinculo"
+                    }
+                  },
+                  "Function": 3
+                }
+              }
+            }
+          },
+          "selector": {
+            "data": [
+              {
+                "dataViewWildcard": {
+                  "matchingOption": 1
+                }
+              }
+            ],
+            "metadata": "bibd_cont_ampliacion_archivo.VerDocumento"
+          }
+        }
+      ],
+      "columnHeaders": [
+        {
+          "properties": {
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI'', wf_segoe-ui_normal, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0A5E92'"
+                    }
+                  }
+                }
+              }
+            },
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "wordWrap": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "total": [
+        {
+          "properties": {
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI'', wf_segoe-ui_normal, helvetica, arial, sans-serif'"
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "9D"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#0A5E92'"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "grid": [
+        {
+          "properties": {
+            "outlineColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "outlineWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "gridVerticalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "gridHorizontalWeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "1D"
+                }
+              }
+            },
+            "rowPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "3D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "columnFormatting": [
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_etapa_control.Año-Mes"
+          }
+        },
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Auto'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_ampliacion.AmpCantDiasCalendario"
+          }
+        },
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_ampliacion.AmpFecTermino"
+          }
+        },
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_cont_ampliacion.NumOrden)"
+          }
+        },
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "Sum(bibd_cont_ampliacion.AmpNumAmpliacion)"
+          }
+        },
+        {
+          "properties": {
+            "alignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Center'"
+                }
+              }
+            },
+            "backColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#22B573'"
+                    }
+                  }
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "selector": {
+            "metadata": "bibd_cont_ampliacion_archivo.VerDocumento"
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "text": {
+              "expr": {
+                "Literal": {
+                  "Value": "'4. AMPLIACIONES'"
+                }
+              }
+            },
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "fontColor": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 1,
+                      "Percent": 0
+                    }
+                  }
+                }
+              }
+            },
+            "fontSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "fontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'''Segoe UI Bold'', wf_segoe-ui_bold, helvetica, arial, sans-serif'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "ThemeDataColor": {
+                      "ColorId": 0,
+                      "Percent": -0.2
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "stylePreset": [
+        {
+          "properties": {
+            "name": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Condensed'"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  },
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "Filter518da057b38f19c6d120",
+        "ordinal": 0,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "AmpFecTermino"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "Filterfc0df17c5fdc01cac92a",
+        "ordinal": 1,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "AmpCantDiasCalendario"
+          }
+        },
+        "type": "Advanced",
+        "howCreated": "User"
+      },
+      {
+        "name": "Filter1c6dcdd95ec37cccedbb",
+        "ordinal": 2,
+        "field": {
+          "GroupRef": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "GrupoTipoPlazp",
+            "GroupedColumns": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "AmpTipoPlazo"
+                }
+              }
+            ]
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "b",
+              "Entity": "bibd_cont_ampliacion",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "b"
+                          }
+                        },
+                        "Property": "GrupoTipoPlazp"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Ampliación de Plazo'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'Ampliación Excepcional de Plazo'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "Filter81b01dbfc97d0fee5100",
+        "ordinal": 3,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "AmpResolucion"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "Filter36d62367edd9a02d5777",
+        "ordinal": 4,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "Plazo Numero"
+          }
+        },
+        "type": "Categorical"
+      },
+      {
+        "name": "Filter6cbb6e10826ce8ccb28b",
+        "ordinal": 5,
+        "field": {
+          "Aggregation": {
+            "Expression": {
+              "Column": {
+                "Expression": {
+                  "SourceRef": {
+                    "Entity": "bibd_cont_ampliacion"
+                  }
+                },
+                "Property": "AmpCantDiasCalendario"
+              }
+            },
+            "Function": 0
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "Filter30790f66a02437e32646",
+        "ordinal": 6,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "AmpFecInicio"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "Filterc08b9cdac95ad05a5bf2",
+        "ordinal": 7,
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "NumOrden"
+          }
+        },
+        "type": "Advanced"
+      },
+      {
+        "name": "Filter3624c60bfefaeb3810bc",
+        "ordinal": 8,
+        "field": {
+          "GroupRef": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_ampliacion"
+              }
+            },
+            "Property": "GrupoTipoCalendario",
+            "GroupedColumns": [
+              {
+                "Column": {
+                  "Expression": {
+                    "SourceRef": {
+                      "Entity": "bibd_cont_ampliacion"
+                    }
+                  },
+                  "Property": "AmpTipoPlazo"
+                }
+              }
+            ]
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      }
+    ],
+    "filterSortOrder": "Custom"
+  }
+}

@@ -1,0 +1,77 @@
+table bibd_contrato_archivo
+	lineageTag: 25419195-171e-44ab-89a7-1d59eece47fc
+
+	column ContratoIde
+		dataType: string
+		lineageTag: 53a275c3-4331-4501-8180-75888f6b726e
+		summarizeBy: none
+		sourceColumn: ContratoIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContArchIde
+		dataType: string
+		lineageTag: 1a06c526-9a2b-4bc1-9e5e-ea36276b04f3
+		summarizeBy: none
+		sourceColumn: ContArchIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContArchTabla
+		dataType: string
+		lineageTag: f5080188-5798-4557-afae-e2d00eda3081
+		summarizeBy: none
+		sourceColumn: ContArchTabla
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContArchRuta
+		dataType: string
+		lineageTag: ad59823e-41a7-4dbf-938b-8d2b40c853c1
+		summarizeBy: none
+		sourceColumn: ContArchRuta
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContArchNombre
+		dataType: string
+		lineageTag: 7eb1e73d-9f7a-4d18-9a7a-29a540644578
+		summarizeBy: none
+		sourceColumn: ContArchNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContArchEstado
+		dataType: string
+		lineageTag: edd31816-431f-46aa-a890-53276a09ad48
+		summarizeBy: none
+		sourceColumn: ContArchEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContArchHipervinculo = "http://localhost:8087/archivos/" & bibd_contrato_archivo[ContArchIde] & "/descargar"
+		lineageTag: ce739460-672e-45e3-a2b9-2db7016bb2cd
+		dataCategory: WebUrl
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column VerDocumento = "Ver"
+		lineageTag: 6a1b2f2b-f357-4ab7-b6b7-adec2c60b51a
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_contrato_archivo-0dc22fd8-7d48-42d7-8b20-6c810da05673 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_contrato_archivo")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ContratoIde", "ContArchIde", "ContArchTabla", "ContArchRuta", "ContArchNombre", "ContArchEstado"}, {"ContratoIde", "ContArchIde", "ContArchTabla", "ContArchRuta", "ContArchNombre", "ContArchEstado"})
+				in
+				    #"Se expandió Column1"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,78 @@
+table bibd_cont_ampliacion_archivo
+	lineageTag: e6e33b23-f1b1-41e4-ae81-49d18aa3e200
+
+	column ContDocumentoIde
+		dataType: string
+		lineageTag: 3100962d-681a-4c08-8667-aa5dbb295aa2
+		summarizeBy: none
+		sourceColumn: ContDocumentoIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContDocumArchIde
+		dataType: string
+		lineageTag: f8d96c15-4107-4dc5-891a-47ffb23366b9
+		summarizeBy: none
+		sourceColumn: ContDocumArchIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContDocumArchTabla
+		dataType: string
+		lineageTag: 2102ae15-02ef-4d7b-80ff-c2fa744b33f5
+		summarizeBy: none
+		sourceColumn: ContDocumArchTabla
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContDocumArchRuta
+		dataType: string
+		lineageTag: 6e55f2dd-c469-491b-a649-12a452589c19
+		summarizeBy: none
+		sourceColumn: ContDocumArchRuta
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContDocumArchNombre
+		dataType: string
+		lineageTag: d9873a7c-5d06-4700-ad8a-f5f4dcb13972
+		summarizeBy: none
+		sourceColumn: ContDocumArchNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContDocumArchEstado
+		dataType: string
+		lineageTag: 62b6cd87-a4f3-475c-bf31-9ad2564d641b
+		summarizeBy: none
+		sourceColumn: ContDocumArchEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column VerDocumento = "Ver"
+		lineageTag: 903ca56d-b679-4580-8e84-7163b7067e36
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column ArchHipervinculo = "http://localhost:8087/archivos/" & bibd_cont_ampliacion_archivo[ContDocumArchIde] & "/descargar"
+		lineageTag: a06fa8ab-c2dd-493d-a0a8-5b45f4afa5cf
+		dataCategory: WebUrl
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_cont_ampliacion_archivo-67d384d9-c063-4d58-844e-ad7e7f97aa6d = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_cont_documentacion_archivo")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ContDocumentoIde", "ContDocumArchIde", "ContDocumArchTabla", "ContDocumArchRuta", "ContDocumArchNombre", "ContDocumArchEstado"}, {"ContDocumentoIde", "ContDocumArchIde", "ContDocumArchTabla", "ContDocumArchRuta", "ContDocumArchNombre", "ContDocumArchEstado"}),
+				    #"Filas filtradas" = Table.SelectRows(#"Se expandió Column1", each ([ContDocumArchTabla] = "PROY_CONT_AMPLIACION"))
+				in
+				    #"Filas filtradas"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,91 @@
+table bibd_proy_social_objetivo_esp
+	lineageTag: ed7f748b-41b3-4b50-9f33-010ad3e6bc23
+
+	column ObjetivoEspIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 7647dd5d-1cb8-4639-941c-4414efc00106
+		summarizeBy: sum
+		sourceColumn: ObjetivoEspIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: e144f44c-2681-45ee-82ed-35bb48aa660b
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionFecha
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: af88942d-24e3-40bf-89e8-eca169b632dc
+		summarizeBy: none
+		sourceColumn: AccionFecha
+
+		variation Variación
+			isDefault
+			relationship: b67a842a-2201-4ce9-bfd1-e0bf0ecbaaed
+			defaultHierarchy: LocalDateTable_ab028289-e45b-4685-9c05-b50d7ce009e3.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column ObjetivoEspecifico
+		dataType: string
+		lineageTag: 7de3a2fe-1a57-4e54-9a85-f4c633675a89
+		summarizeBy: none
+		sourceColumn: ObjetivoEspecifico
+
+		annotation SummarizationSetBy = Automatic
+
+	column Meta
+		dataType: string
+		lineageTag: 257837db-f53f-4226-821c-0099750cf6e9
+		summarizeBy: none
+		sourceColumn: Meta
+
+		annotation SummarizationSetBy = Automatic
+
+	column Indicador
+		dataType: string
+		lineageTag: 340d7227-55ac-45c0-ab63-f2a041fc0745
+		summarizeBy: none
+		sourceColumn: Indicador
+
+		annotation SummarizationSetBy = Automatic
+
+	column Actividad
+		dataType: string
+		lineageTag: bc2c6746-d34d-4d44-ac76-18ca7aa4665c
+		summarizeBy: none
+		sourceColumn: Actividad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ObjetivoEspEstado
+		dataType: string
+		lineageTag: f10777df-c299-41bf-9736-db7411bcb709
+		summarizeBy: none
+		sourceColumn: ObjetivoEspEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_social_objetivo_esp-bb2685db-83b2-4fc6-8df7-4c8d155ab1fa = m
+		mode: import
+		queryGroup: 'FORMATO 6'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_proy_social_objetivo_esp")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ObjetivoEspIde", "ProyIde", "AccionFecha", "ObjetivoEspecifico", "Meta", "Indicador", "Actividad", "ObjetivoEspEstado"}, {"ObjetivoEspIde", "ProyIde", "AccionFecha", "ObjetivoEspecifico", "Meta", "Indicador", "Actividad", "ObjetivoEspEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"ObjetivoEspIde", Int64.Type}, {"ProyIde", Int64.Type}, {"AccionFecha", type date}, {"ObjetivoEspecifico", type text}, {"Meta", type text}, {"Indicador", type text}, {"Actividad", type text}, {"ObjetivoEspEstado", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

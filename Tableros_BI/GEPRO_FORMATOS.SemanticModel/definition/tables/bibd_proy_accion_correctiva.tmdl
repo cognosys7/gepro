@@ -1,0 +1,114 @@
+table bibd_proy_accion_correctiva
+	lineageTag: 5b2f580b-a54c-433e-9b87-c54f7119692f
+
+	measure IdeAccionCorrectiva = ```
+			
+			VAR V_TIPO = SELECTEDVALUE(TipoInforme[Tipo])
+			VAR R1 = CALCULATE(max(bibd_proy_accion_correctiva[AccionIde]), USERELATIONSHIP(bibd_trimestre[Anio-Trim],bibd_proy_accion_correctiva[AñoTrimestre] ), FILTER(
+					 ALLSELECTED(bibd_proy_accion_correctiva[AccionFecha]), bibd_proy_accion_correctiva[AccionFecha]  = max(bibd_proy_accion_correctiva[AccionFecha]) ) )
+			VAR R2 = CALCULATE(max(bibd_proy_accion_correctiva[AccionIde]), USERELATIONSHIP(bibd_trimestre[Anio],bibd_proy_accion_correctiva[Año] ), FILTER(
+					 ALLSELECTED(bibd_proy_accion_correctiva[AccionFecha]), bibd_proy_accion_correctiva[AccionFecha]  = max(bibd_proy_accion_correctiva[AccionFecha]) ) )
+			VAR R3 = IF(V_TIPO = "Anual", R2, R1)         
+			RETURN R3
+			```
+		formatString: 0
+		lineageTag: eee30e21-5978-4308-9847-c0fe5e1263ac
+
+	column AccionIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 6b3d7ba0-890e-45ca-9836-13f6fa6bcd1a
+		summarizeBy: sum
+		sourceColumn: AccionIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 3f6b4fe7-f3b3-4c07-8e95-2efe711f9f8f
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionFecha
+		dataType: dateTime
+		formatString: dd/mm/yy
+		lineageTag: 4d81138b-38e3-4ecc-8815-08b1f5d69661
+		summarizeBy: none
+		sourceColumn: AccionFecha
+
+		variation Variación
+			isDefault
+			relationship: fb9e406b-70d1-4ac0-a381-e74e44810635
+			defaultHierarchy: LocalDateTable_f97926a7-e841-401d-861e-9af5a5096fc9.'Jerarquía de fechas'
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column DesviacionAutomatica
+		dataType: string
+		lineageTag: d30d0b11-73b9-470d-8887-e66eed54fad6
+		summarizeBy: none
+		sourceColumn: DesviacionAutomatica
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionCorrectiva
+		dataType: string
+		lineageTag: c29bc72e-9a4e-4db0-bda0-b67d944f5daf
+		summarizeBy: none
+		sourceColumn: AccionCorrectiva
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionEstado
+		dataType: string
+		lineageTag: f1dfdc08-7fe6-4a3a-998b-5914f8d27aa8
+		summarizeBy: none
+		sourceColumn: AccionEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestre = format(bibd_proy_accion_correctiva[AccionFecha].[Año],"0000") &"-"&format(bibd_proy_accion_correctiva[AccionFecha].[NroTrimestre],"0")
+		lineageTag: 01c0adc4-ff44-4da7-8115-651e4b2e73e5
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Componente
+		dataType: string
+		lineageTag: 91357efc-6bdf-4ee1-8c9e-f623559adf9c
+		summarizeBy: none
+		sourceColumn: Componente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año = ```
+			format(bibd_proy_accion_correctiva[AccionFecha].[Año],"0000") 
+			```
+		lineageTag: eebb449f-40bc-470c-954a-b2a775435e57
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_accion_correctiva-0c0160fe-81e1-45f8-96f8-d084c2e0f69e = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb & "bibd_proy_accion_correctiva")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"AccionIde", "ProyIde", "AccionFecha", "DesviacionAutomatica", "AccionCorrectiva", "AccionEstado", "Componente"}, {"AccionIde", "ProyIde", "AccionFecha", "DesviacionAutomatica", "AccionCorrectiva", "AccionEstado", "Componente"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"AccionIde", Int64.Type}, {"ProyIde", Int64.Type}, {"AccionFecha", type date}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

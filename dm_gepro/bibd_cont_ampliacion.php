@@ -23,7 +23,8 @@
 			AmpCantDiasCalendario ,
 			AmpFecTermino ,
 			AmpResolucion ,
-			AmpEstado 
+			AmpEstado , 
+         NumOrden 
          FROM BIBD_CONT_AMPLIACION order by 1");	
 		$stmt->execute();
 		$filas = $stmt->fetchAll(PDO::FETCH_ASSOC);			
@@ -39,6 +40,7 @@
 				$elemento['AmpFecTermino'] = $fila['AmpFecTermino'];  
 				$elemento['AmpResolucion'] = $fila['AmpResolucion'];  
 				$elemento['AmpEstado'] = $fila['AmpEstado']; 
+            $elemento['NumOrden'] = $fila['NumOrden'];
             $arreglo[] = $elemento;
 		}
 		return $arreglo;

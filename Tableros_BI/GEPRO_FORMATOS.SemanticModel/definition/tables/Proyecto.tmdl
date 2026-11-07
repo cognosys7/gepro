@@ -1,0 +1,517 @@
+table Proyecto
+	lineageTag: 92812627-95ca-4d0b-a66b-5dc5dc8beab1
+
+	column ProyIde
+		formatString: 0
+		lineageTag: a7e0cab8-8f99-45c0-a04a-220559fe91ef
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyIde]
+
+		annotation SummarizationSetBy = User
+
+	column PortafolioCodigo
+		lineageTag: 3df806f1-e414-4849-91c6-564e818502f6
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[PortafolioCodigo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Portafolio
+		isHidden
+		lineageTag: 433f709d-981b-455a-a26e-a0589bf9ca90
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[Portafolio]
+
+		annotation SummarizationSetBy = Automatic
+
+	column PortafolioGrupo
+		lineageTag: be774f7f-6167-4248-919f-6c9762b01859
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[PortafolioGrupo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Programa
+		lineageTag: 1c3f1f79-9bc1-4a5a-aeb1-62924d28dd6b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[Programa]
+
+		annotation SummarizationSetBy = Automatic
+
+	column CentroCostoCodigo
+		isHidden
+		lineageTag: c5491f6e-2815-4d39-8749-abb185550075
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[CentroCostoCodigo]
+
+		annotation SummarizationSetBy = Automatic
+
+	column CentroCosto
+		isHidden
+		lineageTag: 9b919d55-d87c-4ea5-9f30-77348d617041
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[CentroCosto]
+
+		annotation SummarizationSetBy = Automatic
+
+	column SedeEjecutoraRUC
+		lineageTag: 8d9c2561-b2ad-44ba-b8bc-6d7e82366fc1
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[SedeEjecutoraRUC]
+
+		annotation SummarizationSetBy = Automatic
+
+	column SedeEjecutora
+		lineageTag: 842bb50d-7089-48a3-84ca-87a8de251859
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[SedeEjecutora]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyFaseComponente
+		lineageTag: e93a2a13-b25e-4d9c-ad69-25dd93526e13
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyFaseComponente]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoUnico
+		lineageTag: e91e8e16-5e5a-446d-8718-5bcd465f6780
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyCodigoUnico]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSNIP
+		lineageTag: a48b7396-bc22-4371-ad7b-096d97b7057f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyCodigoSNIP]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombre
+		lineageTag: 689aa6bc-4bd1-4c69-bb3f-446325bd2d0e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNombre]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombreCorta
+		lineageTag: 6ddf2551-cb61-492e-bf39-71a616ba17fb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNombreCorta]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombreIngles
+		lineageTag: 37176b0f-0f07-4cf5-a5fc-a8140726c2ef
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNombreIngles]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyTipoMoneda
+		lineageTag: ba12f64e-c600-4f49-8af5-c86c37dc233c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyTipoMoneda]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyMtoAprobadoLoc
+		lineageTag: e8d7cc77-e87d-46e9-aa6d-8afea494c35f
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyMtoAprobadoLoc]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ProyMtoAprobadoExt
+		lineageTag: f2a39816-0b5c-4104-b426-c31dde2634fb
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyMtoAprobadoExt]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ProyFechaAprobacion
+		formatString: General Date
+		lineageTag: 4b464db3-cb58-470f-ae21-2ad214a3638f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyFechaAprobacion]
+
+		variation Variación
+			isDefault
+			relationship: 743cf0b3-e395-46d4-a396-29055c2ec58e
+			defaultHierarchy: LocalDateTable_c1a922c4-51c9-4bf3-9cc7-0f33223a16fd.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyFecInicio
+		formatString: General Date
+		lineageTag: dd9e6555-0cb9-4134-a713-11c753f6f99e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyFecInicio]
+
+		variation Variación
+			isDefault
+			relationship: 67c65464-56bd-4f19-bd77-a16e8813c436
+			defaultHierarchy: LocalDateTable_f1db8012-0050-42f9-99e0-63aac75a9614.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyFecTermino
+		formatString: General Date
+		lineageTag: 18d672c1-02ed-48e3-adcc-9e9d50e9525a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyFecTermino]
+
+		variation Variación
+			isDefault
+			relationship: a820fe9c-fdf7-497c-b1a0-69f82af851a6
+			defaultHierarchy: LocalDateTable_cb09bd60-3214-473d-8d4a-5146b537e289.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyUbicacion
+		lineageTag: 5e747306-d89a-4e82-9ebe-983b38f598b5
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyUbicacion]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyUnidadFormuladora
+		lineageTag: 98c98fd4-4aba-48cb-a4bf-2d7749907445
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyUnidadFormuladora]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyViabilidad
+		lineageTag: 20e7fcb5-51b5-4c03-a57f-e694afb50c07
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyViabilidad]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAreaIntervencion
+		lineageTag: f3d6e2a2-fc24-4fc8-bf6b-9d2517b4ab1b
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyAreaIntervencion]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCuencaHidrografica
+		lineageTag: 120fb027-7f96-40ca-8c23-2ca7ffad2c49
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyCuencaHidrografica]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNumPAMS
+		lineageTag: 40f72889-9d18-41d5-ba4c-e3eba5a54a6e
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNumPAMS]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyStakeholder
+		lineageTag: ab9829d2-8d26-4584-a634-02a4dbd00b48
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyStakeholder]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyEstatus
+		lineageTag: a31b6eb7-463a-4b72-921b-1a101efb5556
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyEstatus]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAccionGestion
+		lineageTag: b18eff8e-5806-4205-a5a0-6e1e31e87eb4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyAccionGestion]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAccionGestionSoc
+		lineageTag: d7b68692-7f49-4f79-a06e-b8a2f094af48
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyAccionGestionSoc]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAccionCorrectiva
+		lineageTag: b06eaefe-bc77-4ad5-819b-27f54d1dc708
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyAccionCorrectiva]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyOportunidadMejora
+		lineageTag: d6473fdb-d55d-4aeb-9b99-57e4d7d7b8c8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyOportunidadMejora]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNumBeneficiarios
+		lineageTag: e9a82952-4f10-4d09-8bd4-5d9a067196c2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNumBeneficiarios]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyTipoProyecto
+		lineageTag: 266241ae-7842-48c7-ab43-a200618ba845
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyTipoProyecto]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyEstado
+		lineageTag: 79acd207-6802-4bca-aa29-4e5ecd0cede4
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyEstado]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodNombre
+		lineageTag: e1f20404-0f11-419b-9f44-ceb595a10bcb
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyCodNombre]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSPRING
+		lineageTag: 845eca79-ad3f-4b24-9b5e-dfd5b268959d
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyCodigoSPRING]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombreBuscar
+		lineageTag: d8a6ff1d-7339-48d9-9838-9a68c1d9d0fc
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNombreBuscar]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyPrincipal
+		lineageTag: c26083be-b436-40a1-a006-4cf77bf392f8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyPrincipal]
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombrePrinc
+		lineageTag: ab5ce7da-615c-4240-adf7-201640d678a3
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[ProyNombrePrinc]
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoProyecto
+		lineageTag: 2c805a0f-b702-4c86-a2eb-f60d57a3cd1f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[GrupoProyecto]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"Proyecto","TableItemName":"NroProyecto","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column NroProyecto =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('Proyecto'[GrupoProyecto]),
+			  "(En blanco)",
+			  'Proyecto'[GrupoProyecto] IN {"5 RELAVERAS"},
+			  "01",
+			  'Proyecto'[GrupoProyecto] IN {"64 PASIVOS - MANTENIMIENTO"},
+			  "02",
+			  'Proyecto'[GrupoProyecto] IN {"64 PASIVOS - ESTUDIOS"},
+			  "03",
+			  'Proyecto'[GrupoProyecto] IN {"ALADINO VI"},
+			  "04",
+			  'Proyecto'[GrupoProyecto] IN {"AZULMINA 1 Y 2"},
+			  "05",
+			  'Proyecto'[GrupoProyecto] IN {"CARHUACAYAN"},
+			  "06",
+			  'Proyecto'[GrupoProyecto] IN {"CARIDAD"},
+			  "07",
+			  'Proyecto'[GrupoProyecto] IN {"CAUDALOSA"},
+			  "08",
+			  'Proyecto'[GrupoProyecto] IN {"CHUGUR"},
+			  "09",
+			  'Proyecto'[GrupoProyecto] IN {"CLEOPATRA"},
+			  "10",
+			  'Proyecto'[GrupoProyecto] IN {"ACOBAMBA Y COLQUI"},
+			  "11",
+			  'Proyecto'[GrupoProyecto] IN {"SAN JUAN Y DELTA"},
+			  "12",
+			  'Proyecto'[GrupoProyecto] IN {"DORADO Y BARRAGAN"},
+			  "13",
+			  'Proyecto'[GrupoProyecto] IN {"ESQUILACHE"},
+			  "14",
+			  'Proyecto'[GrupoProyecto] IN {"HUAMUYO"},
+			  "15",
+			  'Proyecto'[GrupoProyecto] IN {"HUANCHURINA"},
+			  "16",
+			  'Proyecto'[GrupoProyecto] IN {"LA PASTORA"},
+			  "17",
+			  'Proyecto'[GrupoProyecto] IN {"LICHICOCHA"},
+			  "18",
+			  'Proyecto'[GrupoProyecto] IN {"LOS NEGROS"},
+			  "19",
+			  'Proyecto'[GrupoProyecto] IN {"PUSHAQUILCA"},
+			  "20",
+			  'Proyecto'[GrupoProyecto] IN {"SANTA ROSA 2"},
+			  "21",
+			  'Proyecto'[GrupoProyecto]
+			)
+		lineageTag: 6c0ee982-1728-48e8-8d40-b5935031ef02
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "Proyecto"
+				          }
+				        },
+				        "Property": "GrupoProyecto"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"p","Entity":"Proyecto"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"01","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'5 RELAVERAS'"}}]]}}},{"DisplayName":"02","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'64 PASIVOS - MANTENIMIENTO'"}}]]}}},{"DisplayName":"03","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'64 PASIVOS - ESTUDIOS'"}}]]}}},{"DisplayName":"04","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'ALADINO VI'"}}]]}}},{"DisplayName":"05","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'AZULMINA 1 Y 2'"}}]]}}},{"DisplayName":"06","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'CARHUACAYAN'"}}]]}}},{"DisplayName":"07","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'CARIDAD'"}}]]}}},{"DisplayName":"08","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'CAUDALOSA'"}}]]}}},{"DisplayName":"09","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'CHUGUR'"}}]]}}},{"DisplayName":"10","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'CLEOPATRA'"}}]]}}},{"DisplayName":"11","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'ACOBAMBA Y COLQUI'"}}]]}}},{"DisplayName":"12","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'SAN JUAN Y DELTA'"}}]]}}},{"DisplayName":"13","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'DORADO Y BARRAGAN'"}}]]}}},{"DisplayName":"14","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'ESQUILACHE'"}}]]}}},{"DisplayName":"15","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'HUAMUYO'"}}]]}}},{"DisplayName":"16","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'HUANCHURINA'"}}]]}}},{"DisplayName":"17","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'LA PASTORA'"}}]]}}},{"DisplayName":"18","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'LICHICOCHA'"}}]]}}},{"DisplayName":"19","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'LOS NEGROS'"}}]]}}},{"DisplayName":"20","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'PUSHAQUILCA'"}}]]}}},{"DisplayName":"21","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"GrupoProyecto"}}],"Values":[[{"Literal":{"Value":"'SANTA ROSA 2'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column FaseProy
+		lineageTag: c7d9032c-999a-44fa-83dc-f91feda5a9a2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[FaseProy]
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaProy
+		lineageTag: 59a67c0a-2545-4c16-b1ba-a25299c55716
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_proyecto[EtapaProy]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"Proyecto","TableItemName":"GrupoComponente","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column 'Nombre Proyecto' = Proyecto[ProyNombre]&" (CUI "& Proyecto[ProyCodigoUnico]&")"
+		lineageTag: 3fc35574-9012-48ac-bbdd-7da257cccf60
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoComponente =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('Proyecto'[EtapaProy]),
+			  "(En blanco)",
+			  'Proyecto'[EtapaProy] IN {" PLAN DE CIERRE"},
+			  "1. PLAN DE CIERRE",
+			  'Proyecto'[EtapaProy] IN {" EXPEDIENTE TÉCNICO"},
+			  "3. EXPEDIENTE TÉCNICO",
+			  'Proyecto'[EtapaProy] IN {" EJECUCIÓN DE OBRA"},
+			  "4. EJECUCIÓN DE OBRA",
+			  'Proyecto'[EtapaProy] IN {" POST CIERRE"},
+			  "5. POST CIERRE",
+			  'Proyecto'[EtapaProy] IN {"OPERACIÓN Y MANTENIMIENTO"},
+			  "6. OPERACIÓN Y MANTENIMIENTO",
+			  'Proyecto'[EtapaProy]
+			)
+		lineageTag: 25cc8df2-ef97-4e61-bde1-690f28a22658
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "Proyecto"
+				          }
+				        },
+				        "Property": "EtapaProy"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"p","Entity":"Proyecto"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"EtapaProy"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1. PLAN DE CIERRE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"EtapaProy"}}],"Values":[[{"Literal":{"Value":"' PLAN DE CIERRE'"}}]]}}},{"DisplayName":"3. EXPEDIENTE TÉCNICO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"EtapaProy"}}],"Values":[[{"Literal":{"Value":"' EXPEDIENTE TÉCNICO'"}}]]}}},{"DisplayName":"4. EJECUCIÓN DE OBRA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"EtapaProy"}}],"Values":[[{"Literal":{"Value":"' EJECUCIÓN DE OBRA'"}}]]}}},{"DisplayName":"5. POST CIERRE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"EtapaProy"}}],"Values":[[{"Literal":{"Value":"' POST CIERRE'"}}]]}}},{"DisplayName":"6. OPERACIÓN Y MANTENIMIENTO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"p"}},"Property":"EtapaProy"}}],"Values":[[{"Literal":{"Value":"'OPERACIÓN Y MANTENIMIENTO'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoProyCompResumen = Proyecto[GrupoProyecto]&"-"&Proyecto[GrupoComponente]
+		lineageTag: 925016a4-0488-4671-aa06-a1c470415793
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Proyecto-b34facc5-9375-4c6d-ac94-9cbf56ddfc47 = calculated
+		mode: import
+		source = filter(bibd_proyecto, bibd_proyecto[GrupoProyecto]<>"-")
+
+	annotation PBI_Id = d4063a5ca507419b80d0a190e175a794
+

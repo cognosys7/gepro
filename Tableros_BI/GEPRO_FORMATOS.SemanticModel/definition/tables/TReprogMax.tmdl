@@ -1,0 +1,25 @@
+table TReprogMax
+	lineageTag: aa22d68e-c7a3-40d8-b999-b5a6b59b3c28
+
+	column ContCodigoEntidad
+		lineageTag: 81f0b8b4-2eb2-4e2f-b27a-7aed72b6e649
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_contrato[ContCodigoEntidad]
+
+		annotation SummarizationSetBy = Automatic
+
+	column RepMAx
+		lineageTag: dadf6eeb-f9e8-45a7-a61b-5b480abc3154
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [RepMAx]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TReprogMax-8505cf2d-c272-47cd-b230-a179c62b045a = calculated
+		mode: import
+		source = SUMMARIZE( FILTER(bibd_cont_etapa_control,bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION"), bibd_contrato[ContCodigoEntidad], "RepMAx", max(bibd_cont_etapa_control[ContratoConceptoPlan]))
+
+	annotation PBI_Id = 145064240a5a4c16be1f858885bfb201
+

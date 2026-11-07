@@ -1,0 +1,114 @@
+table bibd_trimestre
+	lineageTag: 21e804d7-67f6-4ad3-97c3-425c6b9c70b5
+
+	column Anio
+		dataType: string
+		lineageTag: 5714c179-ac04-480e-83f9-232f21126348
+		summarizeBy: none
+		sourceColumn: Anio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trim
+		dataType: string
+		lineageTag: ccfa938e-4d6e-4df6-9f33-aa63c2dcd5f1
+		summarizeBy: none
+		sourceColumn: Trim
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio-Trim
+		dataType: string
+		lineageTag: 428ca97f-291a-429b-8c31-6d4e2d3cb9d8
+		summarizeBy: none
+		sourceColumn: Anio-Trim
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio_Det
+		dataType: string
+		lineageTag: b3813460-dc79-4219-b6b9-2b4afcc62fe8
+		summarizeBy: none
+		sourceColumn: Anio_Det
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trim_Det
+		dataType: string
+		lineageTag: 02e29d9d-a1cd-40a5-8402-89706b0cc523
+		summarizeBy: none
+		sourceColumn: Trim_Det
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio-Trim_Det
+		dataType: string
+		lineageTag: 5d9269ca-9e72-44c3-b42c-527aec835d8c
+		summarizeBy: none
+		sourceColumn: Anio-Trim_Det
+
+		annotation SummarizationSetBy = Automatic
+
+	column Match
+		dataType: int64
+		formatString: 0
+		lineageTag: 509911a8-b3cd-4044-9d22-13eb652ac144
+		summarizeBy: sum
+		sourceColumn: Match
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_trimestre","TableItemName":"Grupo","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column Grupo =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_trimestre'[Match]),
+			  "(En blanco)",
+			  'bibd_trimestre'[Match] IN {3},
+			  "Acumulado Anterior",
+			  'bibd_trimestre'[Match] IN {1},
+			  "Trimestre Actual",
+			  "Posterior"
+			)
+		lineageTag: 4520a295-7b59-4bd6-8bf3-d22e0db12337
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_trimestre"
+				          }
+				        },
+				        "Property": "Match"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_trimestre"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Match"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"Acumulado Anterior","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Match"}}],"Values":[[{"Literal":{"Value":"3D"}}]]}}},{"DisplayName":"Trimestre Actual","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Match"}}],"Values":[[{"Literal":{"Value":"1D"}}]]}}},{"DisplayName":"Posterior"}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_trimestre-6cba99fe-b8ae-4e0d-854f-cb50d240463d = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Table.NestedJoin(Trimestres, {"C1"}, TrimestresDet, {"C1"}, "TrimestresDet", JoinKind.LeftOuter),
+				    #"Se expandió TrimestresDet" = Table.ExpandTableColumn(Origen, "TrimestresDet", {"Anio_Det", "Trim_Det", "Anio-Trim_Det", "C1"}, {"TrimestresDet.Anio_Det", "TrimestresDet.Trim_Det", "TrimestresDet.Anio-Trim_Det", "TrimestresDet.C1"}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Se expandió TrimestresDet",{"C1", "TrimestresDet.C1"}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Columnas quitadas",{{"TrimestresDet.Anio_Det", "Anio_Det"}, {"TrimestresDet.Trim_Det", "Trim_Det"}, {"TrimestresDet.Anio-Trim_Det", "Anio-Trim_Det"}}),
+				    #"Columna condicional agregada" = Table.AddColumn(#"Columnas con nombre cambiado", "Match", each if [#"Anio-Trim"] = [#"Anio-Trim_Det"] then 1 else if [#"Anio-Trim"] < [#"Anio-Trim_Det"] then 2 else 3),
+				    #"Filas filtradas" = Table.SelectRows(#"Columna condicional agregada", each true),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Filas filtradas",{{"Match", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,116 @@
+table bibd_cont_etapa
+	lineageTag: 966dffcf-d15f-4d8c-a220-d240a667c633
+
+	column ContIde
+		dataType: string
+		lineageTag: acef09e8-e66c-4e89-85dc-d58e79eae5f1
+		summarizeBy: none
+		sourceColumn: ContIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoUnicoOrden
+		dataType: string
+		lineageTag: fe912a73-c520-40be-a7f9-8f8f0d55bf71
+		summarizeBy: none
+		sourceColumn: ContCodigoUnicoOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaIde
+		dataType: string
+		lineageTag: 7e9fb1e7-5cd3-46c9-9373-71b9b2600b1b
+		summarizeBy: none
+		sourceColumn: EtapaIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaContractual
+		dataType: string
+		lineageTag: 58d7975b-c2c5-46d9-a645-4e4a67bf46fe
+		summarizeBy: none
+		sourceColumn: EtapaContractual
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaComponente
+		dataType: string
+		lineageTag: 77e6234f-6a16-4ab1-b335-f1ca6dd80895
+		summarizeBy: none
+		sourceColumn: EtapaComponente
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaContratoAbrev
+		dataType: string
+		lineageTag: 2a2640f5-36c9-49f5-8c6a-07ee213ad2b3
+		summarizeBy: none
+		sourceColumn: EtapaContratoAbrev
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaModoEjecucion
+		dataType: string
+		lineageTag: d3c942ee-73ee-4f04-b81c-88bce961684d
+		summarizeBy: none
+		sourceColumn: EtapaModoEjecucion
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaModoEjecucionAbrev
+		dataType: string
+		lineageTag: 16a9ae95-9d7c-4b31-a514-64c1269a9f2f
+		summarizeBy: none
+		sourceColumn: EtapaModoEjecucionAbrev
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaEstado
+		dataType: string
+		lineageTag: 465270e9-d5e1-4dcf-927c-e1f76315780f
+		summarizeBy: none
+		sourceColumn: EtapaEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaEstadoAbrev
+		dataType: string
+		lineageTag: ba661133-d676-4e5b-ac43-b496944fbd7a
+		summarizeBy: none
+		sourceColumn: EtapaEstadoAbrev
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaSecuencia
+		dataType: string
+		lineageTag: 4c4dfb2f-8bb1-47ac-9f5f-6b576a2fd3dd
+		summarizeBy: none
+		sourceColumn: EtapaSecuencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaMontoInversion
+		dataType: double
+		formatString: "S/"#,0.00;-"S/"#,0.00;"S/"#,0.00
+		lineageTag: 545f2a87-7af8-4e83-8e1f-a59004e088ef
+		summarizeBy: sum
+		sourceColumn: EtapaMontoInversion
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-PE"}
+
+	partition bibd_cont_etapa-0cd7c653-5d84-4cf1-8f67-ea76a2d88cf5 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_cont_etapa")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ContIde", "ContCodigoUnicoOrden", "EtapaIde", "EtapaContractual", "EtapaComponente", "EtapaContratoAbrev", "EtapaModoEjecucion", "EtapaModoEjecucionAbrev", "EtapaEstado", "EtapaEstadoAbrev", "EtapaSecuencia", "EtapaMontoInversion"}, {"ContIde", "ContCodigoUnicoOrden", "EtapaIde", "EtapaContractual", "EtapaComponente", "EtapaContratoAbrev", "EtapaModoEjecucion", "EtapaModoEjecucionAbrev", "EtapaEstado", "EtapaEstadoAbrev", "EtapaSecuencia", "EtapaMontoInversion"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"EtapaMontoInversion", type number}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

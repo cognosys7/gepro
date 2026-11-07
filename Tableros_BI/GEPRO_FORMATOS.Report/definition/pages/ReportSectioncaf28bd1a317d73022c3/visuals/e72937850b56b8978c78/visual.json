@@ -1,0 +1,51 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "e72937850b56b8978c78",
+  "position": {
+    "x": 0,
+    "y": 901,
+    "z": 13000,
+    "height": 31,
+    "width": 1593,
+    "tabOrder": 13000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "1.2 Cronograma de actividades de Relaciones Comunitarias (Actividades de Plan de Cierre y/o Expediente Técnico / ",
+                    "textStyle": {
+                      "fontFamily": "Segoe (Bold)",
+                      "fontSize": "10pt"
+                    }
+                  },
+                  {
+                    "value": "Actividades de Relaciones Comunitarias",
+                    "textStyle": {
+                      "fontFamily": "Segoe (Bold)",
+                      "fontSize": "13.3333px"
+                    }
+                  },
+                  {
+                    "value": ")",
+                    "textStyle": {
+                      "fontFamily": "Segoe (Bold)",
+                      "fontSize": "10pt"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

@@ -1,0 +1,585 @@
+table bibd_proyecto
+	lineageTag: ea9c10db-7d9c-4fa2-a741-eaed139e9033
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: e0641dc2-aed2-4b18-a46f-6cf8d7a23b8c
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column PortafolioCodigo
+		dataType: string
+		lineageTag: 255c6d47-47ed-450c-b03e-6909f5920900
+		summarizeBy: none
+		sourceColumn: PortafolioCodigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Portafolio
+		dataType: string
+		lineageTag: 1f032526-1260-4ba1-9d51-87f77db3e028
+		summarizeBy: none
+		sourceColumn: Portafolio
+
+		annotation SummarizationSetBy = Automatic
+
+	column PortafolioGrupo
+		dataType: string
+		lineageTag: 07ada1e2-ddcc-4b37-a2f9-143f6394f3dd
+		summarizeBy: none
+		sourceColumn: PortafolioGrupo
+
+		annotation SummarizationSetBy = Automatic
+
+	column Programa
+		dataType: string
+		lineageTag: 62b6f35c-4d41-486a-a457-e4adacbcda24
+		summarizeBy: none
+		sourceColumn: Programa
+
+		annotation SummarizationSetBy = Automatic
+
+	column CentroCostoCodigo
+		dataType: string
+		lineageTag: 6bd2c427-a708-492d-8286-9212259fa519
+		summarizeBy: none
+		sourceColumn: CentroCostoCodigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column CentroCosto
+		dataType: string
+		lineageTag: 3f47da77-7a49-42f3-bf8b-48a8a9c7b373
+		summarizeBy: none
+		sourceColumn: CentroCosto
+
+		annotation SummarizationSetBy = Automatic
+
+	column SedeEjecutoraRUC
+		dataType: string
+		lineageTag: 9353303b-0ff7-4050-9f24-4d8b4a2e343b
+		summarizeBy: none
+		sourceColumn: SedeEjecutoraRUC
+
+		annotation SummarizationSetBy = Automatic
+
+	column SedeEjecutora
+		dataType: string
+		lineageTag: 79f75a70-fc94-4fe2-b87d-c22a69c9d97d
+		summarizeBy: none
+		sourceColumn: SedeEjecutora
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyFaseComponente
+		dataType: string
+		lineageTag: 3784b425-c5a2-4650-9461-dd5abe9657c4
+		summarizeBy: none
+		sourceColumn: ProyFaseComponente
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoUnico
+		dataType: string
+		lineageTag: 0e85250f-e087-46f0-9d66-d998bcaeec31
+		summarizeBy: none
+		sourceColumn: ProyCodigoUnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSNIP
+		dataType: string
+		lineageTag: 74a7ccc2-8fba-4ec5-9071-ad5a933fea53
+		summarizeBy: none
+		sourceColumn: ProyCodigoSNIP
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombre
+		dataType: string
+		lineageTag: 85d0d729-d195-4a5f-95d1-a9330c37177a
+		summarizeBy: none
+		sourceColumn: ProyNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombreCorta
+		dataType: string
+		lineageTag: 09610705-0f70-4dee-a682-e29392bfa0db
+		summarizeBy: none
+		sourceColumn: ProyNombreCorta
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombreIngles
+		dataType: string
+		lineageTag: 3064abc3-af43-4328-a25c-e6049a605059
+		summarizeBy: none
+		sourceColumn: ProyNombreIngles
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyTipoMoneda
+		dataType: string
+		lineageTag: 73bfa34b-0cd9-466d-afd5-759130d62177
+		summarizeBy: none
+		sourceColumn: ProyTipoMoneda
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyMtoAprobadoLoc
+		dataType: double
+		formatString: "S/"#,0.00;-"S/"#,0.00;"S/"#,0.00
+		lineageTag: acc7e06e-b2f7-4014-9ed9-41e00875b6c9
+		summarizeBy: sum
+		sourceColumn: ProyMtoAprobadoLoc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-PE"}
+
+	column ProyMtoAprobadoExt
+		dataType: double
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 999a436e-8260-473d-a4e9-acdf66a58c62
+		summarizeBy: sum
+		sourceColumn: ProyMtoAprobadoExt
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	column ProyFechaAprobacion
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 9061d41f-2685-4238-88ef-9dd8a881e9f3
+		summarizeBy: none
+		sourceColumn: ProyFechaAprobacion
+
+		variation Variación
+			isDefault
+			relationship: 8763131f-9b37-4417-8bf5-e67feb2642f1
+			defaultHierarchy: LocalDateTable_90662c4a-33c4-430d-9427-f250b2a674d7.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyFecInicio
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 0cf75e38-5de6-46bf-8683-52ab973d7ef6
+		summarizeBy: none
+		sourceColumn: ProyFecInicio
+
+		variation Variación
+			isDefault
+			relationship: de953258-f056-4253-9924-1f26fd06d102
+			defaultHierarchy: LocalDateTable_c2454b73-c160-4cfe-ab72-bb28fe1eb02e.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyFecTermino
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 000d44d4-3579-4879-8fc5-1041d6041e6d
+		summarizeBy: none
+		sourceColumn: ProyFecTermino
+
+		variation Variación
+			isDefault
+			relationship: 48edd34c-9953-45c1-8ed4-e754e8cc66dc
+			defaultHierarchy: LocalDateTable_ce07a796-aeba-48e5-8cec-0ea76a57763f.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyUbicacion
+		dataType: string
+		lineageTag: a4f60f5a-7e3b-44c3-8d9f-bafc4dad8fa0
+		summarizeBy: none
+		sourceColumn: ProyUbicacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyUnidadFormuladora
+		dataType: string
+		lineageTag: 8c80d0ab-dae8-48f9-8f84-e10e00e17303
+		summarizeBy: none
+		sourceColumn: ProyUnidadFormuladora
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyViabilidad
+		dataType: string
+		lineageTag: ac0ebbdf-cde8-440b-841b-18bf66e0250a
+		summarizeBy: none
+		sourceColumn: ProyViabilidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAreaIntervencion
+		dataType: string
+		lineageTag: 65c23ce7-7395-44fe-9259-3fc087f6bee7
+		summarizeBy: none
+		sourceColumn: ProyAreaIntervencion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCuencaHidrografica
+		dataType: string
+		lineageTag: 86b0b53b-1a22-41aa-8808-86d5cbadc75a
+		summarizeBy: none
+		sourceColumn: ProyCuencaHidrografica
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNumPAMS
+		dataType: string
+		lineageTag: 2ab2eb7a-74d5-4767-8307-4c86681b3d11
+		summarizeBy: none
+		sourceColumn: ProyNumPAMS
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyStakeholder
+		dataType: string
+		lineageTag: 56693357-889c-4098-ac65-61e2445de069
+		summarizeBy: none
+		sourceColumn: ProyStakeholder
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyEstatus
+		dataType: string
+		lineageTag: 3712c887-23d8-4b81-8f98-b027da33f536
+		summarizeBy: none
+		sourceColumn: ProyEstatus
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAccionGestion
+		dataType: string
+		lineageTag: c646f34d-964a-4452-adf3-4f921b9807e0
+		summarizeBy: none
+		sourceColumn: ProyAccionGestion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAccionGestionSoc
+		dataType: string
+		lineageTag: 7c0e8ed0-7727-413a-ac72-4c5a1d6b6dd9
+		summarizeBy: none
+		sourceColumn: ProyAccionGestionSoc
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyAccionCorrectiva
+		dataType: string
+		lineageTag: e48bcd61-628b-4035-88c9-9cd84eac9569
+		summarizeBy: none
+		sourceColumn: ProyAccionCorrectiva
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyOportunidadMejora
+		dataType: string
+		lineageTag: c325ef77-d8c9-493f-81c8-df3647210d30
+		summarizeBy: none
+		sourceColumn: ProyOportunidadMejora
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNumBeneficiarios
+		dataType: string
+		lineageTag: 045a1af8-f6a6-4ccd-a030-588557876000
+		summarizeBy: none
+		sourceColumn: ProyNumBeneficiarios
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyTipoProyecto
+		dataType: string
+		lineageTag: 6147e648-f337-42e8-b60d-343efe42318e
+		summarizeBy: none
+		sourceColumn: ProyTipoProyecto
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyEstado
+		dataType: string
+		lineageTag: 9dedd800-0993-4bbd-b6a3-9f5a14759f2f
+		summarizeBy: none
+		sourceColumn: ProyEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodNombre = RIGHT(bibd_proyecto[ProyCodigoSPRING],6) & " - " & bibd_proyecto[ProyNombreIngles]
+		lineageTag: 86f4cfa3-b8d2-4902-9a4d-cb586064c30d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSPRING
+		dataType: string
+		lineageTag: 0f02ece8-3a64-4e05-921b-37a0dbadfa0e
+		summarizeBy: none
+		sourceColumn: ProyCodigoSPRING
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombreBuscar
+		dataType: string
+		lineageTag: 18119f69-e7e5-4c7b-8ffc-5cb9d5220a5f
+		summarizeBy: none
+		sourceColumn: ProyNombreBuscar
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyPrincipal
+		dataType: string
+		lineageTag: 1a632f26-32f2-4d6a-80c9-1de2d21a94b6
+		summarizeBy: none
+		sourceColumn: ProyPrincipal
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombrePrinc = if(ISBLANK(bibd_proyecto[ProyNombreIngles]),"-",bibd_proyecto[ProyNombreIngles] &" - "&bibd_proyecto[ProyPrincipal] )
+		lineageTag: 4b4f3d70-5933-4998-aea6-4dde9123a5c8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_proyecto","TableItemName":"GrupoProyecto","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column GrupoProyecto =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_proyecto'[ProyNombrePrinc]),
+			  "(En blanco)",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"AAHH. LAS MERCEDES ALTO PERU - 0",
+			    "ACOBAMBA Y COLQUI - 0",
+			    "ADMINISTRATIVOS-EXTERNOS - 0",
+			    "ALTO MARCAVALLE - LADERAS - 0",
+			    "ALTO MARCAVALLE-REFORESTACION - 0",
+			    "AREAS PUBLICAS SAN VICENTE DE PAUL - 0",
+			    "AZALIA Y PUCARA-TRABAJO COMPLEMENTARIO - 0",
+			    "AZALIA-DEPOSITO DE LODOS - 0",
+			    "BUENOS AIRES - ESPACIO RECREATIVO - 0",
+			    "CHICHAYRO - 0",
+			    "CHUCCHIS 1ERA Y 2DA ZONA - 1",
+			    "CLEOPATRA - 0",
+			    "CLUSTER MINERO - 0",
+			    "CONDORCANA 1 - 0",
+			    "CONDORCANA 2 - 0",
+			    "CONDORCANA 3 - 0",
+			    "CONVENIO PROINVERSION INGEMMET - 0",
+			    "CORPORATIVOS - 0",
+			    "CURAPAMPA - 0",
+			    "EL PORVENIR - 0",
+			    "ESQUILACHE - 0",
+			    "EX UNIDAD GOYLLARISQUIZGA - 1",
+			    "EXCELSIOR-ABANDONO DESMONTE - 0",
+			    "JEREZ - 0",
+			    "LA OROYA - DEPOSITO DE SUELOS - 0",
+			    "LADERAS OROYA ANTIGUA - 0",
+			    "LOS NEGROS - 0",
+			    "MAGISTRAL - 1",
+			    "MANTENIMIENTO-NO ES PROYECTO-NO USAR - 0",
+			    "MERCEDES ALTO PERU-PISTAS VEREDAS Y GRAD - 0",
+			    "MICHIQUILLAY - MANTENIMIENTO - 1",
+			    "MICHIQUILLAY- MANEJO DE AGUAS - 0",
+			    "MICHIQUILLAY-MITIGACION Y REVEGETACION - 0",
+			    "MICHIQUILLAY-SECTOR RELAVERA DEL PC - 0",
+			    "MICHIQUILLAY-TRATAMIENTO DE POZAS - 0",
+			    "MURUCATA - 0",
+			    "NORMAN KING - 0",
+			    "OROYA ANTIGUA - ESCALINATAS - 0",
+			    "PILOTO CALIOC - 0",
+			    "POR CONVENIO - 0",
+			    "POYO NEGRO - 0",
+			    "PUSHAQUILCA - 0",
+			    "QUIULACOCHA-CARRETERA - 0",
+			    "QUIULACOCHA-PLANTA DE TRATAMIENTO - 0",
+			    "QUIULACOCHA-SISTEMA NEUTRALIZACION - 0",
+			    "REMANENTES SANTA ROSA DE SACCO - 1",
+			    "SAN JUAN Y DELTA - PLAN DE CIERRE - 0",
+			    "SAN VICENTE DE PAUL-PISTAS Y VEREDAS - 0",
+			    "TACARPANA - PARQUE ECOLOGICO - 0",
+			    "TACARPANA Y MURUHUAY - 0",
+			    "TACARPANA-REFORESTACION - 0",
+			    "YERBA BUENA CHICA - 0"},
+			  "-",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"5 RELAVERAS - 1"},
+			  "5 RELAVERAS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"64 PASIVOS - ESTUDIOS - 1"},
+			  "64 PASIVOS - ESTUDIOS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"64 PASIVOS-MANTENIMIENTO - 1"},
+			  "64 PASIVOS - MANTENIMIENTO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"ACOBAMBA Y COLQUI - 1"},
+			  "ACOBAMBA Y COLQUI",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"ALADINO VI - 1"},
+			  "ALADINO VI",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"ANGLOAMERICAN - PLATAFORMAS - 1"},
+			  "ANGLOAMERICAN - PLATAFORMAS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"ANTUQUITO - 1"},
+			  "ANTUQUITO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"AREAS AFECTADAS CABLE CARRIL - 1"},
+			  "AREAS AFECTADAS CABLE CARRIL",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"AZALIA Y PUCARA - MANTENIMIENTO - 1"},
+			  "AZALIA Y PUCARA - MANTENIMIENTO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"AZALIA-MANTENIMIENTO DE DEPOSITOS - 1"},
+			  "AZALIA-MANTENIMIENTO DE DEPOSITOS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"AZULMINA 1 Y 2 - 1"},
+			  "AZULMINA 1 Y 2",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"BELLAVISTA - 1"},
+			  "BELLAVISTA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CALIOC Y CHACRAPUQUIO - 1"},
+			  "CALIOC Y CHACRAPUQUIO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CALLES TUPAC AMARU - 1"},
+			  "CALLES TUPAC AMARU",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CARHUACAYAN - 1"},
+			  "CARHUACAYAN",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CARIDAD - 1"},
+			  "CARIDAD",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CASAPALCA - MANTENIMIENTO - 1"},
+			  "CASAPALCA - MANTENIMIENTO - 1",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CAUDALOSA - 1"},
+			  "CAUDALOSA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CHUCCHIS - 1"},
+			  "CHUCCHIS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CHUGUR - 1"},
+			  "CHUGUR",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"CLEOPATRA - 1"},
+			  "CLEOPATRA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"DELTA - PAAR - 1"},
+			  "DELTA - PAAR",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"DELTA FA - 1"},
+			  "DELTA FA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"DEPOSITO SUELOS CONTAMINADOS - 1"},
+			  "DEPOSITO SUELOS CONTAMINADOS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"DORADO Y BARRAGAN - 1"},
+			  "DORADO Y BARRAGAN",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"ESQUILACHE - 1"},
+			  "ESQUILACHE",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"EXCELSIOR - 1"},
+			  "EXCELSIOR",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"HUAMUYO - 1"},
+			  "HUAMUYO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"HUANCHURINA - 1"},
+			  "HUANCHURINA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"HUAYNACANCHA - 1"},
+			  "HUAYNACANCHA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"LA OROYA - CALIDAD DE AIRE - 1"},
+			  "LA OROYA - CALIDAD DE AIRE",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"LA PASTORA - 1"},
+			  "LA PASTORA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"LICHICOCHA - 1"},
+			  "LICHICOCHA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"LOS NEGROS - 1"},
+			  "LOS NEGROS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"MALPASO - 1"},
+			  "MALPASO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"MARCAVALLE - 1"},
+			  "MARCAVALLE",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"MARGEN IZQUIERDO - 1"},
+			  "MARGEN IZQUIERDO",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"MICHIQUILLAY - 1"},
+			  "MICHIQUILLAY",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"PISTAS Y VEREDAS JUAN PABLO II - 1"},
+			  "PISTAS Y VEREDAS JUAN PABLO II",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"PLAN DE CIERRE QUIULACOCHA - 1"},
+			  "PLAN DE CIERRE QUIULACOCHA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"PUCARA-TRANSPORTE DE MATERIAL - 0"},
+			  "PUCARA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"PUENTES CHUMPE Y TINCO EN YAURICOCHA - 1"},
+			  "PUENTES CHUMPE Y TINCO EN YAURICOCHA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"PUSHAQUILCA - 1"},
+			  "PUSHAQUILCA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"QUIULACOCHA MITIGACIÓN - 1"},
+			  "QUIULACOCHA MITIGACIÓN",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"SAN FRANCISCO - LADERAS - 1"},
+			  "SAN FRANCISCO - LADERAS",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"SAN JUAN Y DELTA-PLAN DE CIERRE - 1"},
+			  "SAN JUAN Y DELTA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"SANTA ROSA 2 - 1"},
+			  "SANTA ROSA 2",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"TABLACHACA - 1"},
+			  "TABLACHACA",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"VADO, MALPASO, HUAYNACANCHA - MANTENIMIE - 1"},
+			  "VADO, MALPASO, HUAYNACANCHA - MANTENIMIE",
+			  'bibd_proyecto'[ProyNombrePrinc] IN {"VENTUROSA - 0"},
+			  "VENTUROSA - 0",
+			  'bibd_proyecto'[ProyNombrePrinc]
+			)
+		lineageTag: b35435ca-0359-4871-955c-d1b14f8aa242
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_proyecto"
+				          }
+				        },
+				        "Property": "ProyNombrePrinc"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_proyecto"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"-","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'AAHH. LAS MERCEDES ALTO PERU - 0'"}}],[{"Literal":{"Value":"'ACOBAMBA Y COLQUI - 0'"}}],[{"Literal":{"Value":"'ADMINISTRATIVOS-EXTERNOS - 0'"}}],[{"Literal":{"Value":"'ALTO MARCAVALLE - LADERAS - 0'"}}],[{"Literal":{"Value":"'ALTO MARCAVALLE-REFORESTACION - 0'"}}],[{"Literal":{"Value":"'AREAS PUBLICAS SAN VICENTE DE PAUL - 0'"}}],[{"Literal":{"Value":"'AZALIA Y PUCARA-TRABAJO COMPLEMENTARIO - 0'"}}],[{"Literal":{"Value":"'AZALIA-DEPOSITO DE LODOS - 0'"}}],[{"Literal":{"Value":"'BUENOS AIRES - ESPACIO RECREATIVO - 0'"}}],[{"Literal":{"Value":"'CHICHAYRO - 0'"}}],[{"Literal":{"Value":"'CHUCCHIS 1ERA Y 2DA ZONA - 1'"}}],[{"Literal":{"Value":"'CLEOPATRA - 0'"}}],[{"Literal":{"Value":"'CLUSTER MINERO - 0'"}}],[{"Literal":{"Value":"'CONDORCANA 1 - 0'"}}],[{"Literal":{"Value":"'CONDORCANA 2 - 0'"}}],[{"Literal":{"Value":"'CONDORCANA 3 - 0'"}}],[{"Literal":{"Value":"'CONVENIO PROINVERSION INGEMMET - 0'"}}],[{"Literal":{"Value":"'CORPORATIVOS - 0'"}}],[{"Literal":{"Value":"'CURAPAMPA - 0'"}}],[{"Literal":{"Value":"'EL PORVENIR - 0'"}}],[{"Literal":{"Value":"'ESQUILACHE - 0'"}}],[{"Literal":{"Value":"'EX UNIDAD GOYLLARISQUIZGA - 1'"}}],[{"Literal":{"Value":"'EXCELSIOR-ABANDONO DESMONTE - 0'"}}],[{"Literal":{"Value":"'JEREZ - 0'"}}],[{"Literal":{"Value":"'LA OROYA - DEPOSITO DE SUELOS - 0'"}}],[{"Literal":{"Value":"'LADERAS OROYA ANTIGUA - 0'"}}],[{"Literal":{"Value":"'LOS NEGROS - 0'"}}],[{"Literal":{"Value":"'MAGISTRAL - 1'"}}],[{"Literal":{"Value":"'MANTENIMIENTO-NO ES PROYECTO-NO USAR - 0'"}}],[{"Literal":{"Value":"'MERCEDES ALTO PERU-PISTAS VEREDAS Y GRAD - 0'"}}],[{"Literal":{"Value":"'MICHIQUILLAY - MANTENIMIENTO - 1'"}}],[{"Literal":{"Value":"'MICHIQUILLAY- MANEJO DE AGUAS - 0'"}}],[{"Literal":{"Value":"'MICHIQUILLAY-MITIGACION Y REVEGETACION - 0'"}}],[{"Literal":{"Value":"'MICHIQUILLAY-SECTOR RELAVERA DEL PC - 0'"}}],[{"Literal":{"Value":"'MICHIQUILLAY-TRATAMIENTO DE POZAS - 0'"}}],[{"Literal":{"Value":"'MURUCATA - 0'"}}],[{"Literal":{"Value":"'NORMAN KING - 0'"}}],[{"Literal":{"Value":"'OROYA ANTIGUA - ESCALINATAS - 0'"}}],[{"Literal":{"Value":"'PILOTO CALIOC - 0'"}}],[{"Literal":{"Value":"'POR CONVENIO - 0'"}}],[{"Literal":{"Value":"'POYO NEGRO - 0'"}}],[{"Literal":{"Value":"'PUSHAQUILCA - 0'"}}],[{"Literal":{"Value":"'QUIULACOCHA-CARRETERA - 0'"}}],[{"Literal":{"Value":"'QUIULACOCHA-PLANTA DE TRATAMIENTO - 0'"}}],[{"Literal":{"Value":"'QUIULACOCHA-SISTEMA NEUTRALIZACION - 0'"}}],[{"Literal":{"Value":"'REMANENTES SANTA ROSA DE SACCO - 1'"}}],[{"Literal":{"Value":"'SAN JUAN Y DELTA - PLAN DE CIERRE - 0'"}}],[{"Literal":{"Value":"'SAN VICENTE DE PAUL-PISTAS Y VEREDAS - 0'"}}],[{"Literal":{"Value":"'TACARPANA - PARQUE ECOLOGICO - 0'"}}],[{"Literal":{"Value":"'TACARPANA Y MURUHUAY - 0'"}}],[{"Literal":{"Value":"'TACARPANA-REFORESTACION - 0'"}}],[{"Literal":{"Value":"'YERBA BUENA CHICA - 0'"}}]]}}},{"DisplayName":"5 RELAVERAS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'5 RELAVERAS - 1'"}}]]}}},{"DisplayName":"64 PASIVOS - ESTUDIOS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'64 PASIVOS - ESTUDIOS - 1'"}}]]}}},{"DisplayName":"64 PASIVOS - MANTENIMIENTO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'64 PASIVOS-MANTENIMIENTO - 1'"}}]]}}},{"DisplayName":"ACOBAMBA Y COLQUI","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'ACOBAMBA Y COLQUI - 1'"}}]]}}},{"DisplayName":"ALADINO VI","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'ALADINO VI - 1'"}}]]}}},{"DisplayName":"ANGLOAMERICAN - PLATAFORMAS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'ANGLOAMERICAN - PLATAFORMAS - 1'"}}]]}}},{"DisplayName":"ANTUQUITO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'ANTUQUITO - 1'"}}]]}}},{"DisplayName":"AREAS AFECTADAS CABLE CARRIL","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'AREAS AFECTADAS CABLE CARRIL - 1'"}}]]}}},{"DisplayName":"AZALIA Y PUCARA - MANTENIMIENTO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'AZALIA Y PUCARA - MANTENIMIENTO - 1'"}}]]}}},{"DisplayName":"AZALIA-MANTENIMIENTO DE DEPOSITOS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'AZALIA-MANTENIMIENTO DE DEPOSITOS - 1'"}}]]}}},{"DisplayName":"AZULMINA 1 Y 2","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'AZULMINA 1 Y 2 - 1'"}}]]}}},{"DisplayName":"BELLAVISTA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'BELLAVISTA - 1'"}}]]}}},{"DisplayName":"CALIOC Y CHACRAPUQUIO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CALIOC Y CHACRAPUQUIO - 1'"}}]]}}},{"DisplayName":"CALLES TUPAC AMARU","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CALLES TUPAC AMARU - 1'"}}]]}}},{"DisplayName":"CARHUACAYAN","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CARHUACAYAN - 1'"}}]]}}},{"DisplayName":"CARIDAD","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CARIDAD - 1'"}}]]}}},{"DisplayName":"CASAPALCA - MANTENIMIENTO - 1","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CASAPALCA - MANTENIMIENTO - 1'"}}]]}}},{"DisplayName":"CAUDALOSA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CAUDALOSA - 1'"}}]]}}},{"DisplayName":"CHUCCHIS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CHUCCHIS - 1'"}}]]}}},{"DisplayName":"CHUGUR","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CHUGUR - 1'"}}]]}}},{"DisplayName":"CLEOPATRA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'CLEOPATRA - 1'"}}]]}}},{"DisplayName":"DELTA - PAAR","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'DELTA - PAAR - 1'"}}]]}}},{"DisplayName":"DELTA FA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'DELTA FA - 1'"}}]]}}},{"DisplayName":"DEPOSITO SUELOS CONTAMINADOS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'DEPOSITO SUELOS CONTAMINADOS - 1'"}}]]}}},{"DisplayName":"DORADO Y BARRAGAN","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'DORADO Y BARRAGAN - 1'"}}]]}}},{"DisplayName":"ESQUILACHE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'ESQUILACHE - 1'"}}]]}}},{"DisplayName":"EXCELSIOR","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'EXCELSIOR - 1'"}}]]}}},{"DisplayName":"HUAMUYO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'HUAMUYO - 1'"}}]]}}},{"DisplayName":"HUANCHURINA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'HUANCHURINA - 1'"}}]]}}},{"DisplayName":"HUAYNACANCHA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'HUAYNACANCHA - 1'"}}]]}}},{"DisplayName":"LA OROYA - CALIDAD DE AIRE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'LA OROYA - CALIDAD DE AIRE - 1'"}}]]}}},{"DisplayName":"LA PASTORA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'LA PASTORA - 1'"}}]]}}},{"DisplayName":"LICHICOCHA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'LICHICOCHA - 1'"}}]]}}},{"DisplayName":"LOS NEGROS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'LOS NEGROS - 1'"}}]]}}},{"DisplayName":"MALPASO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'MALPASO - 1'"}}]]}}},{"DisplayName":"MARCAVALLE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'MARCAVALLE - 1'"}}]]}}},{"DisplayName":"MARGEN IZQUIERDO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'MARGEN IZQUIERDO - 1'"}}]]}}},{"DisplayName":"MICHIQUILLAY","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'MICHIQUILLAY - 1'"}}]]}}},{"DisplayName":"PISTAS Y VEREDAS JUAN PABLO II","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'PISTAS Y VEREDAS JUAN PABLO II - 1'"}}]]}}},{"DisplayName":"PLAN DE CIERRE QUIULACOCHA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'PLAN DE CIERRE QUIULACOCHA - 1'"}}]]}}},{"DisplayName":"PUCARA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'PUCARA-TRANSPORTE DE MATERIAL - 0'"}}]]}}},{"DisplayName":"PUENTES CHUMPE Y TINCO EN YAURICOCHA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'PUENTES CHUMPE Y TINCO EN YAURICOCHA - 1'"}}]]}}},{"DisplayName":"PUSHAQUILCA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'PUSHAQUILCA - 1'"}}]]}}},{"DisplayName":"QUIULACOCHA MITIGACIÓN","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'QUIULACOCHA MITIGACIÓN - 1'"}}]]}}},{"DisplayName":"SAN FRANCISCO - LADERAS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'SAN FRANCISCO - LADERAS - 1'"}}]]}}},{"DisplayName":"SAN JUAN Y DELTA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'SAN JUAN Y DELTA-PLAN DE CIERRE - 1'"}}]]}}},{"DisplayName":"SANTA ROSA 2","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'SANTA ROSA 2 - 1'"}}]]}}},{"DisplayName":"TABLACHACA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'TABLACHACA - 1'"}}]]}}},{"DisplayName":"VADO, MALPASO, HUAYNACANCHA - MANTENIMIE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'VADO, MALPASO, HUAYNACANCHA - MANTENIMIE - 1'"}}]]}}},{"DisplayName":"VENTUROSA - 0","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ProyNombrePrinc"}}],"Values":[[{"Literal":{"Value":"'VENTUROSA - 0'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column FaseProy
+		dataType: string
+		lineageTag: 34149aaa-b918-42f6-b840-e530b8bc4773
+		summarizeBy: none
+		sourceColumn: FaseProy
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaProy
+		dataType: string
+		lineageTag: 3a2f381b-49f6-49c9-99bb-f80bae60a2b3
+		summarizeBy: none
+		sourceColumn: EtapaProy
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proyecto-4a9e4982-69bc-4e82-8ffa-32f22e846b01 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_proyecto")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ProyIde", "PortafolioCodigo", "Portafolio", "PortafolioGrupo", "Programa", "CentroCostoCodigo", "CentroCosto", "SedeEjecutoraRUC", "SedeEjecutora", "ProyFaseComponente", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyNombreCorta", "ProyNombreIngles", "ProyTipoMoneda", "ProyMtoAprobadoLoc", "ProyMtoAprobadoExt", "ProyFechaAprobacion", "ProyFecInicio", "ProyFecTermino", "ProyUbicacion", "ProyUnidadFormuladora", "ProyViabilidad", "ProyAreaIntervencion", "ProyCuencaHidrografica", "ProyNumPAMS", "ProyStakeholder", "ProyEstatus", "ProyAccionGestion", "ProyAccionGestionSoc", "ProyAccionCorrectiva", "ProyOportunidadMejora", "ProyNumBeneficiarios", "ProyTipoProyecto", "ProyEstado" , "ProyNombreBuscar", "ProyPrincipal" }, {"ProyIde", "PortafolioCodigo", "Portafolio", "PortafolioGrupo", "Programa", "CentroCostoCodigo", "CentroCosto", "SedeEjecutoraRUC", "SedeEjecutora", "ProyFaseComponente", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyNombreCorta", "ProyNombreIngles", "ProyTipoMoneda", "ProyMtoAprobadoLoc", "ProyMtoAprobadoExt", "ProyFechaAprobacion", "ProyFecInicio", "ProyFecTermino", "ProyUbicacion", "ProyUnidadFormuladora", "ProyViabilidad", "ProyAreaIntervencion", "ProyCuencaHidrografica", "ProyNumPAMS", "ProyStakeholder", "ProyEstatus", "ProyAccionGestion", "ProyAccionGestionSoc", "ProyAccionCorrectiva", "ProyOportunidadMejora", "ProyNumBeneficiarios", "ProyTipoProyecto", "ProyEstado" , "ProyNombreBuscar", "ProyPrincipal" }),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{ {"ProyFechaAprobacion", type datetime}, {"ProyFecInicio", type datetime}, {"ProyFecTermino", type datetime}}),
+				    #"Tipo cambiado con configuración regional1" = Table.TransformColumnTypes(#"Tipo cambiado", {{"ProyMtoAprobadoLoc", type number}, {"ProyMtoAprobadoExt", type number}}, "es-PE"),
+				    #"Filas filtradas" = Table.SelectRows(#"Tipo cambiado con configuración regional1", each true),
+				    #"Columna duplicada" = Table.DuplicateColumn(#"Filas filtradas", "ProyFaseComponente", "ProyFaseComponente - Copia"),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Columna duplicada",{{"ProyFaseComponente - Copia", type text}}),
+				    #"Dividir columna por delimitador" = Table.SplitColumn(#"Tipo cambiado1", "ProyFaseComponente - Copia", Splitter.SplitTextByEachDelimiter({":"}, QuoteStyle.Csv, false), {"ProyFaseComponente - Copia.1", "ProyFaseComponente - Copia.2"}),
+				    #"Tipo cambiado2" = Table.TransformColumnTypes(#"Dividir columna por delimitador",{{"ProyFaseComponente - Copia.1", type text}, {"ProyFaseComponente - Copia.2", type text}}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado2",{"ProyFaseComponente - Copia.1"}),
+				    #"Dividir columna por delimitador1" = Table.SplitColumn(#"Columnas quitadas", "ProyFaseComponente - Copia.2", Splitter.SplitTextByDelimiter("-", QuoteStyle.Csv), {"ProyFaseComponente - Copia.2.1", "ProyFaseComponente - Copia.2.2"}),
+				    #"Tipo cambiado3" = Table.TransformColumnTypes(#"Dividir columna por delimitador1",{{"ProyFaseComponente - Copia.2.1", type text}, {"ProyFaseComponente - Copia.2.2", type text}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Tipo cambiado3",{{"ProyFaseComponente - Copia.2.1", "Fase"}, {"ProyFaseComponente - Copia.2.2", "Etapa"}}),
+				    #"Valor reemplazado" = Table.ReplaceValue(#"Columnas con nombre cambiado"," CO PLAN DE CIERRE"," PLAN DE CIERRE",Replacer.ReplaceText,{"Fase"}),
+				    #"Columna condicional agregada" = Table.AddColumn(#"Valor reemplazado", "Fase2", each if [Fase] = " PLAN DE CIERRE" then " FORM. Y EVAL." else if [Fase] <> " PLAN DE CIERRE" then [Fase] else null),
+				    #"Columna condicional agregada1" = Table.AddColumn(#"Columna condicional agregada", "Etapa2", each if [Fase] = " PLAN DE CIERRE" then " PLAN DE CIERRE" else if [Fase] <> " PLAN DE CIERRE" then [Etapa] else null),
+				    #"Columnas quitadas1" = Table.RemoveColumns(#"Columna condicional agregada1",{"Fase", "Etapa"}),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Columnas quitadas1",{{"Fase2", "FaseProy"}, {"Etapa2", "EtapaProy"}})
+				in
+				    #"Columnas con nombre cambiado1"
+
+	annotation PBI_ResultType = Table
+

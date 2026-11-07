@@ -1,0 +1,84 @@
+table bibd_proy_gestion_social_intere
+	lineageTag: 5268109e-acdd-4213-8852-a9a963255179
+
+	column SocialIntrsaIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 3b1d6087-fdc7-4cf2-9038-2803e8305ac0
+		summarizeBy: sum
+		sourceColumn: SocialIntrsaIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIde
+		dataType: int64
+		formatString: 0
+		lineageTag: b0f5c485-86d5-4e8a-9af4-26372cff3191
+		summarizeBy: none
+		sourceColumn: SocialIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column InteresadoIde
+		dataType: int64
+		formatString: 0
+		lineageTag: f0e6896a-afed-4b74-89e4-158055b9badc
+		summarizeBy: none
+		sourceColumn: InteresadoIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIntrsaNombre
+		dataType: string
+		lineageTag: 98ccd712-d484-4696-bb13-c36dc9bd19b7
+		summarizeBy: none
+		sourceColumn: SocialIntrsaNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIntrsaTipo
+		dataType: string
+		lineageTag: 5fd01b15-cf68-46d9-9f94-dc4ded9a42b8
+		summarizeBy: none
+		sourceColumn: SocialIntrsaTipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIntrsaRol
+		dataType: string
+		lineageTag: a13affbe-1fb7-48b9-b264-5a0f4a743653
+		summarizeBy: none
+		sourceColumn: SocialIntrsaRol
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIntrsaCargo
+		dataType: string
+		lineageTag: 8e61eb6b-82b3-4e4b-945c-b081a8956155
+		summarizeBy: none
+		sourceColumn: SocialIntrsaCargo
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIntrsaEstado
+		dataType: string
+		lineageTag: 30c62d81-e0b0-4978-a37c-0ad1ca63f60d
+		summarizeBy: none
+		sourceColumn: SocialIntrsaEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_gestion_social_intere-1c669f73-fb97-4118-bd3f-0fae66ef07d3 = m
+		mode: import
+		queryGroup: 'FORMATO 6'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_proy_gestion_social_intere")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"SocialIntrsaIde", "SocialIde", "InteresadoIde", "SocialIntrsaNombre", "SocialIntrsaTipo", "SocialIntrsaRol", "SocialIntrsaCargo", "SocialIntrsaEstado"}, {"SocialIntrsaIde", "SocialIde", "InteresadoIde", "SocialIntrsaNombre", "SocialIntrsaTipo", "SocialIntrsaRol", "SocialIntrsaCargo", "SocialIntrsaEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"SocialIntrsaIde", Int64.Type}, {"SocialIde", Int64.Type}, {"InteresadoIde", Int64.Type}, {"SocialIntrsaNombre", type text}, {"SocialIntrsaTipo", type text}, {"SocialIntrsaRol", type text}, {"SocialIntrsaCargo", type text}, {"SocialIntrsaEstado", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

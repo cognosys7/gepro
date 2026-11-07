@@ -5,3 +5,8 @@ SGPAM_archivos/
 nbproject/
 Thumbs.db
 *.rar
+
+# Power BI: datos cargados, preferencias locales y el archivo original con datos de AMSAC
+*.pbix
+**/.pbi/cache.abf
+**/.pbi/localSettings.json

@@ -1,0 +1,277 @@
+relationship 173251c5-13a7-41ce-b143-9ba5853af0f7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_contrato.ContFechaSuscribe
+	toColumn: LocalDateTable_9a203fc7-5cb8-45d6-ac35-19672a0e16f2.Date
+
+relationship 7ce34bfe-55a1-4a74-9d6e-2bd11a13ace2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_contrato.ContFechaInicio
+	toColumn: LocalDateTable_964934e6-56a0-4159-aa20-0c915e0877e6.Date
+
+relationship 81cdfe3b-10d5-4fc8-8bae-1558901fb212
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_contrato.ContFechaTermino
+	toColumn: LocalDateTable_2a61db6f-50b4-4503-861b-d9ef828fae01.Date
+
+relationship c07cea19-3396-4308-9176-6e4d6bb4e8d3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_contrato.ContFechaCierre
+	toColumn: LocalDateTable_0ce003ff-d11d-416e-bcbe-198959783617.Date
+
+relationship 456a913b-8ce2-449e-a475-ad762ea18dbc
+	crossFilteringBehavior: bothDirections
+	fromColumn: bibd_contrato.ProyIde
+	toColumn: bibd_proyecto.ProyIde
+
+relationship 767b9313-6a76-47a4-a1b2-88e9445e304b
+	toCardinality: many
+	fromColumn: bibd_contrato_archivo.ContratoIde
+	toColumn: bibd_contrato.ContratoIde
+
+relationship c5ea4d9f-f3de-486e-bbc1-90b774e1b533
+	fromColumn: bibd_cont_etapa.ContIde
+	toColumn: bibd_contrato.ContIde
+
+relationship 8763131f-9b37-4417-8bf5-e67feb2642f1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proyecto.ProyFechaAprobacion
+	toColumn: LocalDateTable_90662c4a-33c4-430d-9427-f250b2a674d7.Date
+
+relationship de953258-f056-4253-9924-1f26fd06d102
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proyecto.ProyFecInicio
+	toColumn: LocalDateTable_c2454b73-c160-4cfe-ab72-bb28fe1eb02e.Date
+
+relationship 48edd34c-9953-45c1-8ed4-e754e8cc66dc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proyecto.ProyFecTermino
+	toColumn: LocalDateTable_ce07a796-aeba-48e5-8cec-0ea76a57763f.Date
+
+relationship 255780d9-3782-4bb2-a048-aa896c8d1a2c
+	fromColumn: bibd_cont_etapa_control.EtapaIde
+	toColumn: bibd_cont_etapa.EtapaIde
+
+relationship e8c78378-e967-4338-9413-af00bdc2999e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_cont_ampliacion.AmpFecInicio
+	toColumn: LocalDateTable_63eac0f0-ea20-49d7-98da-8d2d15f8b3cf.Date
+
+relationship 89c69f67-a814-4e1c-8c2c-9cc5cae21a7c
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_cont_ampliacion.AmpFecTermino
+	toColumn: LocalDateTable_584978ce-6d4c-42fc-91fc-471d935b8c16.Date
+
+relationship cbd77917-d0d9-41bb-9df4-792a02031a22
+	fromColumn: bibd_cont_ampliacion.ContIde
+	toColumn: bibd_contrato.ContIde
+
+relationship 9b69c782-8844-4ceb-a438-106d5e42b9d2
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_accion_gestion.AccionFecha
+	toColumn: LocalDateTable_2467206d-18a6-4651-8611-ff09a7506108.Date
+
+relationship 25874a6b-cfcd-44b8-a2ea-706dd0254b53
+	fromColumn: bibd_proy_accion_gestion.ProyIde
+	toColumn: bibd_proyecto.ProyIde
+
+relationship 0331c2da-df2f-46f7-b4f9-393037317563
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_oportunidad_riesgo.RiesgoFecha
+	toColumn: LocalDateTable_8f58259e-3d7d-49b9-98e3-78c9bcbda119.Date
+
+relationship 954c0783-ea57-492a-8a9e-c73eda30fc39
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_costo_componente.FechaCambio
+	toColumn: LocalDateTable_9a8ed673-ba7a-40ef-8545-acdbcd6d60d2.Date
+
+relationship d4a36d35-1fe5-4cc9-bfbd-3a4ac6306ae9
+	fromColumn: bibd_proy_oportunidad_riesgo.ProyIde
+	toColumn: bibd_proyecto.ProyIde
+
+relationship 4aab0abb-b974-41d0-8389-9326610a6dc3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_costo_comp_UP.FechaCambio
+	toColumn: LocalDateTable_7e631183-f043-4909-aaba-08c7c8ce8767.Date
+
+relationship aea2eb44-ad4b-40ac-a3e3-87f20e08294b
+	fromColumn: bibd_proy_costo_comp_UP.CostoCompIde
+	toColumn: bibd_proy_costo_componente.CostoCompIde
+
+relationship 113ddf86-465d-43eb-a8ec-24b405fe400d
+	toCardinality: many
+	fromColumn: bibd_cont_etapa_control.AñoTrimestre
+	toColumn: bibd_trimestre.Anio-Trim_Det
+
+relationship 9aadc86e-aa7f-4403-8a01-5693b7b0e0ab
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_trimestre.Anio-Trim
+	toColumn: bibd_proy_accion_gestion.AñoTrimestre
+
+relationship 76ea8a86-d682-4726-ad7a-bf726dc723c8
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_trimestre.Anio-Trim
+	toColumn: bibd_proy_oportunidad_riesgo.AñoTrimestre
+
+relationship d466706b-7b00-4c99-a680-1de99f1be3df
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_trimestre.Anio-Trim
+	toColumn: bibd_proy_costo_comp_UP.AñoTrimestre
+
+relationship 2702e307-40c0-4c00-afcf-c6676cce99aa
+	fromColumn: bibd_proy_costo_componente.ProyIde
+	toColumn: bibd_proyecto.ProyIde
+
+relationship fb9e406b-70d1-4ac0-a381-e74e44810635
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_accion_correctiva.AccionFecha
+	toColumn: LocalDateTable_f97926a7-e841-401d-861e-9af5a5096fc9.Date
+
+relationship 8c05ec0b-56c4-45df-a685-2f199e0b59f4
+	fromColumn: bibd_proy_accion_correctiva.ProyIde
+	toColumn: bibd_proyecto.ProyIde
+
+relationship 743cf0b3-e395-46d4-a396-29055c2ec58e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Proyecto.ProyFechaAprobacion
+	toColumn: LocalDateTable_c1a922c4-51c9-4bf3-9cc7-0f33223a16fd.Date
+
+relationship 67c65464-56bd-4f19-bd77-a16e8813c436
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Proyecto.ProyFecInicio
+	toColumn: LocalDateTable_f1db8012-0050-42f9-99e0-63aac75a9614.Date
+
+relationship a820fe9c-fdf7-497c-b1a0-69f82af851a6
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Proyecto.ProyFecTermino
+	toColumn: LocalDateTable_cb09bd60-3214-473d-8d4a-5146b537e289.Date
+
+relationship c113077e-2d52-4afa-9d76-66cf404c5afd
+	isActive: false
+	fromColumn: bibd_proy_costo_componente.ProyIde
+	toColumn: Proyecto.ProyIde
+
+relationship b67a842a-2201-4ce9-bfd1-e0bf0ecbaaed
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_social_objetivo_esp.AccionFecha
+	toColumn: LocalDateTable_ab028289-e45b-4685-9c05-b50d7ce009e3.Date
+
+relationship e43209a6-9134-4815-804a-f3d5be676056
+	fromColumn: bibd_proy_social_objetivo_esp.ProyIde
+	toColumn: Proyecto.ProyIde
+
+relationship baa3cdda-4b0a-4dee-82cb-b833436b4861
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_gestion_social_benef.SocialBenefFecInicio
+	toColumn: LocalDateTable_dc52fb45-f689-47ac-865e-3eda1504ea76.Date
+
+relationship b6614d89-abca-4432-bbfa-5742e74e8443
+	joinOnDateBehavior: datePartOnly
+	fromColumn: bibd_proy_gestion_social_benef.SocialBenefFecTermino
+	toColumn: LocalDateTable_6cb39ca2-7091-46b6-93db-681dc9fb7d33.Date
+
+relationship 6714522c-58d4-4c9f-86c4-25a1f4470d59
+	fromColumn: bibd_proy_gestion_social_benef.SocialIde
+	toColumn: bibd_proy_gestion_social.SocialIde
+
+relationship 1f990fa2-2a68-4c4d-b76d-513268bcb568
+	fromColumn: bibd_proy_gestion_social_intere.SocialIde
+	toColumn: bibd_proy_gestion_social.SocialIde
+
+relationship 3d13f964-9b0a-4bb1-afad-9c005b57f305
+	fromColumn: bibd_proy_gestion_social.ProyIde
+	toColumn: Proyecto.ProyIde
+
+relationship 02665051-4c44-4613-b02d-b1f0d3c9b669
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'KPI FORMATO_2'.FechaActual
+	toColumn: LocalDateTable_926f1382-123c-4f7b-af61-98b8f71c0691.Date
+
+relationship b58e5c4a-754a-4a75-87b4-e23cf418e0d6
+	isActive: false
+	toCardinality: many
+	fromColumn: bibd_proy_costo_comp_UP.AñoTrimestre
+	toColumn: bibd_trimestre_gastos.Anio-Trim
+
+relationship 74eece30-0944-48f9-8d73-2c2e9566be1a
+	isActive: false
+	fromColumn: bibd_proy_costo_comp_UP.GrupoProyCompResumen
+	toColumn: Proyecto.GrupoProyCompResumen
+
+relationship 858ff5c4-c643-4686-970f-f2dc67b75542
+	fromColumn: bibd_cont_etapa_control.ContratoConceptoPlan
+	toColumn: TReprogMax.RepMAx
+
+relationship af49da75-a2e4-484e-bad7-de5d6f627521
+	crossFilteringBehavior: bothDirections
+	securityFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_trimestre_gastos.Anio-Trim_Det
+	toColumn: bibd_trimestre_social.Anio-Trim_Det
+
+relationship 84020c7e-1cef-4643-a0b7-dabe15b49801
+	toCardinality: many
+	fromColumn: bibd_proy_gestion_social_benef.AñoTrimestreTermino
+	toColumn: bibd_trimestre_social.Anio-Trim_Det
+
+relationship 33041b6e-2a6e-4f62-810f-de95488d0831
+	crossFilteringBehavior: bothDirections
+	securityFilteringBehavior: bothDirections
+	fromColumn: bibd_cont_ampliacion_archivo.ContDocumentoIde
+	toColumn: bibd_cont_ampliacion.AmpIde
+
+relationship eed55b71-5c3c-4ca0-bfd3-043ba255ba30
+	toCardinality: many
+	fromColumn: bibd_proy_costo_componente.AñoTrimestre
+	toColumn: bibd_trimestre.Anio-Trim
+
+relationship a0fbae15-b9ea-4606-8317-9c27a02c02c3
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_proy_accion_gestion.Año
+	toColumn: bibd_trimestre.Anio
+
+relationship 563b3dae-114c-458b-bff8-0c96dc2304f5
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_proy_oportunidad_riesgo.Año
+	toColumn: bibd_trimestre.Anio
+
+relationship 6dfe9d13-17fb-4ce0-8b3e-e54fb3e8e4b5
+	isActive: false
+	toCardinality: many
+	fromColumn: bibd_cont_etapa_control.AñoTrimestreProvision
+	toColumn: bibd_trimestre.Anio-Trim_Det
+
+relationship 95f15447-b813-41e3-ac48-10b8c74dc341
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_trimestre.Anio-Trim
+	toColumn: bibd_proy_accion_correctiva.AñoTrimestre
+
+relationship fac71ce8-c852-4deb-a348-f7acfbc312d8
+	isActive: false
+	crossFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_trimestre.Anio
+	toColumn: bibd_proy_accion_correctiva.Año
+
+relationship ef91e30d-c5a0-4ac1-b2d8-8ecdee3d5b25
+	fromColumn: bibd_contrato.ContratoIde
+	toColumn: bibd_contrato_PostCierre.ContratoIde
+
+relationship a7f64408-e2ff-439d-b680-6e1375c05fb2
+	crossFilteringBehavior: bothDirections
+	securityFilteringBehavior: bothDirections
+	toCardinality: many
+	fromColumn: bibd_cont_etapa_control.ContratoConceptoPlan2
+	toColumn: TProg_Reprog.MaxPlan
+

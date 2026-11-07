@@ -1,0 +1,85 @@
+model Model
+	culture: es-ES
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: es-ES
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'FORMATO 2'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'FORMATO 1'
+
+	annotation PBI_QueryGroupOrder = 1
+
+queryGroup 'FORMATO 6'
+
+	annotation PBI_QueryGroupOrder = 2
+
+queryGroup INVERSIONES
+
+	annotation PBI_QueryGroupOrder = 3
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["RutaWeb","bibd_proyecto","bibd_contrato","bibd_contrato_archivo","bibd_cont_ampliacion","bibd_cont_etapa","bibd_cont_etapa_control","bibd_proy_accion_gestion","bibd_proy_oportunidad_riesgo","bibd_proy_costo_componente","bibd_proy_costo_comp_UP","Trimestres","TrimestresDet","bibd_trimestre","bibd_proy_accion_correctiva","bibd_trimestre_gastos","bibd_proy_social_objetivo_esp","bibd_proy_gestion_social","bibd_proy_gestion_social_benef","bibd_proy_gestion_social_intere","ActividadTrimestre","ActividadTrimestreDet","bibd_trimestre_social","bibd_cont_ampliacion_archivo","TipoInforme","bibd_contrato_PostCierre"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table bibd_proyecto
+ref table DateTableTemplate_f089b53c-97fc-4184-95ca-fd7929671599
+ref table bibd_contrato
+ref table LocalDateTable_9a203fc7-5cb8-45d6-ac35-19672a0e16f2
+ref table LocalDateTable_964934e6-56a0-4159-aa20-0c915e0877e6
+ref table LocalDateTable_2a61db6f-50b4-4503-861b-d9ef828fae01
+ref table LocalDateTable_0ce003ff-d11d-416e-bcbe-198959783617
+ref table bibd_contrato_archivo
+ref table bibd_cont_etapa
+ref table LocalDateTable_90662c4a-33c4-430d-9427-f250b2a674d7
+ref table LocalDateTable_c2454b73-c160-4cfe-ab72-bb28fe1eb02e
+ref table LocalDateTable_ce07a796-aeba-48e5-8cec-0ea76a57763f
+ref table bibd_cont_etapa_control
+ref table bibd_cont_ampliacion
+ref table LocalDateTable_63eac0f0-ea20-49d7-98da-8d2d15f8b3cf
+ref table LocalDateTable_584978ce-6d4c-42fc-91fc-471d935b8c16
+ref table 'KPI FORMATO_2'
+ref table bibd_proy_accion_gestion
+ref table LocalDateTable_2467206d-18a6-4651-8611-ff09a7506108
+ref table bibd_proy_oportunidad_riesgo
+ref table LocalDateTable_8f58259e-3d7d-49b9-98e3-78c9bcbda119
+ref table bibd_proy_costo_componente
+ref table LocalDateTable_9a8ed673-ba7a-40ef-8545-acdbcd6d60d2
+ref table bibd_proy_costo_comp_UP
+ref table LocalDateTable_7e631183-f043-4909-aaba-08c7c8ce8767
+ref table Trimestres
+ref table TrimestresDet
+ref table bibd_trimestre
+ref table bibd_proy_accion_correctiva
+ref table LocalDateTable_f97926a7-e841-401d-861e-9af5a5096fc9
+ref table 'KPI FORMATO_1'
+ref table bibd_trimestre_gastos
+ref table Proyecto
+ref table LocalDateTable_c1a922c4-51c9-4bf3-9cc7-0f33223a16fd
+ref table LocalDateTable_f1db8012-0050-42f9-99e0-63aac75a9614
+ref table LocalDateTable_cb09bd60-3214-473d-8d4a-5146b537e289
+ref table bibd_proy_social_objetivo_esp
+ref table LocalDateTable_ab028289-e45b-4685-9c05-b50d7ce009e3
+ref table bibd_proy_gestion_social
+ref table bibd_proy_gestion_social_benef
+ref table LocalDateTable_dc52fb45-f689-47ac-865e-3eda1504ea76
+ref table LocalDateTable_6cb39ca2-7091-46b6-93db-681dc9fb7d33
+ref table bibd_proy_gestion_social_intere
+ref table LocalDateTable_926f1382-123c-4f7b-af61-98b8f71c0691
+ref table TReprogMax
+ref table ActividadTrimestre
+ref table ActividadTrimestreDet
+ref table bibd_trimestre_social
+ref table bibd_cont_ampliacion_archivo
+ref table TProg_Reprog
+ref table TipoInforme
+ref table bibd_contrato_PostCierre
+
+ref cultureInfo es-ES
+

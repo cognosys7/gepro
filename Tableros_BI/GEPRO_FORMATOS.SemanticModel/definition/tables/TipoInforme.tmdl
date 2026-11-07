@@ -1,0 +1,22 @@
+table TipoInforme
+	lineageTag: a0bab6b2-7dc9-42a5-be89-6f6ce55edb77
+
+	column Tipo
+		dataType: string
+		lineageTag: dc2b3fe9-dfa1-4c20-99fc-4bea786bd655
+		summarizeBy: none
+		sourceColumn: Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TipoInforme-9befbc12-bf22-4cd0-b3f5-1c4063468bce = m
+		mode: import
+		source =
+				let
+				    Origen = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WCinKzE0tLilKzFGK1YlWcswrBbFiAQ==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Tipo = _t]),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(Origen,{{"Tipo", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,192 @@
+table bibd_proy_costo_componente
+	lineageTag: b15041be-8fca-4133-85e5-78251d8098ac
+
+	measure '% AvanceFisico' =
+			
+			VAR R1 = CALCULATE(max(bibd_proy_costo_componente[AvanceFisico]), USERELATIONSHIP(bibd_trimestre[Anio-Trim],bibd_proy_costo_componente[AñoTrimestre] ), FILTER(
+					ALLSELECTED(bibd_proy_costo_componente[AñoTrimestre]), bibd_proy_costo_componente[AñoTrimestre]  = max(bibd_proy_costo_componente[AñoTrimestre]) ) )
+			VAR R2 = CALCULATE( max(bibd_proy_costo_componente[AvanceFisico])  )
+			
+			VAR R3 = IF(ISBLANK(R1),0,R1)
+			RETURN R3
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 2da95b42-7437-425d-80b9-99be560cf7af
+
+	column CostoCompIde
+		dataType: int64
+		formatString: 0
+		lineageTag: b7f0f1ba-dd4d-4aa9-a050-ad9503475cae
+		summarizeBy: none
+		sourceColumn: CostoCompIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 42e1b086-d1d8-4105-bbe3-6e968956cf0a
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column AvanceFisico
+		dataType: double
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 7208396c-5e3b-4668-94a3-ff743e271e3d
+		summarizeBy: sum
+		sourceColumn: AvanceFisico
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaCambio
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 5e43947c-4d7e-48dc-97ce-e2217bc82776
+		summarizeBy: none
+		sourceColumn: FechaCambio
+
+		variation Variación
+			isDefault
+			relationship: 954c0783-ea57-492a-8a9e-c73eda30fc39
+			defaultHierarchy: LocalDateTable_9a8ed673-ba7a-40ef-8545-acdbcd6d60d2.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column CtoPlanCierre
+		dataType: double
+		lineageTag: 95a9b8a1-149e-4920-acbd-470666ae47ef
+		summarizeBy: sum
+		sourceColumn: CtoPlanCierre
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoPerfil
+		dataType: double
+		lineageTag: 37c26412-c09f-4053-967f-f846516d5cc6
+		summarizeBy: sum
+		sourceColumn: CtoPerfil
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoExpediente
+		dataType: double
+		lineageTag: 75b77b0a-b304-4d92-b871-bca3bc357861
+		summarizeBy: sum
+		sourceColumn: CtoExpediente
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoEjecucionObra
+		dataType: double
+		lineageTag: 733db687-5a80-4937-9949-5d4f55da3b54
+		summarizeBy: sum
+		sourceColumn: CtoEjecucionObra
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoSupervision
+		dataType: double
+		lineageTag: 5f852b66-c53c-461a-97a0-f1d5ea1c8b73
+		summarizeBy: sum
+		sourceColumn: CtoSupervision
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoGestionProyecto
+		dataType: double
+		lineageTag: c33c798d-e46d-4864-b731-4c8d39c11cce
+		summarizeBy: sum
+		sourceColumn: CtoGestionProyecto
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoCapacitacion
+		dataType: double
+		lineageTag: 35278432-5e39-4c2e-8334-2fe2b33f1400
+		summarizeBy: sum
+		sourceColumn: CtoCapacitacion
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtoPostCierre
+		dataType: double
+		lineageTag: 16da40ee-f5fa-4830-ac2d-0f4209ddd6b6
+		summarizeBy: sum
+		sourceColumn: CtoPostCierre
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ComponenteNombre
+		dataType: string
+		lineageTag: 573dd4be-0ed2-44b6-a3ac-5e6f00e6a717
+		summarizeBy: none
+		sourceColumn: ComponenteNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComponenteIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 9bfba689-c82d-4718-8285-2aef44f08711
+		summarizeBy: sum
+		sourceColumn: ComponenteIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ComponenteDescAct
+		dataType: string
+		lineageTag: 386db94e-2398-40dd-9ed0-a3d76b8e50ac
+		summarizeBy: none
+		sourceColumn: ComponenteDescAct
+
+		annotation SummarizationSetBy = Automatic
+
+	column CostoCompEstado
+		dataType: string
+		lineageTag: b4d44dfe-a111-404b-91e9-d341d5bad10d
+		summarizeBy: none
+		sourceColumn: CostoCompEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestre = format(bibd_proy_costo_componente[FechaCambio].[Año],"0000")&"-"&format(bibd_proy_costo_componente[FechaCambio].[NroTrimestre],"0")
+		lineageTag: 80051a16-595c-407c-843e-203e36016e64
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_costo_componente-50e0f633-a607-48e8-bbc2-056a89fdc44d = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb & "bibd_proy_costo_componente")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"CostoCompIde", "ProyIde", "AvanceFisico", "FechaCambio", "CtoPlanCierre", "CtoPerfil", "CtoExpediente", "CtoEjecucionObra", "CtoSupervision", "CtoGestionProyecto", "CtoCapacitacion", "CtoPostCierre", "ComponenteNombre", "ComponenteIde", "ComponenteDescAct", "CostoCompEstado"}, {"CostoCompIde", "ProyIde", "AvanceFisico", "FechaCambio", "CtoPlanCierre", "CtoPerfil", "CtoExpediente", "CtoEjecucionObra", "CtoSupervision", "CtoGestionProyecto", "CtoCapacitacion", "CtoPostCierre", "ComponenteNombre", "ComponenteIde", "ComponenteDescAct", "CostoCompEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"CostoCompIde", Int64.Type}, {"ProyIde", Int64.Type}, {"FechaCambio", type date}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"AvanceFisico", type number}, {"CtoPlanCierre", type number}, {"CtoPerfil", type number}, {"CtoExpediente", type number}, {"CtoEjecucionObra", type number}, {"CtoSupervision", type number}, {"CtoGestionProyecto", type number}, {"CtoCapacitacion", type number}, {"CtoPostCierre", type number}}, "es-PE"),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Tipo cambiado con configuración regional",{{"ComponenteIde", Int64.Type}})
+				in
+				    #"Tipo cambiado1"
+
+	annotation PBI_ResultType = Table
+
