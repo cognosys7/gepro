@@ -6,7 +6,7 @@
     "y": 0,
     "z": 7000,
     "height": 126.19553666312433,
-    "width": 172.1002865329513,
+    "width": 172.10028653295129,
     "tabOrder": 7000
   },
   "visual": {
@@ -20,7 +20,7 @@
                 "ResourcePackageItem": {
                   "PackageName": "RegisteredResources",
                   "PackageType": 1,
-                  "ItemName": "Cognosys_logo.png"
+                  "ItemName": "Gepro_logo.png"
                 }
               }
             }

@@ -28,6 +28,18 @@ class TablerosTest extends TestCase
         $this->markTestSkipped('Ningun usuario tiene acceso a un tablero.');
     }
 
+    public function test_formatos_abre_el_tablero_de_cognosys(): void
+    {
+        $usuario = $this->usuarioGepro(false, 'PBI_PRY_2CONTRATOS');
+        if (! $usuario) {
+            $this->markTestSkipped('Ningun usuario tiene acceso a Formatos F1, F2, F6.');
+        }
+        $this->actingAs($usuario)->get(route('tableros.index', ['pagina' => 'PBI_PRY_2CONTRATOS']))
+            ->assertOk()
+            ->assertSee('Formatos F1, F2, F6')
+            ->assertSee('<iframe class="gp-tablero-marco" src="'.e(config('tableros.PBI_PRY_2CONTRATOS')).'"', false);
+    }
+
     public function test_pagina_que_no_es_tablero(): void
     {
         $usuario = $this->usuarioGepro();

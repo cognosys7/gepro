@@ -14,7 +14,7 @@
 <body>
     <header class="gp-barra">
         <button type="button" class="gp-barra-menu" id="gp-abrir-menu" title="Menú"><i class="fa-solid fa-bars"></i></button>
-        <a href="{{ route('inicio') }}" class="gp-barra-marca"><img src="{{ asset('img/cognosys_barra.png') }}" alt="COGNOSYS"></a>
+        <a href="{{ route('inicio') }}" class="gp-barra-marca"><img src="{{ asset('img/gepro.png') }}" alt="GEPRO"></a>
         <div class="gp-barra-titulo">{{ ! empty($areaSeguridad) ? 'SEGURIDAD DEL SISTEMA' : 'SISTEMA INTEGRAL PARA OFICINA DE PROYECTOS (PMO)' }}</div>
         <div class="gp-usuario">
             <button type="button" id="gp-usuario-boton" aria-haspopup="true" aria-expanded="false">

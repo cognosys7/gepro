@@ -12,7 +12,7 @@
     <main class="gp-ingreso">
         <form class="gp-ingreso-caja" method="POST" action="{{ route('ingreso') }}" novalidate>
             @csrf
-            <img class="gp-logo" src="{{ asset('img/gepro_logo.png') }}" alt="GEPRO">
+            <img class="gp-logo" src="{{ asset('img/gepro.png') }}" alt="GEPRO">
             <h1>Sistema Integral para Oficina de Proyectos (PMO)</h1>
 
             <div class="gp-campo">
