@@ -192,25 +192,11 @@ class ProyectoContratosTabla extends Component
 
     public function urlAccion(string $clave, object $fila): string
     {
-        [, , , $pagina, $parametros] = self::ACCIONES[$clave];
         if ($clave === 'migrar') {
             return route('contratos.migrar-control', ['contrato' => (int) $fila->ID, 'opcion' => $this->opcion]);
         }
-        //PANTALLAS QUE YA ESTAN EN LARAVEL (config/catalogos.php, P. EJ. LAS ETAPAS DEL CONTRATO)
-        if (\App\Support\Catalogo::existe($pagina) && ! empty(config('catalogos.'.$pagina.'.de'))) {
-            return route('catalogos.index', ['pagina' => $pagina, 'de' => (int) $fila->ID]);
-        }
-        $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2];
-        foreach ($parametros as $nombre => $valor) {
-            $consulta[$nombre] = str_replace(
-                ['{id}', '{proyecto}', '{intervencion}', '{proceso}'],
-                [(int) $fila->ID, (int) $fila->IDE_PROYECTO, (int) $fila->IDE_INTERVENCION, (int) $fila->IDE_PROCESO_ITEM],
-                (string) $valor
-            );
-        }
-        $consulta['vmSinCabecera'] = 1;
-
-        return app(Seguridad::class)->urlLegado('mainpage.php?'.http_build_query($consulta));
+        //LAS DEMAS SON PANTALLAS DE config/catalogos.php (P. EJ. LAS ETAPAS DEL CONTRATO)
+        return route('catalogos.index', ['pagina' => self::ACCIONES[$clave][3], 'de' => (int) $fila->ID]);
     }
 
     /** Codigo unico del proyecto (el sistema actual compara P.COD_UNICO = '<valor>', vacio si no tiene) */

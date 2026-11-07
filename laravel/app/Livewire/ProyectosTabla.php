@@ -162,7 +162,7 @@ class ProyectosTabla extends Component
         $this->direccion = $this->direccion === 'desc' ? 'desc' : 'asc';
     }
 
-    /** URL de la pantalla del sistema actual que abre una accion para un proyecto */
+    /** URL de la pantalla que abre una accion para un proyecto */
     public function urlAccion(string $accion, object $fila): ?string
     {
         if ($accion === 'sigam') {
@@ -179,16 +179,8 @@ class ProyectosTabla extends Component
         if ($pagina === 'PROYECTO_ACTIVIDAD') {
             return route('proyectos.contratos', ['proyecto' => (int) $fila->IDE_PROYECTO, 'opcion' => $this->opcion, 'tipo' => (int) $parametros['Pfiltro']]);
         }
-        //PANTALLAS DEL PROYECTO QUE YA ESTAN EN LARAVEL (config/catalogos.php, P. EJ. LECCIONES APRENDIDAS)
-        if (\App\Support\Catalogo::existe($pagina) && ! empty(config('catalogos.'.$pagina.'.de'))) {
-            return route('catalogos.index', ['pagina' => $pagina, 'de' => (int) $fila->IDE_PROYECTO]);
-        }
-        $consulta = ['Pagina' => $pagina, 'Accion' => 'muestraVista', 'AccionLocal' => 2, 'vmSinCabecera' => 1];
-        foreach ($parametros as $clave => $valor) {
-            $consulta[$clave] = str_replace(['{id}', '{opcion}'], [(int) $fila->IDE_PROYECTO, $this->opcion], (string) $valor);
-        }
-
-        return app(Seguridad::class)->urlLegado('mainpage.php?'.http_build_query($consulta));
+        //LAS DEMAS SON PANTALLAS DE config/catalogos.php (P. EJ. LECCIONES APRENDIDAS)
+        return route('catalogos.index', ['pagina' => $pagina, 'de' => (int) $fila->IDE_PROYECTO]);
     }
 
     public function render()

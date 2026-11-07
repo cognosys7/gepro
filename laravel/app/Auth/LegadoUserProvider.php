@@ -100,7 +100,7 @@ class LegadoUserProvider implements UserProvider
 
     public function rehashPasswordIfRequired(Authenticatable $user, #[\SensitiveParameter] array $credentials, bool $force = false)
     {
-        //LAS CLAVES LAS COMPARTE EL SISTEMA ACTUAL: NO SE CAMBIAN DESDE AQUI
+        //LAS CLAVES SIGUEN EN md5: SOLO SE CAMBIAN EN ClaveController
     }
 
     /** Limpieza que el login actual aplica a lo que escribe el usuario (Reemplazar + addslashes + htmlspecialchars) */
@@ -128,6 +128,12 @@ class LegadoUserProvider implements UserProvider
             return null;
         }
 
-        return md5($base.self::limpiar($clave).self::SAL);
+        return self::claveParaGuardar($base, $clave);
+    }
+
+    /** md5 de la clave de un usuario, tal como la compara el ingreso */
+    public static function claveParaGuardar(string $usunombre, #[\SensitiveParameter] string $clave): string
+    {
+        return md5($usunombre.self::limpiar($clave).self::SAL);
     }
 }

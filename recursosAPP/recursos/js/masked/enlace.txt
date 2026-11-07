@@ -1,2 +1,0 @@
-http://digitalbush.com/projects/masked-input-plugin
-http://plentz.github.com/jquery-maskmoney/

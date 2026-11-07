@@ -78,9 +78,8 @@
 		return $arreglo;
 		
 	} catch (PDOException $e) {
-		$db->rollback();
+		http_response_code(500);
 		$mensaje  = '<b>Consulta No Válida:</b> ' . $e->getMessage() . "<br/>";
-		$mensaje .= '<b>Consulta: </b>' . $sql;
 		die($mensaje);
 	}
 }

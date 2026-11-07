@@ -27,7 +27,7 @@
                     <strong>{{ $usuarioGepro->nombreVisible() }}</strong>
                     {{ $usuarioGepro->unidad }}
                 </div>
-                <a href="{{ config('gepro.legado_url') }}/intranet/Vista/AntiRefresh.php?Pagina=Clave"><i class="fa-solid fa-key"></i> Cambiar clave</a>
+                <a href="{{ route('clave') }}"><i class="fa-solid fa-key"></i> Cambiar clave</a>
                 <form method="POST" action="{{ route('salir') }}">
                     @csrf
                     <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> Salir</button>

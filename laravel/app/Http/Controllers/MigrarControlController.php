@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Livewire\ProyectoContratosTabla;
 use App\Services\Seguridad;
-use App\Support\PuenteSesionLegado;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -26,9 +25,6 @@ class MigrarControlController extends Controller
         $fila = DB::table('dbo.PROYECTO_ACTIVIDAD')->where('IDE_PROYECTO_ACTIVIDAD', $contrato)
             ->where('EST_PROYECTO_ACTIVIDAD', '<>', '2')->first(['IDE_PROYECTO_ACTIVIDAD', 'COD_PROYECTO', 'DES_PROYECTO']);
         abort_unless($fila, 404);
-
-        //LA IMPORTACION DEL SISTEMA ACTUAL VALIDA EL ACCESO CON ESTA OPCION (Oc)
-        PuenteSesionLegado::marcarOpcion($menu['padre'], $menu['id'], $perfil['perfil'], (int) $seguridad->sistema());
 
         return view('contratos.migrar-control', ['titulo' => 'Migrar control de etapas', 'contrato' => $fila]);
     }

@@ -1,1 +1,0 @@
-C:\xampp\php\php.exe -f C:\xampp\htdocs\amsac\Controlador\LogicaNegocio\email\ALERTA_CONTRATO_CARTA_FIANZAln.php

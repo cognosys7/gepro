@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Services\Seguridad;
 use App\Support\Catalogo;
-use App\Support\PuenteSesionLegado;
 use Illuminate\Http\Request;
 
 /**
@@ -35,8 +34,6 @@ class CatalogosController extends Controller
 
         $menu = $seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], $pagina);
         abort_unless($menu, 403, 'Su perfil no tiene acceso a esta opción.');
-        PuenteSesionLegado::marcarOpcion($menu['padre'], $menu['id'], $perfil['perfil'], (int) $seguridad->sistema());
-
         $grupo = $menu['padre'] !== $menu['id'] ? $seguridad->nombreOpcion($menu['padre']) : null;
 
         //JERARQUIA: ?padre=<id> LISTA LOS HIJOS DE ESE REGISTRO; LAS MIGAS MUESTRAN EL CAMINO DESDE LA RAIZ

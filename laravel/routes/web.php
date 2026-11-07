@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchivosController;
 use App\Http\Controllers\CatalogosController;
+use App\Http\Controllers\ClaveController;
 use App\Http\Controllers\DescargasController;
 use App\Http\Controllers\IngresoController;
 use App\Http\Controllers\InicioController;
@@ -19,6 +20,12 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/salir', [IngresoController::class, 'salir'])->middleware('auth')->name('salir');
+
+//CAMBIO DE CLAVE: SIN EL MIDDLEWARE gepro, PORQUE PUEDE SER OBLIGATORIO ANTES DE ENTRAR
+Route::middleware('auth')->group(function () {
+    Route::get('/clave', [ClaveController::class, 'formulario'])->name('clave');
+    Route::post('/clave', [ClaveController::class, 'cambiar'])->middleware('throttle:6,1')->name('clave.grabar');
+});
 
 //PANTALLAS DE GEPRO: USUARIO CON PERFIL EN GEPRO (EL MENU SALE DE SU PERFIL)
 Route::middleware(['auth', 'gepro'])->group(function () {
@@ -38,6 +45,7 @@ Route::middleware(['auth', 'gepro'])->group(function () {
 //SISTEMA DE SEGURIDAD (ANTES sisSeguridad): USUARIO CON PERFIL DE ADMINISTRACION EN ESE SISTEMA
 Route::middleware(['auth', 'seguridad'])->prefix('seguridad')->name('seguridad.')->group(function () {
     Route::get('/', [SeguridadController::class, 'inicio'])->name('inicio');
+    Route::get('/guia', [DescargasController::class, 'guiaSeguridad'])->name('guia');
     Route::get('/tableros/{pagina}', [SeguridadController::class, 'tablero'])->where('pagina', '[A-Za-z0-9_]+')->name('tablero');
     Route::get('/perfiles/{perfil}/accesos', [SeguridadController::class, 'accesos'])->whereNumber('perfil')->name('accesos');
     Route::get('/usuarios/{usuario}/perfiles', [SeguridadController::class, 'usuarioPerfiles'])->whereNumber('usuario')->name('usuario-perfiles');

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 /**
- * Ingreso, portada y menu contra BDGEPRO (solo lectura; el puente de sesion esta apagado en phpunit.xml).
+ * Ingreso, portada y menu contra BDGEPRO (solo lectura).
  */
 class IngresoTest extends TestCase
 {

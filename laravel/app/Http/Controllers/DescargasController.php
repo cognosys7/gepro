@@ -22,11 +22,23 @@ class DescargasController extends Controller
         return redirect()->away($url);
     }
 
-    /** Guia de usuario del menu: el PDF de config('gepro.guia_usuario'), dentro de la carpeta de archivos */
+    /** Guia de usuario del menu: el PDF de config('gepro.guia_usuario') */
     public function guia()
     {
+        return $this->pdf((string) config('gepro.guia_usuario'));
+    }
+
+    /** Guia del menu del sistema de seguridad: el PDF de config('gepro.seguridad.guia') */
+    public function guiaSeguridad()
+    {
+        return $this->pdf((string) config('gepro.seguridad.guia'));
+    }
+
+    /** Sirve un archivo relativo a la carpeta de archivos, sin salir de ella */
+    private function pdf(string $relativo)
+    {
         $raiz = realpath((string) config('gepro.archivos.raiz'));
-        $real = $raiz ? realpath($raiz.DIRECTORY_SEPARATOR.config('gepro.guia_usuario')) : false;
+        $real = $raiz ? realpath($raiz.DIRECTORY_SEPARATOR.$relativo) : false;
         abort_unless($real && str_starts_with($real, $raiz.DIRECTORY_SEPARATOR) && is_file($real), 404);
 
         return response()->file($real);

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Livewire\ProyectosTabla;
 use App\Services\Seguridad;
-use App\Support\PuenteSesionLegado;
 use Illuminate\Http\Request;
 
 /**
@@ -22,9 +21,6 @@ class ProyectosController extends Controller
         $perfil = $request->attributes->get('perfilGepro');
         $menu = $seguridad->opcionDePagina($perfil['perfil'], $perfil['modulo'], 'PROYECTO', ['Opcion' => $opcion]);
         abort_unless($menu, 403, 'Su perfil no tiene acceso a esta opción.');
-
-        //LAS VENTANAS DEL SISTEMA ACTUAL QUE SE ABREN DESDE AQUI VALIDAN EL ACCESO CON ESTA OPCION (Oc)
-        PuenteSesionLegado::marcarOpcion($menu['padre'], $menu['id'], $perfil['perfil'], (int) $seguridad->sistema());
 
         $grupo = $menu['padre'] !== $menu['id'] ? $seguridad->nombreOpcion($menu['padre']) : null;
 

@@ -55,10 +55,16 @@ class DescargasTest extends TestCase
         }
     }
 
-    public function test_ninguna_opcion_activa_del_menu_abre_el_sistema_actual(): void
+    public function test_la_guia_del_menu_de_seguridad_se_sirve_desde_laravel(): void
+    {
+        $this->assertSame(route('seguridad.guia'), app(Seguridad::class)->urlSeguridad((object) ['OpcEnlace' => '../../SGPAM_archivos/Manual/AMSAC_Manual_Usuario_SGPAM-Seguridad.pdf']));
+
+        $this->get(route('seguridad.guia'))->assertRedirect(route('login'));
+    }
+
+    public function test_ninguna_opcion_activa_del_menu_queda_sin_pantalla(): void
     {
         $seguridad = app(Seguridad::class);
-        $legado = rtrim((string) config('gepro.legado_url'), '/');
         $opciones = DB::table('seguridad.tsopcion as o')->join('seguridad.tsmodulo as m', 'm.idmodulo', '=', 'o.opcmodulo')
             ->where('m.modsistema', $seguridad->sistema())->where('o.opcestado', 1)
             //LOS GRUPOS (OPCIONES CON HIJOS) NO TIENEN ENLACE EN EL MENU
@@ -68,8 +74,7 @@ class DescargasTest extends TestCase
 
         $pendientes = [];
         foreach ($opciones as $o) {
-            $url = (string) $seguridad->url($o);
-            if (str_starts_with($url, $legado)) {
+            if ($seguridad->url($o) === null) {
                 $pendientes[] = trim((string) $o->OpcDescripcion).' -> '.trim((string) $o->OpcEnlace);
             }
         }
