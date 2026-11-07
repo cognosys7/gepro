@@ -1,0 +1,158 @@
+table bibd_proy_accion_gestion
+	lineageTag: a78c8115-8002-445a-99e0-327705d9d1af
+
+	measure Ide = ```
+			
+			VAR V_TIPO = SELECTEDVALUE(TipoInforme[Tipo])
+			VAR R1 = CALCULATE(max(bibd_proy_accion_gestion[AccionIde]), USERELATIONSHIP(bibd_trimestre[Anio-Trim],bibd_proy_accion_gestion[AñoTrimestre] ), FILTER(
+					 ALLSELECTED(bibd_proy_accion_gestion[AccionFecha]), bibd_proy_accion_gestion[AccionFecha]  = max(bibd_proy_accion_gestion[AccionFecha]) ) )
+			VAR R2 = CALCULATE(max(bibd_proy_accion_gestion[AccionIde]), USERELATIONSHIP(bibd_trimestre[Anio],bibd_proy_accion_gestion[Año] ), FILTER(
+					 ALLSELECTED(bibd_proy_accion_gestion[AccionFecha]), bibd_proy_accion_gestion[AccionFecha]  = max(bibd_proy_accion_gestion[AccionFecha]) ) )
+			VAR R3 = IF(V_TIPO = "Anual", R2, R1)         
+			RETURN R3
+			```
+		formatString: 0
+		lineageTag: 776dd294-0440-4413-a1e2-31cef536b439
+
+	column AccionIde
+		dataType: int64
+		formatString: 0
+		lineageTag: de717d72-bb57-47e0-8694-f77a4a87f4ff
+		summarizeBy: sum
+		sourceColumn: AccionIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 0db70a2a-fc63-40a5-b135-647a94dda99b
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionFecha
+		dataType: dateTime
+		formatString: dd/mm/yy
+		lineageTag: d2e31e2f-e4c5-4b6c-9d80-168c1e0f5036
+		summarizeBy: none
+		sourceColumn: AccionFecha
+
+		variation Variación
+			isDefault
+			relationship: 9b69c782-8844-4ceb-a438-106d5e42b9d2
+			defaultHierarchy: LocalDateTable_2467206d-18a6-4651-8611-ff09a7506108.'Jerarquía de fechas'
+
+		changedProperty = FormatString
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column ComponenteTipo
+		dataType: string
+		lineageTag: fb5a1faf-8407-4418-ae6c-ae6c34d0a19c
+		summarizeBy: none
+		sourceColumn: ComponenteTipo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_proy_accion_gestion","TableItemName":"GrupoComponente","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column ComponenteCodTipo
+		dataType: int64
+		formatString: 0
+		lineageTag: 47fd184c-54a7-4690-a0e3-4ab6a1d2b6d2
+		summarizeBy: sum
+		sourceColumn: ComponenteCodTipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionDescripcion
+		dataType: string
+		lineageTag: 6fa9db66-2a31-4430-9439-48da599e7006
+		summarizeBy: none
+		sourceColumn: AccionDescripcion
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionEstado
+		dataType: string
+		lineageTag: dd8f4b81-788a-434b-9eec-82f3d60d7310
+		summarizeBy: none
+		sourceColumn: AccionEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestre = format(bibd_proy_accion_gestion[AccionFecha].[Año],"0000") &"-"&format(bibd_proy_accion_gestion[AccionFecha].[NroTrimestre],"0")
+		lineageTag: 39965185-dd99-4a5d-8465-8d5dc55a092c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoComponente =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_proy_accion_gestion'[ComponenteTipo]),
+			  "(En blanco)",
+			  'bibd_proy_accion_gestion'[ComponenteTipo] IN {"PLAN DE CIERRE"},
+			  "1. PLAN DE CIERRE",
+			  'bibd_proy_accion_gestion'[ComponenteTipo] IN {"PERFIL"},
+			  "2. PERFIL",
+			  'bibd_proy_accion_gestion'[ComponenteTipo] IN {"EXPEDIENTE TECNICO"},
+			  "3. EXPEDIENTE TECNICO",
+			  'bibd_proy_accion_gestion'[ComponenteTipo] IN {"EJECUCIÓN DE OBRA"},
+			  "4. EJECUCIÓN DE OBRA",
+			  'bibd_proy_accion_gestion'[ComponenteTipo] IN {"SUPERVISION DE OBRA"},
+			  "5. SUPERVISION DE OBRA",
+			  'bibd_proy_accion_gestion'[ComponenteTipo] IN {"GESTION DE PROYECTO"},
+			  "6. GESTION DE PROYECTO",
+			  'bibd_proy_accion_gestion'[ComponenteTipo]
+			)
+		lineageTag: 7aec4a11-a055-49ee-b6c2-96e25b609bde
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_proy_accion_gestion"
+				          }
+				        },
+				        "Property": "ComponenteTipo"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_proy_accion_gestion"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1. PLAN DE CIERRE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"Values":[[{"Literal":{"Value":"'PLAN DE CIERRE'"}}]]}}},{"DisplayName":"2. PERFIL","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"Values":[[{"Literal":{"Value":"'PERFIL'"}}]]}}},{"DisplayName":"3. EXPEDIENTE TECNICO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"Values":[[{"Literal":{"Value":"'EXPEDIENTE TECNICO'"}}]]}}},{"DisplayName":"4. EJECUCIÓN DE OBRA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"Values":[[{"Literal":{"Value":"'EJECUCIÓN DE OBRA'"}}]]}}},{"DisplayName":"5. SUPERVISION DE OBRA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"Values":[[{"Literal":{"Value":"'SUPERVISION DE OBRA'"}}]]}}},{"DisplayName":"6. GESTION DE PROYECTO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ComponenteTipo"}}],"Values":[[{"Literal":{"Value":"'GESTION DE PROYECTO'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año = format(bibd_proy_accion_gestion[AccionFecha].[Año],"0000")
+		lineageTag: 100e198d-edbe-4b56-9fcc-a0a6c570b787
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_accion_gestion-fa3dce51-7e4d-4511-b5d2-108642237c72 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb & "bibd_proy_accion_gestion")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"AccionIde", "ProyIde", "AccionFecha", "ComponenteTipo", "ComponenteCodTipo", "AccionDescripcion", "AccionEstado"}, {"AccionIde", "ProyIde", "AccionFecha", "ComponenteTipo", "ComponenteCodTipo", "AccionDescripcion", "AccionEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"AccionFecha", type date}, {"ProyIde", Int64.Type}, {"AccionIde", Int64.Type}, {"ComponenteCodTipo", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

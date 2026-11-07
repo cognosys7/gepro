@@ -1,0 +1,98 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "dc434c25d4d4023ab8c1",
+  "position": {
+    "x": 106.94516971279374,
+    "y": 229.76501305483029,
+    "z": 10000,
+    "height": 29.242819843342037,
+    "width": 1471.3315926892951,
+    "tabOrder": 10000
+  },
+  "visual": {
+    "visualType": "InfoCard20C2BF75F48447AC938F5C499D100557",
+    "query": {
+      "queryState": {
+        "measure": {
+          "projections": [
+            {
+              "field": {
+                "Aggregation": {
+                  "Expression": {
+                    "Column": {
+                      "Expression": {
+                        "SourceRef": {
+                          "Entity": "Proyecto"
+                        }
+                      },
+                      "Property": "ProyUbicacion"
+                    }
+                  },
+                  "Function": 3
+                }
+              },
+              "queryRef": "Min(Proyecto.ProyUbicacion)"
+            }
+          ]
+        }
+      }
+    },
+    "objects": {
+      "dataLabelFormat": [
+        {
+          "properties": {
+            "textSize": {
+              "expr": {
+                "Literal": {
+                  "Value": "10D"
+                }
+              }
+            },
+            "dataLabelFontFamily": {
+              "expr": {
+                "Literal": {
+                  "Value": "'Segoe UI'"
+                }
+              }
+            },
+            "dataLabelAlignment": {
+              "expr": {
+                "Literal": {
+                  "Value": "'left'"
+                }
+              }
+            },
+            "dataLabelPosition": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            },
+            "imageHeight": {
+              "expr": {
+                "Literal": {
+                  "Value": "32D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "dataCategoryFormat": [
+        {
+          "properties": {
+            "preferredCategoryWidth": {
+              "expr": {
+                "Literal": {
+                  "Value": "20D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

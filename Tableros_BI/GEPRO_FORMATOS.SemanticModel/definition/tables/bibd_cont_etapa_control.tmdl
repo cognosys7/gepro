@@ -1,0 +1,617 @@
+table bibd_cont_etapa_control
+	lineageTag: 30158dd8-2b95-4908-a81b-2bf25f03ac3d
+
+	measure '.Adelantos' = calculate(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoPlan] = "Adelantos")
+		lineageTag: 7e92b724-f517-4be3-9f56-70e50e532fdc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.Valorización' = calculate(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoPlan] = "Valorización")
+		lineageTag: d5190f41-2537-4b7b-aff6-92ebc22e0187
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.Total(R-A-D)' = SUM(bibd_cont_etapa_control[.R-A-D])
+		lineageTag: 8e84262e-c3ac-494d-9ccd-4d457936a5d9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.ValorizacionProvision' = calculate(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoPlan] = "Valorización",  USERELATIONSHIP(bibd_trimestre[Anio-Trim_Det],bibd_cont_etapa_control[AñoTrimestreProvision]))
+		lineageTag: 50e2e226-3be3-4a8b-bd44-8246bed9ec97
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.AdelantosProvision' = calculate(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoPlan] = "Adelantos", USERELATIONSHIP(bibd_trimestre[Anio-Trim_Det],bibd_cont_etapa_control[AñoTrimestreProvision]))
+		lineageTag: 895b1302-bc96-4865-a7e4-d31b935f80cc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.Total(R-A-D) Provision' = CALCULATE(SUM(bibd_cont_etapa_control[.R-A-D]), USERELATIONSHIP(bibd_trimestre[Anio-Trim_Det],bibd_cont_etapa_control[AñoTrimestreProvision]) )
+		lineageTag: 92f674bc-21c1-4cc7-9f87-33f113dd720d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.Monto sin IGV Provision' = CALCULATE(SUM(bibd_cont_etapa_control[CtlDetMontoImponible]), USERELATIONSHIP(bibd_trimestre[Anio-Trim_Det],bibd_cont_etapa_control[AñoTrimestreProvision]) )
+		lineageTag: b0417b2f-829a-426e-a56d-f7049fab56cc
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.IGV Provision' = CALCULATE(SUM(bibd_cont_etapa_control[CtlDetMontoIGV]), USERELATIONSHIP(bibd_trimestre[Anio-Trim_Det],bibd_cont_etapa_control[AñoTrimestreProvision]) )
+		lineageTag: fd70fd2a-25a6-435f-855a-76b64762c4d9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '.Monto Neto Provision' = CALCULATE(SUM(bibd_cont_etapa_control[CtlDetMontoNeto]), USERELATIONSHIP(bibd_trimestre[Anio-Trim_Det],bibd_cont_etapa_control[AñoTrimestreProvision]) )
+		lineageTag: ac4e8349-2450-4599-bda4-55aaf49e3f59
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetIde
+		dataType: string
+		lineageTag: 794ab170-1622-4c83-85e7-166c64396aa8
+		summarizeBy: none
+		sourceColumn: CtlDetIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlIde
+		dataType: string
+		lineageTag: d3665be3-dd25-4911-883c-4aaf56ca8274
+		summarizeBy: none
+		sourceColumn: CtlIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column EtapaIde
+		dataType: string
+		lineageTag: a1098f39-ec72-4a01-85af-6154ec818a8d
+		summarizeBy: none
+		sourceColumn: EtapaIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlTipoPlan
+		dataType: string
+		lineageTag: 65608498-dc26-42b8-95db-a447c59ed0b8
+		summarizeBy: none
+		sourceColumn: CtlTipoPlan
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlConceptoPlan
+		dataType: string
+		lineageTag: fa8120f2-bf0c-4f9e-9c6c-dfb25c70c12b
+		summarizeBy: none
+		sourceColumn: CtlConceptoPlan
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_cont_etapa_control","TableItemName":"GrupoConcepto","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_cont_etapa_control","TableItemName":"GrupoPlan","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_cont_etapa_control","TableItemName":"GrupoConcepto2","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column CtlEstado
+		dataType: string
+		lineageTag: dfb7dc18-6736-4fa9-8812-bedc60b73a7f
+		summarizeBy: none
+		sourceColumn: CtlEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetAnio
+		dataType: string
+		lineageTag: 70cef378-c114-4502-ada5-379078488fca
+		summarizeBy: none
+		sourceColumn: CtlDetAnio
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetMes
+		dataType: int64
+		formatString: 0
+		lineageTag: 7153d07c-bfb5-42d1-b518-0b9a0f107f5a
+		summarizeBy: sum
+		sourceColumn: CtlDetMes
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_cont_etapa_control","TableItemName":"GrupoTrimestre","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column CtlDetConceptoPago
+		dataType: string
+		lineageTag: c6f7d6c8-09bc-47ae-b3f8-d99e3472c41b
+		summarizeBy: none
+		sourceColumn: CtlDetConceptoPago
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetPorcentajeAvance
+		dataType: double
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: e6b8ce21-821a-4461-9c31-55787c7ac549
+		summarizeBy: sum
+		sourceColumn: CtlDetPorcentajeAvance
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetMontoBruto
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 1f20bf71-1b1c-4e6d-99d2-624aeb4aaed7
+		summarizeBy: sum
+		sourceColumn: CtlDetMontoBruto
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetReajuste
+		dataType: double
+		lineageTag: c8d2b9bf-93dc-4f05-84b6-c25b74935310
+		summarizeBy: sum
+		sourceColumn: CtlDetReajuste
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetAmortAdelantoDirecto
+		dataType: double
+		lineageTag: 277753bd-632e-454d-9b27-e24e36c6789b
+		summarizeBy: sum
+		sourceColumn: CtlDetAmortAdelantoDirecto
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetAmortAdelantoMaterial
+		dataType: double
+		lineageTag: b59aa34f-2c8f-4079-ba5b-1e119242b9c5
+		summarizeBy: sum
+		sourceColumn: CtlDetAmortAdelantoMaterial
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetAmortizacion
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 31df15ba-6c82-4af8-9ddf-0de622da20d3
+		summarizeBy: sum
+		sourceColumn: CtlDetAmortizacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetSaldoSinIGV
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 252c5eef-35e2-4522-9ab6-39be21f1a301
+		summarizeBy: sum
+		sourceColumn: CtlDetSaldoSinIGV
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetDeductivoAdelantoDirecto
+		dataType: double
+		lineageTag: 9d3d256a-94ce-4feb-adc0-078b1350bd8f
+		summarizeBy: sum
+		sourceColumn: CtlDetDeductivoAdelantoDirecto
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetDeductivoAdelantoMaterial
+		dataType: double
+		lineageTag: 072f169b-05fb-4ba3-bf5b-49b981466331
+		summarizeBy: sum
+		sourceColumn: CtlDetDeductivoAdelantoMaterial
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetMontoImponible
+		dataType: double
+		lineageTag: bba950bf-7247-4d00-8c17-6471989545b3
+		summarizeBy: sum
+		sourceColumn: CtlDetMontoImponible
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetPorcentajeIGV
+		dataType: double
+		lineageTag: 88ff46f4-13d0-49f4-94af-00a67a1eb3be
+		summarizeBy: sum
+		sourceColumn: CtlDetPorcentajeIGV
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetMontoIGV
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 1839ef33-301b-4235-9e44-f68a864eccf8
+		summarizeBy: sum
+		sourceColumn: CtlDetMontoIGV
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetMontoNeto
+		dataType: double
+		formatString: #,0.00
+		lineageTag: c047b41e-3573-47e1-b304-db5b7f3b31e4
+		summarizeBy: sum
+		sourceColumn: CtlDetMontoNeto
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetPenalidad
+		dataType: double
+		lineageTag: f76b919d-db54-45d2-8887-1fd18e465898
+		summarizeBy: sum
+		sourceColumn: CtlDetPenalidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetRetencion
+		dataType: double
+		lineageTag: d13d6fb9-e68f-4941-aa51-e7bc461e874c
+		summarizeBy: sum
+		sourceColumn: CtlDetRetencion
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetMontoPago
+		dataType: double
+		lineageTag: 7b23ef53-c2a3-44bc-9c0c-95b5d85595a5
+		summarizeBy: sum
+		sourceColumn: CtlDetMontoPago
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column CtlDetEstado
+		dataType: string
+		lineageTag: 2a5cfa88-29b5-49f0-8eb4-260247195d1b
+		summarizeBy: none
+		sourceColumn: CtlDetEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año-Mes-Valorizacion = bibd_cont_etapa_control[CtlDetAnio]&"-"&FORMAT(bibd_cont_etapa_control[CtlDetMes],"00")
+		lineageTag: 5044b78f-f894-474d-b04b-1b4193a61cf6
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoConcepto =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_etapa_control'[CtlConceptoPlan]),
+			  "(En blanco)",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"4. PROGRAMADO"},
+			  "1. Programado",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"1. ADELANTO DIRECTO",
+			    "2. ADELANTO DE MATERIAL"},
+			  "2. Adelantos",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"3. VALORIZACION"},
+			  "3. Real",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"5. REPROG 01",
+			    "5. REPROG 02",
+			    "5. REPROG 03",
+			    "5. REPROG 04",
+			    "5. REPROG 05",
+			    "5. REPROG 06",
+			    "5. REPROG 07",
+			    "5. REPROG 08"},
+			  "4. Reprogramado",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan]
+			)
+		lineageTag: 2e2231f0-8fb2-48d2-8ddc-6522e6d99417
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_etapa_control"
+				          }
+				        },
+				        "Property": "CtlConceptoPlan"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_etapa_control"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1. Programado","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'4. PROGRAMADO'"}}]]}}},{"DisplayName":"2. Adelantos","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'1. ADELANTO DIRECTO'"}}],[{"Literal":{"Value":"'2. ADELANTO DE MATERIAL'"}}]]}}},{"DisplayName":"3. Real","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'3. VALORIZACION'"}}]]}}},{"DisplayName":"4. Reprogramado","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'5. REPROG 01'"}}],[{"Literal":{"Value":"'5. REPROG 02'"}}],[{"Literal":{"Value":"'5. REPROG 03'"}}],[{"Literal":{"Value":"'5. REPROG 04'"}}],[{"Literal":{"Value":"'5. REPROG 05'"}}],[{"Literal":{"Value":"'5. REPROG 06'"}}],[{"Literal":{"Value":"'5. REPROG 07'"}}],[{"Literal":{"Value":"'5. REPROG 08'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoPlan =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_etapa_control'[CtlConceptoPlan]),
+			  "(En blanco)",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"1. ADELANTO DIRECTO",
+			    "2. ADELANTO DE MATERIAL"},
+			  "Adelantos",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"4. PROGRAMADO"},
+			  "LineaBase",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"5. REPROG 01",
+			    "5. REPROG 02",
+			    "5. REPROG 03",
+			    "5. REPROG 04",
+			    "5. REPROG 05",
+			    "5. REPROG 06",
+			    "5. REPROG 07",
+			    "5. REPROG 08"},
+			  "Reprogramado",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"3. VALORIZACION"},
+			  "Valorización",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan]
+			)
+		lineageTag: dbfc2dea-e428-4865-8edb-77d283ea25a8
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_etapa_control"
+				          }
+				        },
+				        "Property": "CtlConceptoPlan"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_etapa_control"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"Adelantos","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'1. ADELANTO DIRECTO'"}}],[{"Literal":{"Value":"'2. ADELANTO DE MATERIAL'"}}]]}}},{"DisplayName":"LineaBase","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'4. PROGRAMADO'"}}]]}}},{"DisplayName":"Reprogramado","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'5. REPROG 01'"}}],[{"Literal":{"Value":"'5. REPROG 02'"}}],[{"Literal":{"Value":"'5. REPROG 03'"}}],[{"Literal":{"Value":"'5. REPROG 04'"}}],[{"Literal":{"Value":"'5. REPROG 05'"}}],[{"Literal":{"Value":"'5. REPROG 06'"}}],[{"Literal":{"Value":"'5. REPROG 07'"}}],[{"Literal":{"Value":"'5. REPROG 08'"}}]]}}},{"DisplayName":"Valorización","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'3. VALORIZACION'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoTrimestre =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_etapa_control'[CtlDetMes]),
+			  "(En blanco)",
+			  'bibd_cont_etapa_control'[CtlDetMes] IN {1,
+			    2,
+			    3},
+			  "1",
+			  'bibd_cont_etapa_control'[CtlDetMes] IN {4,
+			    5,
+			    6},
+			  "2",
+			  'bibd_cont_etapa_control'[CtlDetMes] IN {7,
+			    8,
+			    9},
+			  "3",
+			  'bibd_cont_etapa_control'[CtlDetMes] IN {10,
+			    11,
+			    12},
+			  "4",
+			  "Otros"
+			)
+		formatString: 0
+		lineageTag: 258cc264-3bb1-4a57-be37-cfee86278ae9
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_etapa_control"
+				          }
+				        },
+				        "Property": "CtlDetMes"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_etapa_control"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMes"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMes"}}],"Values":[[{"Literal":{"Value":"1L"}}],[{"Literal":{"Value":"2L"}}],[{"Literal":{"Value":"3L"}}]]}}},{"DisplayName":"2","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMes"}}],"Values":[[{"Literal":{"Value":"4L"}}],[{"Literal":{"Value":"5L"}}],[{"Literal":{"Value":"6L"}}]]}}},{"DisplayName":"3","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMes"}}],"Values":[[{"Literal":{"Value":"7L"}}],[{"Literal":{"Value":"8L"}}],[{"Literal":{"Value":"9L"}}]]}}},{"DisplayName":"4","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMes"}}],"Values":[[{"Literal":{"Value":"10L"}}],[{"Literal":{"Value":"11L"}}],[{"Literal":{"Value":"12L"}}]]}}},{"DisplayName":"Otros"}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestre = bibd_cont_etapa_control[CtlDetAnio]&"-"&bibd_cont_etapa_control[GrupoTrimestre]
+		lineageTag: 0a927f5e-2501-462a-8567-25594244328b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoConcepto2 =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_etapa_control'[CtlConceptoPlan]),
+			  "(En blanco)",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"4. PROGRAMADO"},
+			  "LineaBase",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"1. ADELANTO DIRECTO",
+			    "2. ADELANTO DE MATERIAL",
+			    "3. VALORIZACION"},
+			  "Real",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan] IN {"5. REPROG 01",
+			    "5. REPROG 02",
+			    "5. REPROG 03",
+			    "5. REPROG 04",
+			    "5. REPROG 05",
+			    "5. REPROG 06",
+			    "5. REPROG 07",
+			    "5. REPROG 08"},
+			  "Reprogramado",
+			  'bibd_cont_etapa_control'[CtlConceptoPlan]
+			)
+		lineageTag: a14f3cc1-d248-4c74-aedc-46a73dd2272c
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_etapa_control"
+				          }
+				        },
+				        "Property": "CtlConceptoPlan"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_etapa_control"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"LineaBase","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'4. PROGRAMADO'"}}]]}}},{"DisplayName":"Real","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'1. ADELANTO DIRECTO'"}}],[{"Literal":{"Value":"'2. ADELANTO DE MATERIAL'"}}],[{"Literal":{"Value":"'3. VALORIZACION'"}}]]}}},{"DisplayName":"Reprogramado","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlConceptoPlan"}}],"Values":[[{"Literal":{"Value":"'5. REPROG 01'"}}],[{"Literal":{"Value":"'5. REPROG 02'"}}],[{"Literal":{"Value":"'5. REPROG 03'"}}],[{"Literal":{"Value":"'5. REPROG 04'"}}],[{"Literal":{"Value":"'5. REPROG 05'"}}],[{"Literal":{"Value":"'5. REPROG 06'"}}],[{"Literal":{"Value":"'5. REPROG 07'"}}],[{"Literal":{"Value":"'5. REPROG 08'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column AnioMesValorizConcepto = bibd_cont_etapa_control[Año-Mes-Valorizacion]&": "&bibd_cont_etapa_control[CtlDetConceptoPago]
+		lineageTag: 2f1c60d3-fbd9-403f-9a8b-e8d08d112f92
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column '.R-A-D' = bibd_cont_etapa_control[CtlDetMontoBruto] - bibd_cont_etapa_control[CtlDetMontoImponible]
+		lineageTag: 93815e78-1d94-4a3a-bfb3-4700fa5bd430
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ContratoConceptoPlan = related(bibd_contrato[ContCodigoEntidad])&"-"&bibd_cont_etapa_control[CtlConceptoPlan]
+		lineageTag: f69791cc-3d1a-4a20-95ab-81dbcce28843
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContratoConceptoPlan2 = related(bibd_contrato[ContCodigoEntidad])&"-"&bibd_cont_etapa_control[CtlConceptoPlan]
+		lineageTag: daa8a97e-c8a4-4076-8291-c85a26b88161
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetMesProvision
+		dataType: int64
+		formatString: 0
+		lineageTag: 59d6a988-8c6f-4436-8c91-a7f472643776
+		summarizeBy: sum
+		sourceColumn: CtlDetMesProvision
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_cont_etapa_control","TableItemName":"GrupoTrimestreProvision","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column AnioMesPagoConcepto = bibd_cont_etapa_control[Año-Mes-Pago]&": "&bibd_cont_etapa_control[CtlDetConceptoPago]
+		lineageTag: 1889927b-5865-4dc1-90d8-3a35c7b727f4
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año-Mes-Pago = bibd_cont_etapa_control[CtlDetAnioProvision]&"-"&FORMAT(bibd_cont_etapa_control[CtlDetMesProvision],"00")
+		lineageTag: a8eb8536-1dc4-4ea1-a739-92f5d7cb5012
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column CtlDetAnioProvision
+		dataType: string
+		lineageTag: 793bd77e-988a-4ac8-bc88-629b39b1f6e4
+		summarizeBy: none
+		sourceColumn: CtlDetAnioProvision
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoTrimestreProvision =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_etapa_control'[CtlDetMesProvision]),
+			  "(En blanco)",
+			  'bibd_cont_etapa_control'[CtlDetMesProvision] IN {1,
+			    2,
+			    3},
+			  "1",
+			  'bibd_cont_etapa_control'[CtlDetMesProvision] IN {4,
+			    5,
+			    6},
+			  "2",
+			  'bibd_cont_etapa_control'[CtlDetMesProvision] IN {7,
+			    8,
+			    9},
+			  "3",
+			  'bibd_cont_etapa_control'[CtlDetMesProvision] IN {10,
+			    11,
+			    12},
+			  "4",
+			  "Otros"
+			)
+		formatString: 0
+		lineageTag: df48f9e7-dbc6-4879-a4c0-f71e36da74cd
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_etapa_control"
+				          }
+				        },
+				        "Property": "CtlDetMesProvision"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_etapa_control"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMesProvision"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMesProvision"}}],"Values":[[{"Literal":{"Value":"1L"}}],[{"Literal":{"Value":"2L"}}],[{"Literal":{"Value":"3L"}}]]}}},{"DisplayName":"2","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMesProvision"}}],"Values":[[{"Literal":{"Value":"4L"}}],[{"Literal":{"Value":"5L"}}],[{"Literal":{"Value":"6L"}}]]}}},{"DisplayName":"3","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMesProvision"}}],"Values":[[{"Literal":{"Value":"7L"}}],[{"Literal":{"Value":"8L"}}],[{"Literal":{"Value":"9L"}}]]}}},{"DisplayName":"4","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"CtlDetMesProvision"}}],"Values":[[{"Literal":{"Value":"10L"}}],[{"Literal":{"Value":"11L"}}],[{"Literal":{"Value":"12L"}}]]}}},{"DisplayName":"Otros"}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestreProvision = bibd_cont_etapa_control[CtlDetAnioProvision]&"-"&bibd_cont_etapa_control[GrupoTrimestreProvision]
+		lineageTag: e71132d2-1de8-4d88-8c6b-d7d0e6f9aaec
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_cont_etapa_control-0d87e421-4882-4243-97fa-0820daab1ea1 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_cont_etapa_control")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"CtlDetIde", "CtlIde", "EtapaIde", "CtlTipoPlan", "CtlConceptoPlan", "CtlEstado", "CtlDetAnio", "CtlDetMes", "CtlDetConceptoPago", "CtlDetPorcentajeAvance", "CtlDetMontoBruto", "CtlDetReajuste", "CtlDetAmortAdelantoDirecto", "CtlDetAmortAdelantoMaterial", "CtlDetAmortizacion", "CtlDetSaldoSinIGV", "CtlDetDeductivoAdelantoDirecto", "CtlDetDeductivoAdelantoMaterial", "CtlDetMontoImponible", "CtlDetPorcentajeIGV", "CtlDetMontoIGV", "CtlDetMontoNeto", "CtlDetPenalidad", "CtlDetRetencion", "CtlDetMontoPago", "CtlDetEstado", "CtlDetMesProvision", "CtlDetAnioProvision"}, {"CtlDetIde", "CtlIde", "EtapaIde", "CtlTipoPlan", "CtlConceptoPlan", "CtlEstado", "CtlDetAnio", "CtlDetMes", "CtlDetConceptoPago", "CtlDetPorcentajeAvance", "CtlDetMontoBruto", "CtlDetReajuste", "CtlDetAmortAdelantoDirecto", "CtlDetAmortAdelantoMaterial", "CtlDetAmortizacion", "CtlDetSaldoSinIGV", "CtlDetDeductivoAdelantoDirecto", "CtlDetDeductivoAdelantoMaterial", "CtlDetMontoImponible", "CtlDetPorcentajeIGV", "CtlDetMontoIGV", "CtlDetMontoNeto", "CtlDetPenalidad", "CtlDetRetencion", "CtlDetMontoPago", "CtlDetEstado", "CtlDetMesProvision", "CtlDetAnioProvision"}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Se expandió Column1", {{"CtlDetPorcentajeAvance", type number}}, "es-PE"),
+				    #"Tipo cambiado con configuración regional1" = Table.TransformColumnTypes(#"Tipo cambiado con configuración regional", {{"CtlDetMontoBruto", type number}, {"CtlDetReajuste", type number}, {"CtlDetAmortAdelantoDirecto", type number}, {"CtlDetAmortAdelantoMaterial", type number}, {"CtlDetAmortizacion", type number}, {"CtlDetSaldoSinIGV", type number}, {"CtlDetDeductivoAdelantoDirecto", type number}, {"CtlDetDeductivoAdelantoMaterial", type number}, {"CtlDetMontoImponible", type number}, {"CtlDetPorcentajeIGV", type number}, {"CtlDetMontoIGV", type number}, {"CtlDetMontoNeto", type number}, {"CtlDetPenalidad", type number}, {"CtlDetRetencion", type number}, {"CtlDetMontoPago", type number}}, "es-PE")
+				in
+				    #"Tipo cambiado con configuración regional1"
+
+	annotation PBI_ResultType = Exception
+

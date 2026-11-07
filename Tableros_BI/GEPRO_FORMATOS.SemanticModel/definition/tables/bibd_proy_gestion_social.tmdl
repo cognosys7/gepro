@@ -1,0 +1,163 @@
+table bibd_proy_gestion_social
+	lineageTag: a89bc704-c703-4a7f-be77-f79c7edf18ca
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 6526ef04-e6df-4c13-922c-437c68397676
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIde
+		dataType: int64
+		formatString: 0
+		lineageTag: aaf32c3f-1563-4af6-8292-8da0b7c117e6
+		summarizeBy: none
+		sourceColumn: SocialIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSPRING
+		dataType: string
+		lineageTag: 24d4c3a4-aa1e-49d6-93fb-f01137774511
+		summarizeBy: none
+		sourceColumn: ProyCodigoSPRING
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoUnico
+		dataType: string
+		lineageTag: 72c8bf97-7c9f-40fa-bdb6-33380034bb8d
+		summarizeBy: none
+		sourceColumn: ProyCodigoUnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSNIP
+		dataType: string
+		lineageTag: 3c6304aa-9b62-42a6-a4e6-b232bf71cc61
+		summarizeBy: none
+		sourceColumn: ProyCodigoSNIP
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombre
+		dataType: string
+		lineageTag: e898bc9e-8440-41ba-a2b1-554608720a73
+		summarizeBy: none
+		sourceColumn: ProyNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyEstado
+		dataType: string
+		lineageTag: a7028138-2afb-4b8d-b3e5-e814b271a7ca
+		summarizeBy: none
+		sourceColumn: ProyEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyDepartamento
+		dataType: string
+		lineageTag: 60867b9a-947c-42c0-8567-52eb0dd6d5bd
+		summarizeBy: none
+		sourceColumn: ProyDepartamento
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyProvincia
+		dataType: string
+		lineageTag: 7cb45f24-3678-48a1-a875-a7662967aeef
+		summarizeBy: none
+		sourceColumn: ProyProvincia
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyDistrito
+		dataType: string
+		lineageTag: 84fba7f2-3099-49d6-a29d-d3aa673013a7
+		summarizeBy: none
+		sourceColumn: ProyDistrito
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyUBIGEO
+		dataType: string
+		lineageTag: dda224a5-3b2d-4e2c-b2ae-516c093041ec
+		summarizeBy: none
+		sourceColumn: ProyUBIGEO
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCentroPoblado
+		dataType: string
+		lineageTag: 896d63c8-429c-4bcb-9788-def3c41262cc
+		summarizeBy: none
+		sourceColumn: ProyCentroPoblado
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialFaseComponente
+		dataType: string
+		lineageTag: a0d1b3c1-75ef-406f-9c04-9aa481a89e76
+		summarizeBy: none
+		sourceColumn: SocialFaseComponente
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialNumBeneficiados
+		dataType: string
+		lineageTag: 1165ad81-b475-439d-bef7-7281371e9ff9
+		summarizeBy: none
+		sourceColumn: SocialNumBeneficiados
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialTipBeneficiados
+		dataType: string
+		lineageTag: 631913c5-edd3-4f62-b906-fe715f9e6195
+		summarizeBy: none
+		sourceColumn: SocialTipBeneficiados
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialMatrizActoresSoc
+		dataType: string
+		lineageTag: b85c2b33-f4e5-41b8-8913-6988eaa76e79
+		summarizeBy: none
+		sourceColumn: SocialMatrizActoresSoc
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialActaPropbacion
+		dataType: string
+		lineageTag: c9bf648f-d86c-4109-a05f-aefc42d41ff3
+		summarizeBy: none
+		sourceColumn: SocialActaPropbacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialEstado
+		dataType: string
+		lineageTag: fc1fb4fe-c891-4da9-b88d-492c873fa8ff
+		summarizeBy: none
+		sourceColumn: SocialEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_gestion_social-ac1fa56c-caf6-48b9-9dcf-eae7ac80fdf7 = m
+		mode: import
+		queryGroup: 'FORMATO 6'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_proy_gestion_social")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ProyIde", "SocialIde", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyEstado", "ProyDepartamento", "ProyProvincia", "ProyDistrito", "ProyUBIGEO", "ProyCentroPoblado", "SocialFaseComponente", "SocialNumBeneficiados", "SocialTipBeneficiados", "SocialMatrizActoresSoc", "SocialActaPropbacion", "SocialEstado"}, {"ProyIde", "SocialIde", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyEstado", "ProyDepartamento", "ProyProvincia", "ProyDistrito", "ProyUBIGEO", "ProyCentroPoblado", "SocialFaseComponente", "SocialNumBeneficiados", "SocialTipBeneficiados", "SocialMatrizActoresSoc", "SocialActaPropbacion", "SocialEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"ProyIde", Int64.Type}, {"SocialIde", Int64.Type}, {"ProyNombre", type text}, {"ProyEstado", type text}, {"ProyDepartamento", type text}, {"ProyProvincia", type text}, {"ProyDistrito", type text}, {"ProyUBIGEO", type text}, {"ProyCentroPoblado", type text}, {"SocialFaseComponente", type text}, {"SocialTipBeneficiados", type text}, {"SocialMatrizActoresSoc", type text}, {"SocialActaPropbacion", type text}, {"SocialEstado", type text}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

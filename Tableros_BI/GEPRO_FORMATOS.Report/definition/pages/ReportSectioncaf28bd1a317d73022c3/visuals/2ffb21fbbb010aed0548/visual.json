@@ -1,0 +1,37 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.14.0/schema.json",
+  "name": "2ffb21fbbb010aed0548",
+  "position": {
+    "x": 770.68062827225128,
+    "y": 1952.7463089563009,
+    "z": 19000,
+    "height": 31.223227034745356,
+    "width": 763.82674916706321,
+    "tabOrder": 19000
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "1.4 Equipo Social (responsable de la ejecución y Supervisor y/o Inspector según corresponda) que liderará las actividades sociales del Proyecto",
+                    "textStyle": {
+                      "fontFamily": "Segoe (Bold)",
+                      "fontSize": "10pt"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

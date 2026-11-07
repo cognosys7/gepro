@@ -1,0 +1,322 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
+  "name": "ReportSection250f561bd43e731ea403",
+  "displayName": "F2-EJECUCION",
+  "displayOption": "FitToWidth",
+  "height": 3150,
+  "width": 2020,
+  "filterConfig": {
+    "filters": [
+      {
+        "name": "Filter907cff72c798ac69c4d4",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_contrato"
+              }
+            },
+            "Property": "ContFaseComponente"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "b",
+              "Entity": "bibd_contrato",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "b"
+                          }
+                        },
+                        "Property": "ContFaseComponente"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'FASE III: EJECUCIÓN - EJECUCIÓN DE OBRA'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'FASE III: EJECUCIÓN - SUPERVISIÓN DE OBRA'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      },
+      {
+        "name": "Filter7551255cdc01955dad71",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_trimestre"
+              }
+            },
+            "Property": "Match"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "Drillthrough"
+      },
+      {
+        "name": "Filterefb3bd7f106c47a491aa",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_trimestre"
+              }
+            },
+            "Property": "Match"
+          }
+        },
+        "type": "Categorical",
+        "howCreated": "User"
+      },
+      {
+        "name": "Filtercb99ef5ca2d7e2dbc330",
+        "field": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_cont_etapa_control"
+              }
+            },
+            "Property": "CtlEstado"
+          }
+        },
+        "type": "Categorical",
+        "filter": {
+          "Version": 2,
+          "From": [
+            {
+              "Name": "b",
+              "Entity": "bibd_cont_etapa_control",
+              "Type": 0
+            }
+          ],
+          "Where": [
+            {
+              "Condition": {
+                "In": {
+                  "Expressions": [
+                    {
+                      "Column": {
+                        "Expression": {
+                          "SourceRef": {
+                            "Source": "b"
+                          }
+                        },
+                        "Property": "CtlEstado"
+                      }
+                    }
+                  ],
+                  "Values": [
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'VIGENTE'"
+                        }
+                      }
+                    ],
+                    [
+                      {
+                        "Literal": {
+                          "Value": "'SUPERADO'"
+                        }
+                      }
+                    ]
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        "howCreated": "User"
+      }
+    ]
+  },
+  "pageBinding": {
+    "name": "Pod",
+    "type": "Drillthrough",
+    "parameters": [
+      {
+        "name": "Param_Filter7551255cdc01955dad71",
+        "boundFilter": "Filter7551255cdc01955dad71",
+        "fieldExpr": {
+          "Column": {
+            "Expression": {
+              "SourceRef": {
+                "Entity": "bibd_trimestre"
+              }
+            },
+            "Property": "Match"
+          }
+        }
+      }
+    ]
+  },
+  "objects": {
+    "outspacePane": [
+      {
+        "properties": {
+          "width": {
+            "expr": {
+              "Literal": {
+                "Value": "212L"
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "type": "Drillthrough",
+  "visualInteractions": [
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "01a83869418bef309168",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "fbfe0496357d86047ce3",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "504465f8c2e41bafdb82",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "c59ba1349b30391312f8",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "c98df0151580b2c80006",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "a58f0334b50c9d27b930",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "9a240242d09210ca7a0e",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "60a78a36c0b336b22b94",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "5f09bfac091b3b8b750c",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "4bdada37982997c1cea0",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "a9ca872b49058f26f53a",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "52d3d0ba434ebc5e2a6e",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "69adee737a44b0a32e86",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "297b7c586ca5ea75b666",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "694434e026ac232436c7",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "5be32a603db5bb9d5d15",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "8a2579359a33d4193166",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "fe6b88ce9bab4d4c0481",
+      "type": "DataFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "8267211281d759dafb6d",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "eeb9cc04175e9b490fee",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "5ffbde6fced390b0e650",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "32413b888b90a553ecec",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "93daade7b1c5492c607b",
+      "type": "NoFilter"
+    },
+    {
+      "source": "824740b5a9e7e9090087",
+      "target": "461a5673a2b4baa9b1e3",
+      "type": "DataFilter"
+    }
+  ]
+}

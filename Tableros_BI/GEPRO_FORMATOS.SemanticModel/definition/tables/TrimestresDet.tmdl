@@ -1,0 +1,73 @@
+table TrimestresDet
+	isHidden
+	lineageTag: 6540f1f5-1e96-4b1e-b222-5c72a01b4a01
+
+	column Anio_Det
+		dataType: string
+		isHidden
+		lineageTag: b3e28965-0c25-476e-9684-b966c049a6ea
+		summarizeBy: none
+		sourceColumn: Anio_Det
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trim_Det
+		dataType: string
+		isHidden
+		lineageTag: 690e92ec-fe08-4df6-8af6-7119baeb1350
+		summarizeBy: none
+		sourceColumn: Trim_Det
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio-Trim_Det
+		dataType: string
+		isHidden
+		lineageTag: 735be27c-6950-443b-aea0-8a07826f8e65
+		summarizeBy: none
+		sourceColumn: Anio-Trim_Det
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column C1
+		dataType: string
+		isHidden
+		lineageTag: 9bf14c2a-886f-4bc7-88c5-59ed73b14145
+		summarizeBy: none
+		sourceColumn: C1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TrimestresDet-18f9b64d-960f-4c95-9f3b-80799cbea9c2 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_cont_etapa_control")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"CtlDetIde", "CtlIde", "EtapaIde", "CtlTipoPlan", "CtlConceptoPlan", "CtlEstado", "CtlDetAnio", "CtlDetMes", "CtlDetConceptoPago", "CtlDetPorcentajeAvance", "CtlDetMontoBruto", "CtlDetReajuste", "CtlDetAmortAdelantoDirecto", "CtlDetAmortAdelantoMaterial", "CtlDetAmortizacion", "CtlDetSaldoSinIGV", "CtlDetDeductivoAdelantoDirecto", "CtlDetDeductivoAdelantoMaterial", "CtlDetMontoImponible", "CtlDetPorcentajeIGV", "CtlDetMontoIGV", "CtlDetMontoNeto", "CtlDetPenalidad", "CtlDetRetencion", "CtlDetMontoPago", "CtlDetEstado"}, {"CtlDetIde", "CtlIde", "EtapaIde", "CtlTipoPlan", "CtlConceptoPlan", "CtlEstado", "CtlDetAnio", "CtlDetMes", "CtlDetConceptoPago", "CtlDetPorcentajeAvance", "CtlDetMontoBruto", "CtlDetReajuste", "CtlDetAmortAdelantoDirecto", "CtlDetAmortAdelantoMaterial", "CtlDetAmortizacion", "CtlDetSaldoSinIGV", "CtlDetDeductivoAdelantoDirecto", "CtlDetDeductivoAdelantoMaterial", "CtlDetMontoImponible", "CtlDetPorcentajeIGV", "CtlDetMontoIGV", "CtlDetMontoNeto", "CtlDetPenalidad", "CtlDetRetencion", "CtlDetMontoPago", "CtlDetEstado"}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Se expandió Column1", {{"CtlDetPorcentajeAvance", type number}}, "es-PE"),
+				    #"Tipo cambiado con configuración regional1" = Table.TransformColumnTypes(#"Tipo cambiado con configuración regional", {{"CtlDetMontoBruto", type number}, {"CtlDetReajuste", type number}, {"CtlDetAmortAdelantoDirecto", type number}, {"CtlDetAmortAdelantoMaterial", type number}, {"CtlDetAmortizacion", type number}, {"CtlDetSaldoSinIGV", type number}, {"CtlDetDeductivoAdelantoDirecto", type number}, {"CtlDetDeductivoAdelantoMaterial", type number}, {"CtlDetMontoImponible", type number}, {"CtlDetPorcentajeIGV", type number}, {"CtlDetMontoIGV", type number}, {"CtlDetMontoNeto", type number}, {"CtlDetPenalidad", type number}, {"CtlDetRetencion", type number}, {"CtlDetMontoPago", type number}}, "es-PE"),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado con configuración regional1",{"CtlDetIde", "CtlIde", "EtapaIde", "CtlTipoPlan", "CtlConceptoPlan", "CtlEstado", "CtlDetConceptoPago", "CtlDetPorcentajeAvance", "CtlDetMontoBruto", "CtlDetReajuste", "CtlDetAmortAdelantoDirecto", "CtlDetAmortAdelantoMaterial", "CtlDetAmortizacion", "CtlDetSaldoSinIGV", "CtlDetDeductivoAdelantoDirecto", "CtlDetDeductivoAdelantoMaterial", "CtlDetMontoImponible", "CtlDetPorcentajeIGV", "CtlDetMontoIGV", "CtlDetMontoNeto", "CtlDetPenalidad", "CtlDetRetencion", "CtlDetMontoPago", "CtlDetEstado"}),
+				    #"Duplicados quitados" = Table.Distinct(#"Columnas quitadas"),
+				    #"Columna condicional agregada" = Table.AddColumn(#"Duplicados quitados", "Trim", each if [CtlDetMes] = "1" then 1 else if [CtlDetMes] = "2" then 1 else if [CtlDetMes] = "3" then 1 else if [CtlDetMes] = "4" then 2 else if [CtlDetMes] = "5" then 2 else if [CtlDetMes] = "6" then 2 else if [CtlDetMes] = "7" then 3 else if [CtlDetMes] = "8" then 3 else if [CtlDetMes] = "9" then 3 else if [CtlDetMes] = "10" then 4 else if [CtlDetMes] = "11" then 4 else if [CtlDetMes] = "12" then 4 else null),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Columna condicional agregada",{{"CtlDetAnio", "Anio"}, {"CtlDetMes", "Mes"}}),
+				    #"Columnas quitadas1" = Table.RemoveColumns(#"Columnas con nombre cambiado",{"Mes"}),
+				    #"Duplicados quitados1" = Table.Distinct(#"Columnas quitadas1"),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Duplicados quitados1",{{"Anio", type text}, {"Trim", type text}}),
+				    #"Personalizada agregada" = Table.AddColumn(#"Tipo cambiado", "Anio-Trim", each [Anio]&"-"&[Trim]),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Personalizada agregada",{{"Anio", "Anio_Det"}, {"Trim", "Trim_Det"}, {"Anio-Trim", "Anio-Trim_Det"}}),
+				    #"Personalizada agregada1" = Table.AddColumn(#"Columnas con nombre cambiado1", "C1", each 1)
+				in
+				    #"Personalizada agregada1"
+
+	annotation PBI_ResultType = Table
+

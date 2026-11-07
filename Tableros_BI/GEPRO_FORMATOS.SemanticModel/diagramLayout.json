@@ -1,0 +1,382 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 1028.1597439767831,
+        "y": 690.07744656628483
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 0,
+            "y": 1168.6
+          },
+          "nodeIndex": "ActividadTrimestre",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 420.8,
+            "y": 1168.6
+          },
+          "nodeIndex": "ActividadTrimestreDet",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 4
+        },
+        {
+          "location": {
+            "x": 3995.341978231284,
+            "y": 904.86971860376957
+          },
+          "nodeIndex": "bibd_cont_ampliacion",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 5
+        },
+        {
+          "location": {
+            "x": 3969.1,
+            "y": 0
+          },
+          "nodeIndex": "bibd_cont_ampliacion_archivo",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 6
+        },
+        {
+          "location": {
+            "x": 3181.669277617932,
+            "y": 1774.2727006133518
+          },
+          "nodeIndex": "bibd_cont_etapa",
+          "size": {
+            "height": 543.47490554254,
+            "width": 234
+          },
+          "zIndex": 30
+        },
+        {
+          "location": {
+            "x": 2732.2756194669364,
+            "y": 1714.3712096085605
+          },
+          "nodeIndex": "bibd_cont_etapa_control",
+          "size": {
+            "height": 327.82570349057619,
+            "width": 267.39084418869106
+          },
+          "zIndex": 37
+        },
+        {
+          "location": {
+            "x": 3884.555543900969,
+            "y": 1565.9874843492689
+          },
+          "nodeIndex": "bibd_contrato",
+          "size": {
+            "height": 528.17076862272347,
+            "width": 297.99911802832412
+          },
+          "zIndex": 40
+        },
+        {
+          "location": {
+            "x": 4157.8793154009154,
+            "y": 484.2706005754448
+          },
+          "nodeIndex": "bibd_contrato_archivo",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 13
+        },
+        {
+          "location": {
+            "x": 3159.6195296888495,
+            "y": 1337.9155608163114
+          },
+          "nodeIndex": "bibd_proy_accion_correctiva",
+          "size": {
+            "height": 248,
+            "width": 278.52112558492126
+          },
+          "zIndex": 38
+        },
+        {
+          "location": {
+            "x": 3583.4060689104463,
+            "y": 1390.5142378587987
+          },
+          "nodeIndex": "bibd_proy_accion_gestion",
+          "size": {
+            "height": 322.26056279246086,
+            "width": 257.65184796698941
+          },
+          "zIndex": 33
+        },
+        {
+          "location": {
+            "x": 1957.3862662830368,
+            "y": 1060.5917261603665
+          },
+          "nodeIndex": "bibd_proy_costo_comp_UP",
+          "size": {
+            "height": 300,
+            "width": 302.17297355191113
+          },
+          "zIndex": 41
+        },
+        {
+          "location": {
+            "x": 2369.8385552358641,
+            "y": 1012.6174296509422
+          },
+          "nodeIndex": "bibd_proy_costo_componente",
+          "size": {
+            "height": 300,
+            "width": 278.52112558492172
+          },
+          "zIndex": 14
+        },
+        {
+          "location": {
+            "x": 1523.3926081320417,
+            "y": 993.35730784431928
+          },
+          "nodeIndex": "bibd_proy_gestion_social",
+          "size": {
+            "height": 300,
+            "width": 252.08670726887431
+          },
+          "zIndex": 15
+        },
+        {
+          "location": {
+            "x": 744.70071392439672,
+            "y": 1762.6871482547122
+          },
+          "nodeIndex": "bibd_proy_gestion_social_benef",
+          "size": {
+            "height": 300,
+            "width": 293.82526250473848
+          },
+          "zIndex": 16
+        },
+        {
+          "location": {
+            "x": 1130.4183116226175,
+            "y": 1003.6784334292408
+          },
+          "nodeIndex": "bibd_proy_gestion_social_intere",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 17
+        },
+        {
+          "location": {
+            "x": 2707.2614447641358,
+            "y": 995.76056279246086
+          },
+          "nodeIndex": "bibd_proy_oportunidad_riesgo",
+          "size": {
+            "height": 300,
+            "width": 288.26012180662337
+          },
+          "zIndex": 35
+        },
+        {
+          "location": {
+            "x": 1911.7,
+            "y": 670.7
+          },
+          "nodeIndex": "bibd_proy_social_objetivo_esp",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 18
+        },
+        {
+          "location": {
+            "x": 3851.1646997122775,
+            "y": 453.2348593018848
+          },
+          "nodeIndex": "bibd_proyecto",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 19
+        },
+        {
+          "location": {
+            "x": 2376.1586308018323,
+            "y": 1511.5019319906287
+          },
+          "nodeIndex": "bibd_trimestre",
+          "size": {
+            "height": 299.82570349057596,
+            "width": 234
+          },
+          "zIndex": 39
+        },
+        {
+          "location": {
+            "x": 1973.190844188691,
+            "y": 1625.2679546604193
+          },
+          "nodeIndex": "bibd_trimestre_gastos",
+          "size": {
+            "height": 300,
+            "width": 263.21698866510451
+          },
+          "zIndex": 34
+        },
+        {
+          "location": {
+            "x": 1078.9137337169634,
+            "y": 1308.0610037782983
+          },
+          "nodeIndex": "bibd_trimestre_social",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 29
+        },
+        {
+          "location": {
+            "x": 1597.5614019227085,
+            "y": 1995.631226523903
+          },
+          "nodeIndex": "KPI FORMATO_1",
+          "size": {
+            "height": 423.82438053306328,
+            "width": 292.43397733020947
+          },
+          "zIndex": 22
+        },
+        {
+          "location": {
+            "x": 7104.9,
+            "y": 1106.6
+          },
+          "nodeIndex": "KPI FORMATO_2",
+          "size": {
+            "height": 464.17165059439844,
+            "width": 234
+          },
+          "zIndex": 23
+        },
+        {
+          "location": {
+            "x": 1574.8431331415181,
+            "y": 1598.8692776179319
+          },
+          "nodeIndex": "Proyecto",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 42
+        },
+        {
+          "location": {
+            "x": 2269.8079377450763,
+            "y": 1970.8936581509959
+          },
+          "nodeIndex": "TReprogMax",
+          "size": {
+            "height": 204.52068459908378,
+            "width": 234
+          },
+          "zIndex": 31
+        },
+        {
+          "location": {
+            "x": 8367.4,
+            "y": 1168.6
+          },
+          "nodeIndex": "Trimestres",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 26
+        },
+        {
+          "location": {
+            "x": 8788.3,
+            "y": 1168.6
+          },
+          "nodeIndex": "TrimestresDet",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 27
+        },
+        {
+          "location": {
+            "x": 2712.2413680920226,
+            "y": 2202.40443127909
+          },
+          "nodeIndex": "TProg_Reprog",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 32
+        },
+        {
+          "location": {
+            "x": 9139.3,
+            "y": 0
+          },
+          "nodeIndex": "TipoInforme",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 4378.3324434839906,
+            "y": 1524.848551283565
+          },
+          "nodeIndex": "bibd_contrato_PostCierre",
+          "size": {
+            "height": 608.8653087453938,
+            "width": 327.21610669342954
+          },
+          "zIndex": 1
+        }
+      ],
+      "name": "Todas las tablas",
+      "zoomValue": 71.87599050918368,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "Todas las tablas",
+  "defaultDiagram": "Todas las tablas"
+}

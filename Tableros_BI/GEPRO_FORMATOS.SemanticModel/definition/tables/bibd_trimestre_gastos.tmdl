@@ -1,0 +1,123 @@
+table bibd_trimestre_gastos
+	lineageTag: 0aaf88f4-e9db-4a24-a165-d14ac6020909
+
+	column Anio
+		dataType: string
+		lineageTag: 51629baf-abdd-4100-be33-f3e58e466604
+		summarizeBy: none
+		sourceColumn: Anio
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trim
+		dataType: string
+		lineageTag: 5af3a969-7fc9-428b-823b-5be277f059df
+		summarizeBy: none
+		sourceColumn: Trim
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio-Trim
+		dataType: string
+		lineageTag: 8ab11380-d6a9-4b98-a077-96d01e7fc8bb
+		summarizeBy: none
+		sourceColumn: Anio-Trim
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio_Det
+		dataType: string
+		lineageTag: cd028680-4602-477c-85ed-c6239dde06e4
+		summarizeBy: none
+		sourceColumn: Anio_Det
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trim_Det
+		dataType: string
+		lineageTag: 93825b02-8e94-41d6-99e0-087d6fafa950
+		summarizeBy: none
+		sourceColumn: Trim_Det
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio-Trim_Det
+		dataType: string
+		lineageTag: e6bfe300-acf4-4dad-80de-5ca661d62c0c
+		summarizeBy: none
+		sourceColumn: Anio-Trim_Det
+
+		annotation SummarizationSetBy = Automatic
+
+	column MatchTrim
+		dataType: string
+		lineageTag: 65a486ac-5dbd-4506-90f2-948eead30e66
+		summarizeBy: none
+		sourceColumn: MatchTrim
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_trimestre_gastos","TableItemName":"GrupoTrimestre","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column GrupoTrimestre =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_trimestre_gastos'[MatchTrim]),
+			  "(En blanco)",
+			  'bibd_trimestre_gastos'[MatchTrim] IN {"1"},
+			  "Actual",
+			  'bibd_trimestre_gastos'[MatchTrim] IN {"3"},
+			  "Anterior",
+			  'bibd_trimestre_gastos'[MatchTrim] IN {"2"},
+			  "Posterior",
+			  'bibd_trimestre_gastos'[MatchTrim]
+			)
+		lineageTag: 4bdddbee-74df-4c6f-95cf-a2f24d0bc324
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_trimestre_gastos"
+				          }
+				        },
+				        "Property": "MatchTrim"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_trimestre_gastos"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"MatchTrim"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"Actual","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"MatchTrim"}}],"Values":[[{"Literal":{"Value":"'1'"}}]]}}},{"DisplayName":"Anterior","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"MatchTrim"}}],"Values":[[{"Literal":{"Value":"'3'"}}]]}}},{"DisplayName":"Posterior","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"MatchTrim"}}],"Values":[[{"Literal":{"Value":"'2'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column MatchAnio
+		dataType: string
+		lineageTag: c950f297-6c13-4243-b76c-b75f25b32147
+		summarizeBy: none
+		sourceColumn: MatchAnio
+
+		annotation SummarizationSetBy = Automatic
+
+
+	partition bibd_trimestre_gastos-8c5ce72d-41f6-41b1-8aff-c7d849a2d132 = m
+		mode: import
+		queryGroup: 'FORMATO 1'
+		source =
+				let
+				    Origen = Table.NestedJoin(Trimestres, {"C1"}, TrimestresDet, {"C1"}, "TrimestresDet", JoinKind.LeftOuter),
+				    #"Se expandió GastoTrimestreDet" = Table.ExpandTableColumn(Origen, "TrimestresDet", {"Anio_Det", "Trim_Det", "Anio-Trim_Det", "C1"}, {"Anio_Det", "Trim_Det", "Anio-Trim_Det", "C1.1"}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Se expandió GastoTrimestreDet",{"C1", "C1.1"}),
+				    #"Columna condicional agregada" = Table.AddColumn(#"Columnas quitadas", "Match", each if [#"Anio-Trim"] = [#"Anio-Trim_Det"] then 1 else if [#"Anio-Trim"] < [#"Anio-Trim_Det"] then 2 else 3),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Columna condicional agregada",{{"Match", "MatchTrim"}}),
+				    #"Columna condicional agregada1" = Table.AddColumn(#"Columnas con nombre cambiado", "MatchAnio", each if [Anio] = [Anio_Det] then 1 else if [Anio] < [Anio_Det] then 2 else 3)
+				in
+				    #"Columna condicional agregada1"
+
+	annotation PBI_ResultType = Table
+

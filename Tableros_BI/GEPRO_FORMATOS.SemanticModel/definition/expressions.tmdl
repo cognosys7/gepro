@@ -1,0 +1,7 @@
+/// http://localhost:8086/dm_gepro/index.php/
+expression RutaWeb = "http://localhost:8086/dm_gepro/index.php/" meta [IsParameterQuery=true, Type="Any", IsParameterQueryRequired=true]
+	lineageTag: 567dd128-e91a-458f-a49b-9487524b641d
+	queryGroup: 'FORMATO 2'
+
+	annotation PBI_ResultType = Text
+

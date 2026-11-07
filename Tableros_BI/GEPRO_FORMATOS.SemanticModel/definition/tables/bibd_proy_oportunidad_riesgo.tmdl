@@ -1,0 +1,192 @@
+table bibd_proy_oportunidad_riesgo
+	lineageTag: c51ce6dd-6fd6-43b7-a107-cf1940c03bd7
+
+	measure Valoracion = ```
+			
+			VAR V_TIPO = SELECTEDVALUE(TipoInforme[Tipo])
+			VAR R1 = CALCULATE(sum(bibd_proy_oportunidad_riesgo[ValoracionValor]), USERELATIONSHIP(bibd_trimestre[Anio-Trim],bibd_proy_oportunidad_riesgo[AñoTrimestre] ) )
+					 
+			VAR R2 = CALCULATE(sum(bibd_proy_oportunidad_riesgo[ValoracionValor]), USERELATIONSHIP(bibd_trimestre[Anio],bibd_proy_oportunidad_riesgo[Año] ) )
+			
+			VAR R3 = IF(V_TIPO = "Anual", R2, R1)         
+			RETURN R3
+			
+			```
+		lineageTag: 2fd3c18c-8a36-4379-a8b9-f05a4a929bfe
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure IdeRiesgo = ```
+			
+			VAR V_TIPO = SELECTEDVALUE(TipoInforme[Tipo])
+			VAR R1 = CALCULATE(max(bibd_proy_oportunidad_riesgo[RiesgoIde]), USERELATIONSHIP(bibd_trimestre[Anio-Trim],bibd_proy_oportunidad_riesgo[AñoTrimestre] ), FILTER(
+					 ALLSELECTED(bibd_proy_oportunidad_riesgo[RiesgoFecha]), bibd_proy_oportunidad_riesgo[RiesgoFecha]  = max(bibd_proy_oportunidad_riesgo[RiesgoFecha]) ) )
+			VAR R2 = CALCULATE(max(bibd_proy_oportunidad_riesgo[RiesgoIde]), USERELATIONSHIP(bibd_trimestre[Anio],bibd_proy_oportunidad_riesgo[Año] ), FILTER(
+					 ALLSELECTED(bibd_proy_oportunidad_riesgo[RiesgoFecha]),  bibd_proy_oportunidad_riesgo[RiesgoFecha] = max(bibd_proy_oportunidad_riesgo[RiesgoFecha]) ) )
+			VAR R3 = IF(V_TIPO = "Anual", R2, R1)         
+			RETURN R3
+			```
+		formatString: 0
+		lineageTag: 815909d3-2575-4286-88e9-2d9f0b362c8a
+
+	column RiesgoIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 33d6bd8d-2eeb-4993-9f9a-86fece9741ba
+		summarizeBy: sum
+		sourceColumn: RiesgoIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: d4dd24ae-4d5d-4f66-9e76-a370eaa05076
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiesgoFecha
+		dataType: dateTime
+		formatString: dd/mm/yy
+		lineageTag: 445d8664-43ac-4496-9b1f-a55d61528908
+		summarizeBy: none
+		sourceColumn: RiesgoFecha
+
+		variation Variación
+			isDefault
+			relationship: 0331c2da-df2f-46f7-b4f9-393037317563
+			defaultHierarchy: LocalDateTable_8f58259e-3d7d-49b9-98e3-78c9bcbda119.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column RiesgoDesc
+		dataType: string
+		lineageTag: c361c4b6-593e-4d25-8003-fd959da4c91b
+		summarizeBy: none
+		sourceColumn: RiesgoDesc
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProbabilidadValor
+		dataType: double
+		lineageTag: 5dc7a809-ee1e-418b-a3b6-2a7ff646998e
+		summarizeBy: sum
+		sourceColumn: ProbabilidadValor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ProbabilidadDesc
+		dataType: string
+		lineageTag: b224a3a5-6d5e-4ae5-bf7c-3758ee47879a
+		summarizeBy: none
+		sourceColumn: ProbabilidadDesc
+
+		annotation SummarizationSetBy = Automatic
+
+	column ImpactoValor
+		dataType: double
+		lineageTag: 358c93a9-30f7-42a5-90e6-0587b8e86bfa
+		summarizeBy: sum
+		sourceColumn: ImpactoValor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ImpactoDesc
+		dataType: string
+		lineageTag: 8c3d4727-61cc-4274-9a96-9daba59ac56e
+		summarizeBy: none
+		sourceColumn: ImpactoDesc
+
+		annotation SummarizationSetBy = Automatic
+
+	column ValoracionValor
+		dataType: double
+		lineageTag: f6c35fa3-6b16-4923-b967-777e75c0f422
+		summarizeBy: sum
+		sourceColumn: ValoracionValor
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ValoracionRango
+		dataType: double
+		lineageTag: 5835717c-671e-4175-9f33-126f184f1e7b
+		summarizeBy: sum
+		sourceColumn: ValoracionRango
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column ValoracionDesc
+		dataType: string
+		lineageTag: 05a7e46b-0c79-488d-ae89-a92af5194ce7
+		summarizeBy: none
+		sourceColumn: ValoracionDesc
+
+		annotation SummarizationSetBy = Automatic
+
+	column AccionProcesoDesc
+		dataType: string
+		lineageTag: 9d24347f-1246-41d3-8aa5-0aa967ea73bf
+		summarizeBy: none
+		sourceColumn: AccionProcesoDesc
+
+		annotation SummarizationSetBy = Automatic
+
+	column RiesgoEstado
+		dataType: string
+		lineageTag: 60808082-cd82-4906-be4e-fe6343dc0b32
+		summarizeBy: none
+		sourceColumn: RiesgoEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestre = format(bibd_proy_oportunidad_riesgo[RiesgoFecha].[Año],"0000") &"-"&format(bibd_proy_oportunidad_riesgo[RiesgoFecha].[NroTrimestre],"0")
+		lineageTag: 4a72baf2-517d-4f59-855d-0a5b0eab0c58
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Componente
+		dataType: string
+		lineageTag: f7cc4000-1238-4b34-9dce-9e0458b3a33f
+		summarizeBy: none
+		sourceColumn: Componente
+
+		annotation SummarizationSetBy = Automatic
+
+	column Año = ```
+			format(bibd_proy_oportunidad_riesgo[RiesgoFecha].[Año],"0000") 
+			```
+		lineageTag: 4aaa56a3-7cb8-4274-87f5-6587831220c8
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_oportunidad_riesgo-d621c60d-cd6c-4e30-b337-a4d854c1b955 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb & "bibd_proy_oportunidad_riesgo")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"RiesgoIde", "ProyIde", "RiesgoFecha", "RiesgoDesc", "ProbabilidadValor", "ProbabilidadDesc", "ImpactoValor", "ImpactoDesc", "ValoracionValor", "ValoracionRango", "ValoracionDesc", "AccionProcesoDesc", "RiesgoEstado", "Componente"}, {"RiesgoIde", "ProyIde", "RiesgoFecha", "RiesgoDesc", "ProbabilidadValor", "ProbabilidadDesc", "ImpactoValor", "ImpactoDesc", "ValoracionValor", "ValoracionRango", "ValoracionDesc", "AccionProcesoDesc", "RiesgoEstado", "Componente"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"RiesgoIde", Int64.Type}, {"ProyIde", Int64.Type}, {"RiesgoFecha", type date}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"ProbabilidadValor", type number}, {"ImpactoValor", type number}, {"ValoracionValor", type number}, {"ValoracionRango", type number}}, "es-PE")
+				in
+				    #"Tipo cambiado con configuración regional"
+
+	annotation PBI_ResultType = Table
+

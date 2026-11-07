@@ -1,0 +1,135 @@
+table bibd_proy_gestion_social_benef
+	lineageTag: d2a7bc81-88c0-46cc-9d95-cc751c2d232d
+
+	column SocialBenefIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 54637699-b9bc-4d99-a225-f37412189af8
+		summarizeBy: sum
+		sourceColumn: SocialBenefIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 3608fe8e-93a6-45aa-8d95-a55d24a479a3
+		summarizeBy: none
+		sourceColumn: SocialIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialBenefConceptoSup
+		dataType: string
+		lineageTag: b951cbb6-5f9b-48cd-8462-eefae6e3a51a
+		summarizeBy: none
+		sourceColumn: SocialBenefConceptoSup
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialBenefConcepto
+		dataType: string
+		lineageTag: 8e008ec2-126b-4cc9-8587-f3000d4e1367
+		summarizeBy: none
+		sourceColumn: SocialBenefConcepto
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialBenefActividad
+		dataType: string
+		lineageTag: df9b4862-0207-423a-b0dc-5cba63623df6
+		summarizeBy: none
+		sourceColumn: SocialBenefActividad
+
+		annotation SummarizationSetBy = Automatic
+
+	column SocialBenefCantidad
+		dataType: double
+		formatString: #,0
+		lineageTag: b43a89e1-9053-4ab3-8870-a1361a7ba4db
+		summarizeBy: sum
+		sourceColumn: SocialBenefCantidad
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column SocialBenefFecInicio
+		dataType: dateTime
+		formatString: dd/mm/yy
+		lineageTag: 0c450119-5634-4a4f-aa55-f2987ac27e07
+		summarizeBy: none
+		sourceColumn: SocialBenefFecInicio
+
+		variation Variación
+			isDefault
+			relationship: baa3cdda-4b0a-4dee-82cb-b833436b4861
+			defaultHierarchy: LocalDateTable_dc52fb45-f689-47ac-865e-3eda1504ea76.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column SocialBenefFecTermino
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: f8792c34-8143-4fc7-b98b-1ee177e206cd
+		summarizeBy: none
+		sourceColumn: SocialBenefFecTermino
+
+		variation Variación
+			isDefault
+			relationship: b6614d89-abca-4432-bbfa-5742e74e8443
+			defaultHierarchy: LocalDateTable_6cb39ca2-7091-46b6-93db-681dc9fb7d33.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column SocialBenefEstado
+		dataType: string
+		lineageTag: 7b1a3632-b5c5-4bb2-99a2-14081d848f09
+		summarizeBy: none
+		sourceColumn: SocialBenefEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestreTermino = bibd_proy_gestion_social_benef[SocialBenefFecTermino].[Año]&"-"&bibd_proy_gestion_social_benef[SocialBenefFecTermino].[NroTrimestre]
+		lineageTag: 95a991b8-7a7a-469a-85a3-9432fdf7354d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column Titulo = bibd_proy_gestion_social_benef[SocialBenefConceptoSup]& " por ESTADO (En Proceso / En Ejecución / Implementado) y GRUPO"
+		lineageTag: 2c33b445-d15c-45d3-8b85-f1a72e4ad237
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestreInicio = bibd_proy_gestion_social_benef[SocialBenefFecInicio].[Año]&"-"&bibd_proy_gestion_social_benef[SocialBenefFecInicio].[NroTrimestre]
+		lineageTag: de648415-cc02-47c8-960e-be8beda584f0
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_gestion_social_benef-e7f76bba-08ba-414e-98c1-16ee8f39e3e9 = m
+		mode: import
+		queryGroup: 'FORMATO 6'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_proy_gestion_social_benef")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"SocialBenefIde", "SocialIde", "SocialBenefConceptoSup", "SocialBenefConcepto", "SocialBenefActividad", "SocialBenefCantidad", "SocialBenefConcpNivel", "SocialBenefFecInicio", "SocialBenefFecTermino", "SocialBenefEstado"}, {"SocialBenefIde", "SocialIde", "SocialBenefConceptoSup", "SocialBenefConcepto", "SocialBenefActividad", "SocialBenefCantidad", "SocialBenefConcpNivel", "SocialBenefFecInicio", "SocialBenefFecTermino", "SocialBenefEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"SocialBenefIde", Int64.Type}, {"SocialIde", Int64.Type}, {"SocialBenefConceptoSup", type text}, {"SocialBenefConcepto", type text}, {"SocialBenefActividad", type text}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"SocialBenefCantidad", type number}}, "es-PE"),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado con configuración regional",{"SocialBenefConcpNivel"}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Columnas quitadas",{{"SocialBenefFecInicio", type date}, {"SocialBenefFecTermino", type date}, {"SocialBenefEstado", type text}})
+				in
+				    #"Tipo cambiado1"
+
+	annotation PBI_ResultType = Table
+

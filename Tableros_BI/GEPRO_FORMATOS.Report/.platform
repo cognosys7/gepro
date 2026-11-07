@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "GEPRO_FORMATOS"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "02303afc-a7bf-4cdf-a2b9-92aeb604dab3"
+  }
+}

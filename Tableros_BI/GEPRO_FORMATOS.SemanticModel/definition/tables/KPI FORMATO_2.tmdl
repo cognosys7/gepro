@@ -1,0 +1,465 @@
+table 'KPI FORMATO_2'
+	lineageTag: d11ecbe3-0502-4981-a69a-b1e6ceca5900
+
+	measure '% AvaFisicoAcumPV ini' =
+			
+			CALCULATE(
+				[% AvaFisico(PV ini)],
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: 05238032-5778-4c5e-8fb5-c50cfeccb6e0
+
+	measure '% AvaFisico(PV ini)' = ```
+			CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoConcepto]="1. Programado", bibd_trimestre[Grupo]<>"Posterior") / 
+			CALCULATE( 	SUM('bibd_cont_etapa_control'[CtlDetMontoBruto]),
+				       ALL('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), bibd_cont_etapa_control[GrupoConcepto]="1. Programado"	
+			)
+			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 07adb36d-fdcc-4e49-8087-56024e651769
+
+	measure '% AvaFisico(EV ini)' = ```
+			CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoConcepto]="3. Real", bibd_trimestre[Grupo] <> "Posterior")  / 
+			CALCULATE( 	SUM('bibd_cont_etapa_control'[CtlDetMontoBruto]),
+				       ALL('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),  bibd_cont_etapa_control[GrupoConcepto]="1. Programado"	
+			)
+			```
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: fbc6eed1-2ddd-4794-9fae-889607f6fd92
+
+	measure '% AvaFisicoAcumEV ini' =
+			
+			CALCULATE(
+				[% AvaFisico(EV ini)],
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+		formatString: 0.0\ %;-0.0\ %;0.0\ %
+		lineageTag: ea141c68-f58d-4849-a267-aa0ec763792a
+
+	measure 'CostoLineaBaseNeto(PV ini)' =
+			
+			VAR R1 = CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoNeto]), bibd_cont_etapa_control[CtlConceptoPlan]="4. PROGRAMADO", bibd_contrato[GrupoModalidadGestion]="PRINCIPAL")
+			VAR R2 = IF(ISBLANK(R1),0,R1)
+			RETURN R2
+		lineageTag: efa716e4-680a-4b71-88c7-717ff30d9259
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CostoContModificaciones = CALCULATE(sum(bibd_contrato[ContMontoFin]),bibd_contrato[GrupoModalidadGestion]="MODIFICACIONES")+[CostoLineaBaseNeto(PV ini)]
+		formatString: #,0.00
+		lineageTag: e4d331bf-5121-4b0f-bdd3-651a74e277a1
+
+	measure CostoIncidencia(%) = IF( [CostoLineaBaseNeto(PV ini)]>0 , [CostoModifContraOriginal]/[CostoLineaBaseNeto(PV ini)],0)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 72253eab-66e2-4adb-96b5-aae74f10d6e4
+
+	measure FechaInicioAmpliacionCont = CALCULATE(MAX(bibd_cont_ampliacion[AmpFecInicio]), bibd_cont_ampliacion[AmpTipoPlazo]="2. PLAZO CONTRACTUAL", bibd_contrato[GrupoModalidadGestion]="PRINCIPAL" )
+		formatString: dd/mm/yyyy
+		lineageTag: c222f2ad-973e-4760-8ae5-a46f3a6fb3c7
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	measure FechaTerminoVigente =
+			
+			var r1 = MAXX( KEEPFILTERS(VALUES('bibd_cont_ampliacion'[AmpFecTermino])), 	CALCULATE(MAX('bibd_cont_ampliacion'[AmpFecTermino])) )
+			var r2 = CALCULATE(max(bibd_cont_ampliacion[AmpFecTermino]), FILTER(bibd_cont_ampliacion, bibd_cont_ampliacion[NumOrden]= max(bibd_cont_ampliacion[NumOrden])) )
+			return r2
+		formatString: Short Date
+		lineageTag: 0a0e59f2-2385-47d3-b60d-e4e8a061b4c9
+
+	measure PlazoLineaBase =
+			
+			VAR R1 = CALCULATE(SUM(bibd_cont_ampliacion[AmpCantDiasCalendario]), bibd_cont_ampliacion[AmpTipoPlazo]="2. PLAZO CONTRACTUAL", bibd_contrato[GrupoModalidadGestion]="PRINCIPAL" )
+			VAR R2 = IF(ISBLANK(R1),0,R1)
+			RETURN R2
+		formatString: 0
+		lineageTag: 6a7a8e52-7070-48ac-b0ed-9b5f9e8f1b5a
+
+	measure FechaInicioContractual =
+			
+			VAR R1 = CALCULATE(max(bibd_cont_ampliacion[AmpFecInicio]), bibd_cont_ampliacion[AmpTipoPlazo]="2. PLAZO CONTRACTUAL", bibd_contrato[GrupoModalidadGestion]="PRINCIPAL")
+			
+			RETURN R1
+		formatString: Short Date
+		lineageTag: 86e6c754-8ddc-40d0-a58a-2e3553035f3f
+
+	measure PlazoModificaciones = CALCULATE(SUM(bibd_cont_ampliacion[AmpCantDiasCalendario]), bibd_cont_ampliacion[AmpTipoPlazo] <> "2. PLAZO CONTRACTUAL", bibd_contrato[GrupoModalidadGestion]="PRINCIPAL" )
+		formatString: 0.00
+		lineageTag: 40e7b20c-fd2e-46d3-8c02-6b86d1b2b3a5
+
+	measure CostoCtlModificaciones = CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoNeto]), bibd_cont_etapa_control[CtlConceptoPlan]<>"4. PROGRAMADO", bibd_contrato[GrupoModalidadGestion]="MODIFICACIONES", bibd_trimestre[Grupo]<>"Posterior")+[CostoLineaBaseNeto(PV ini)]
+		formatString: #,0.00
+		lineageTag: b586aacb-112f-4ce2-b070-372d3a6ec199
+
+	measure CostoRealNeto(AC) =
+			
+			VAR R1 = CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoNeto]), bibd_cont_etapa_control[GrupoConcepto2]="Real", bibd_cont_etapa_control[CtlTipoPlan]="2. EJECUCIÓN REAL", bibd_trimestre[Grupo]<>"Posterior")
+			VAR R2 = IF(ISBLANK(R1),0,R1)
+			RETURN R2
+		formatString: #,0.00
+		lineageTag: 8085de0d-2a7b-41cf-be53-d6becad1c31b
+
+	measure 'CostoBruto(PV ini) SinCorte' = CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoConcepto]="1. Programado", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" )*1.18
+		formatString: #,0.00
+		lineageTag: 76281cc6-0066-418d-9664-52749adbc262
+
+	measure SPI = ```
+			
+			var rPVIni = [CostoBruto(EV rep) Corte] / [CostoBruto(PV ini) Corte]
+			var rPVRep = if([CostoBruto(PV rep) Corte] > 0, [CostoBruto(EV rep) Corte] / [CostoBruto(PV rep) Corte], 0 )
+			
+			var vCosto = CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoConcepto]="3. Real",  bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_trimestre[Grupo]<>"Posterior")
+			
+			var AnioMesEje = [AnioMesEjecucion]
+			var vPro = IFERROR(CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  bibd_trimestre[Grupo]<>"Posterior", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_cont_etapa_control[Año-Mes-Valorizacion]<= AnioMesEje,                                                                  
+			                        bibd_cont_etapa_control[CtlTipoPlan]="1. LÍNEA BASE"                                              
+			                 ) ,0) 
+			VAR R_Pro = IFERROR(vCosto/vPro,0)
+			
+			var vRepro = IFERROR(CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  bibd_trimestre[Grupo]<>"Posterior", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_cont_etapa_control[Año-Mes-Valorizacion]<= AnioMesEje,
+			                       filter(bibd_cont_etapa_control, bibd_cont_etapa_control[ContratoConceptoPlan] = RELATED(TReprogMax[RepMAx])),                                             
+			                        bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION"                                              
+			                 ) ,0) 
+			VAR R_Repro = IFERROR(vCosto/vRepro,0)
+			VAR R2 = IF(R_Repro=0,R_Pro,R_Repro)
+			return R2
+			```
+		lineageTag: 0ae14729-99ab-43cc-bb64-4f990d238701
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure RangoFin = 2
+		lineageTag: aacb399a-6d72-4a9a-acd4-aab66fe00df9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Rango2 = 0.5
+		lineageTag: 677f7bf1-2896-4608-a690-e89a06ce9496
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Rango3 = 0.8
+		lineageTag: e811ef1d-1092-43cd-b3cc-1046997fb3a5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Acum(PV ini)' =
+			
+			CALCULATE(
+				[CostoBruto(PV ini) SinCorte]/1000000,
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+		formatString: 0.00
+		lineageTag: f141c80c-1acc-4098-9bb4-4ff37f71666f
+
+	measure 'CostoBruto(PV rep) Corte' = ```
+			
+			var AnioMesEje = [AnioMesEjecucion]
+			var r1 = IFERROR(CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  bibd_trimestre[Grupo]<>"Posterior", bibd_cont_etapa_control[Año-Mes-Valorizacion]<= AnioMesEje,
+			                       filter(bibd_cont_etapa_control, bibd_cont_etapa_control[ContratoConceptoPlan] = RELATED(TReprogMax[RepMAx])),                                             
+			                        bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION"                                              
+			                 )
+			,0) 
+			return r1
+			```
+		formatString: #,0.00
+		lineageTag: f80639e4-b8f2-4208-bfc0-6673fcb00dfc
+
+	measure 'Acum(PV rep)' =
+			
+			VAR R1 = CALCULATE(
+			                [CostoBruto(PV rep) SinCorte]/1000000,
+			                FILTER(
+			                    ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+			                    ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+			                )
+			            )
+			VAR R2 = [Acum(PV ini)]
+			VAR R3 = IF(ISBLANK(R1),R2,R1)
+			RETURN R3
+		formatString: 0.00
+		lineageTag: fed133cf-d434-4cc0-8b21-bec61a7ed783
+
+	measure '% AvaFisico(EV rep)' = ```
+			
+			
+			VAR vCostoRealCorte         = [Acum(AC) Corte]
+			VAR vCostoContratoAprobados = [CostoContAprobado]
+			VAR vDen = if(ISBLANK(vCostoContratoAprobados),0,vCostoContratoAprobados)
+			VAR R1 = if(vDen=0,0,IFERROR(vCostoRealCorte / vCostoContratoAprobados,0))
+			
+			return IF(ISBLANK(R1),0,R1)
+			
+			
+			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 9a85a4c2-a21c-4eb4-a040-144aa24bd9ca
+
+	measure 'CostoBruto(EV rep) Corte' = if([CostoBruto(PV rep) Corte] > 0, [CostoBruto(PV rep) SinCorte]*[% AvaFisico(EV rep)], 0)
+		formatString: #,0.00
+		lineageTag: 75a0d4a7-248b-49b7-a9fc-09678feb5e28
+
+	measure '%AvaFinancieroReal (PV rep)' = IFERROR('KPI FORMATO_2'[CostoRealNeto(AC)]/'KPI FORMATO_2'[CostoContModificaciones],0)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 93e56c1a-6739-4630-a0ab-249e08b6b5b2
+
+	measure 'CostoBruto(PV rep) SinCorte' = ```
+			
+			
+			VAR R1 = CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),                                                                         
+			                                            filter(bibd_cont_etapa_control, bibd_cont_etapa_control[ContratoConceptoPlan] = RELATED(TReprogMax[RepMAx])),                                             
+			                        bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION" , bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" 
+			                                             
+			                 ) *1.18
+			
+			RETURN R1
+			```
+		lineageTag: 784e59d5-65d6-43be-a559-899bffe1320a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure Acum(AC) =
+			
+			CALCULATE(
+				[CostoRealBruto(AC) CorteMM],
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+		lineageTag: 8fb398af-7cc5-4dcc-b32b-707662fb68f6
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CostoRealBruto(AC) = CALCULATE([.Adelantos] +[.Valorización], bibd_cont_etapa_control[GrupoConcepto2]="Real", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_cont_etapa_control[CtlTipoPlan]="2. EJECUCIÓN REAL", bibd_trimestre[Grupo]<>"Posterior")*1.18
+		formatString: #,0.00
+		lineageTag: d6a479f0-3a0a-49e3-a0c7-51fbdabde9ce
+
+	measure 'CostoRealBruto(AC) CorteMM' = [CostoRealBruto(AC)]/1000000
+		lineageTag: 8b65991e-2b44-4360-be4e-0e4c24a5f122
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Plazo Total' = [PlazoLineaBase]+[PlazoModificaciones]
+		formatString: 0
+		lineageTag: e9ed7c69-164c-4b4f-85d6-bd851955603e
+
+	measure FechaCorteOk =
+			
+			VAR vAnioTrim = SELECTEDVALUE(bibd_trimestre[Anio-Trim])
+			VAR vAnio     = mid(vAnioTrim,1,4)
+			VAR vTrim     = mid(vAnioTrim,6,1)
+			VAR vFechaTrim      = if(vTrim="1","31/03/",if(vTrim="2","30/06/",if(vTrim="3","30/09/","31/12/")))&vAnio
+			VAR vAnioTrimAct = SELECTEDVALUE('KPI FORMATO_2'[AnioTrimestreActual])
+			VAR R = if(vAnioTrim = vAnioTrimAct, SELECTEDVALUE('KPI FORMATO_2'[FechaCorte]), "Fecha Corte "&vFechaTrim)
+			Return R
+		lineageTag: 27302b53-7d3f-40c4-bcbe-0b91209da4eb
+
+	measure '% AvaFisico' = IF([% AvaFisico(EV rep)] > 0, [% AvaFisico(EV rep)], [% AvaFisico(EV ini)])
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: ef92f4ef-860d-44c7-82d7-524035394aff
+
+	measure 'CostoBruto(PV ini) Corte' = CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_trimestre[Grupo]<>"Posterior", bibd_cont_etapa_control[GrupoConcepto]="1. Programado")
+		lineageTag: d0402b43-45dd-44d1-9c44-719288595bfa
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CostoModifContraOriginal = CALCULATE(sum(bibd_contrato[ContMontoFin]),bibd_contrato[GrupoModifContrato]="MODIFICACIONES")+[CostoLineaBaseNeto(PV ini)]
+		lineageTag: 16ce82df-4299-4b21-8cd4-019282fb9ec5
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure AnioMesEjecucion = CALCULATE( max(bibd_cont_etapa_control[Año-Mes-Valorizacion]),  bibd_trimestre[Grupo]<>"Posterior",ABS( bibd_cont_etapa_control[GrupoConcepto2]="Real"))
+		lineageTag: 686fc46b-1595-4aa9-a7dd-fd57e982b219
+
+	measure 'Acum(PV ini) Corte' =
+			
+			CALCULATE(
+				[CostoBruto(PV ini) Corte],
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+		lineageTag: 0516f9e4-6c23-4395-bfb5-9bc09f14b7e1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Acum(AC) Corte' =
+			
+			var vCostoReal  = CALCULATE(sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoConcepto]="3. Real",  bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_trimestre[Grupo]<>"Posterior")*1.18
+			var vCostoReal2 = CALCULATE([.Valorización], bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_trimestre[Grupo]<>"Posterior")*1.18
+			
+			var R2 = CALCULATE(
+				[.Valorización],
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+			RETURN vCostoReal2
+		lineageTag: f440e3e4-6037-4f58-bdea-fda92e09fb8f
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CostoContAprobado = CALCULATE(sum(bibd_contrato[ContMontoFin]),bibd_contrato[GrupoMGAvanceFisico]="GrupoAF")
+		formatString: #,0.00
+		lineageTag: b1b03175-83a0-4d74-a705-ce1bf436a764
+
+	measure SPI-Denominador-OBRA = ```
+			
+			
+			var AnioMesEje = [AnioMesEjecucion]
+			var vReprog =  CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  bibd_trimestre[Grupo]<>"Posterior", bibd_cont_etapa_control[Año-Mes-Valorizacion]<= AnioMesEje,
+			                                   filter(bibd_cont_etapa_control, bibd_cont_etapa_control[ContratoConceptoPlan] = RELATED(TReprogMax[RepMAx])) ,                                        
+			                                   bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" )
+			
+			
+			var vProg   = CALCULATE(sum(TProg_Reprog[MtoProg]), ISBLANK(TProg_Reprog[MtoReprog]))
+			
+			var vDenom =  vReprog + vProg
+			                  
+			return vDenom
+			```
+		lineageTag: 7c95301f-3083-469f-9d12-de805eae40e0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure SPI-OBRA =
+			
+			VAR vNum = [SPI-Numerador-Obra]
+			VAR vDen = [SPI-Denominador-OBRA]
+			VAR vRes  = IF(ISBLANK(vDen),0,vDen)
+			VAR SPI = IF(vRes=0, 0, IFERROR(vNum / vRes,0))
+			RETURN IF(ISBLANK(SPI),0, SPI)
+		lineageTag: 7da43639-0d39-4050-860e-3c5a135123c8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure SPI-Numerador-Obra = ```
+			
+			var vCostoRealBruto =calculate( sum(bibd_cont_etapa_control[CtlDetMontoBruto]), bibd_cont_etapa_control[GrupoPlan] = "Valorización", 
+			                                 FILTER(bibd_cont_etapa_control, bibd_cont_etapa_control[CtlTipoPlan] = "2. EJECUCIÓN REAL" ),                                                       
+			                                 bibd_contrato[GrupoMGAvanceFisico]="GrupoAF" , bibd_trimestre[Grupo]<>"Posterior")
+			RETURN vCostoRealBruto
+			```
+		lineageTag: 655d9103-4dea-43a9-a83a-1d6eeb0e4579
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Acum(AC) Obra' =
+			
+			CALCULATE(
+				[SPI-Numerador-Obra]*1.18/1000000,
+				FILTER(
+					ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+					ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+				)
+			)
+		lineageTag: 79c3231e-06fd-4594-8849-f9d753ade78a
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Acum(PV rep) Obra' =
+			
+			--VAR Reprog  = [CostoBruto(PV rep) SinCorte]
+			--VAR CostoAC = [CostoRealBruto(AC) CorteMM]
+			VAR R1 = CALCULATE(
+			                [SPI-Reprogramacion-OBRA]*1.18/1000000,
+			                FILTER(
+			                    ALLSELECTED('bibd_cont_etapa_control'[Año-Mes-Valorizacion]),
+			                    ISONORAFTER('bibd_cont_etapa_control'[Año-Mes-Valorizacion], MAX('bibd_cont_etapa_control'[Año-Mes-Valorizacion]), DESC)
+			                )
+			            )
+			--VAR R2 = [Acum(PV ini)]
+			--VAR R3 = IF(ISBLANK(R1),R2,R1)
+			--VAR R4 = IF(ISBLANK(Reprog), IF(ISBLANK(CostoAC),R2, R3), R3)
+			RETURN R1
+		lineageTag: 657cb701-26ec-44fa-9798-292c87182240
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure SPI-Reprogramacion-OBRA = ```
+			
+			var AnioMesEje = [AnioMesEjecucion]
+			var vReprog =  CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),   
+			                                   filter(bibd_cont_etapa_control, bibd_cont_etapa_control[ContratoConceptoPlan] = RELATED(TReprogMax[RepMAx])) ,                                        
+			                                   bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF"  )
+			
+			var vProg =   CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  
+			                                   FILTER(bibd_cont_etapa_control, bibd_cont_etapa_control[CtlTipoPlan] = "1. LÍNEA BASE"), bibd_contrato[GrupoMGAvanceFisico]="GrupoAF",  ISBLANK(TProg_Reprog[MtoReprog]) )
+			                     
+			
+			--var vProg2   = CALCULATE(sum(TProg_Reprog[MtoProg]), ISBLANK(TProg_Reprog[MtoReprog]))
+			--var vRep     =  if(ISBLANK(vReprog), vProg2, vReprog)
+			var vRep    = vReprog + vProg
+			               
+			return vRep
+			```
+		lineageTag: f801fb4a-d3a7-4358-b42c-fde422634da9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure CostoContModificaciones(PostCierre) =
+			
+			VAR R1 = CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoNeto]), bibd_cont_etapa_control[CtlConceptoPlan]="4. PROGRAMADO")
+			VAR R2 = IF(ISBLANK(R1),0,R1)
+			RETURN R2
+		lineageTag: 06a44158-f844-4915-8435-b824912f66f9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure '%AvaFinancieroReal (Post Cierre)' = IFERROR('KPI FORMATO_2'[CostoRealNeto(AC)]/'KPI FORMATO_2'[CostoContModificaciones(PostCierre)],0)
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: fae87c20-b93d-4585-ad3f-2a02f3e376c1
+
+	column Año
+		lineageTag: 4d14d690-731a-4e30-b4a0-66db08117c9f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Año]
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaCorte = "Fecha Corte "& FORMAT(NOW(),"DD/MM/YYYY")
+		lineageTag: 8cffd4bb-6155-438c-8bd5-3e68ce919d8b
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaActual = now()
+		formatString: dd/mm/yyyy
+		lineageTag: 4a5e1175-d0dc-4d55-933e-b02105f5272e
+		summarizeBy: none
+
+		variation Variación
+			isDefault
+			relationship: 02665051-4c44-4613-b02d-b1f0d3c9b669
+			defaultHierarchy: LocalDateTable_926f1382-123c-4f7b-af61-98b8f71c0691.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column AnioTrimestreActual = format('KPI FORMATO_2'[FechaActual].[Año],"0000") &"-"&format('KPI FORMATO_2'[FechaActual].[NroTrimestre],"0")
+		lineageTag: 1e5e2d80-a214-4722-8a04-b483136c295f
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI FORMATO_2-55b97a41-d9c6-4cbb-b333-b2acce00e2ac' = calculated
+		mode: import
+		source = DISTINCT(SELECTCOLUMNS(bibd_cont_etapa_control,"Año", bibd_cont_etapa_control[CtlDetAnio]))
+
+	annotation PBI_Id = 9d58db0bb22f4273abf5cbb9543e63ca
+

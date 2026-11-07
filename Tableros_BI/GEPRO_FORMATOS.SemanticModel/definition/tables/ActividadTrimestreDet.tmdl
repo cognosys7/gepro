@@ -1,0 +1,80 @@
+table ActividadTrimestreDet
+	isHidden
+	lineageTag: 07e37fe4-54f7-403f-ab99-5c8a36e00eb7
+
+	column Anio_Det
+		dataType: string
+		isHidden
+		lineageTag: 72cb4f49-aaac-4334-a806-3b2ebc6640d1
+		summarizeBy: none
+		sourceColumn: Anio_Det
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trim_Det
+		dataType: string
+		isHidden
+		lineageTag: cc796257-548a-460b-ae84-1777d7f270e0
+		summarizeBy: none
+		sourceColumn: Trim_Det
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column Anio-Trim_Det
+		dataType: string
+		isHidden
+		lineageTag: 5ebfcc18-8a6e-41fc-b407-bbd1763306cc
+		summarizeBy: none
+		sourceColumn: Anio-Trim_Det
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	column c1
+		dataType: string
+		isHidden
+		lineageTag: 2600184f-3478-4baf-b7c3-813f8c635788
+		summarizeBy: none
+		sourceColumn: c1
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition ActividadTrimestreDet-a97c6308-c76f-4d4f-b0bc-cc62dc91357e = m
+		mode: import
+		queryGroup: 'FORMATO 6'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_proy_gestion_social_benef")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"SocialBenefIde", "SocialIde", "SocialBenefConceptoSup", "SocialBenefConcepto", "SocialBenefActividad", "SocialBenefCantidad", "SocialBenefConcpNivel", "SocialBenefFecInicio", "SocialBenefFecTermino", "SocialBenefEstado"}, {"SocialBenefIde", "SocialIde", "SocialBenefConceptoSup", "SocialBenefConcepto", "SocialBenefActividad", "SocialBenefCantidad", "SocialBenefConcpNivel", "SocialBenefFecInicio", "SocialBenefFecTermino", "SocialBenefEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"SocialBenefIde", Int64.Type}, {"SocialIde", Int64.Type}, {"SocialBenefConceptoSup", type text}, {"SocialBenefConcepto", type text}, {"SocialBenefActividad", type text}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"SocialBenefCantidad", type number}}, "es-PE"),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado con configuración regional",{"SocialBenefConcpNivel"}),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Columnas quitadas",{{"SocialBenefFecInicio", type date}, {"SocialBenefFecTermino", type date}, {"SocialBenefEstado", type text}}),
+				    #"Columnas quitadas1" = Table.RemoveColumns(#"Tipo cambiado1",{"SocialBenefIde", "SocialIde", "SocialBenefConceptoSup", "SocialBenefConcepto", "SocialBenefActividad", "SocialBenefCantidad", "SocialBenefFecInicio", "SocialBenefEstado"}),
+				    #"Columna duplicada" = Table.DuplicateColumn(#"Columnas quitadas1", "SocialBenefFecTermino", "SocialBenefFecTermino - Copia"),
+				    #"Trimestre calculado" = Table.TransformColumns(#"Columna duplicada",{{"SocialBenefFecTermino - Copia", Date.QuarterOfYear, Int64.Type}}),
+				    #"Columna duplicada1" = Table.DuplicateColumn(#"Trimestre calculado", "SocialBenefFecTermino", "SocialBenefFecTermino - Copia.1"),
+				    #"Año extraído" = Table.TransformColumns(#"Columna duplicada1",{{"SocialBenefFecTermino - Copia.1", Date.Year, Int64.Type}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Año extraído",{{"SocialBenefFecTermino - Copia", "Trim"}, {"SocialBenefFecTermino - Copia.1", "Anio"}}),
+				    #"Tipo cambiado2" = Table.TransformColumnTypes(#"Columnas con nombre cambiado",{{"Trim", type text}, {"Anio", type text}}),
+				    #"Columnas quitadas2" = Table.RemoveColumns(#"Tipo cambiado2",{"SocialBenefFecTermino"}),
+				    #"Duplicados quitados" = Table.Distinct(#"Columnas quitadas2"),
+				    #"Filas en blanco eliminadas" = Table.SelectRows(#"Duplicados quitados", each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null}))),
+				    #"Columnas reordenadas" = Table.ReorderColumns(#"Filas en blanco eliminadas",{"Anio", "Trim"}),
+				    #"Personalizada agregada" = Table.AddColumn(#"Columnas reordenadas", "Personalizado", each [Anio]&"-"&[Trim]),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Personalizada agregada",{{"Personalizado", "Anio-Trim"}}),
+				    #"Personalizada agregada1" = Table.AddColumn(#"Columnas con nombre cambiado1", "c1", each 1),
+				    #"Columnas con nombre cambiado2" = Table.RenameColumns(#"Personalizada agregada1",{{"Anio", "Anio_Det"}, {"Trim", "Trim_Det"}, {"Anio-Trim", "Anio-Trim_Det"}})
+				in
+				    #"Columnas con nombre cambiado2"
+
+	annotation PBI_ResultType = Table
+

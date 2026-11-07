@@ -1,0 +1,107 @@
+table bibd_contrato_PostCierre
+	lineageTag: ec2c9d1b-96ca-4cd3-b490-2cbf79746068
+
+	column ContratoIde
+		dataType: string
+		lineageTag: 43e6e06a-c3a5-4c1c-b033-a774c09e6b49
+		summarizeBy: none
+		sourceColumn: ContratoIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: string
+		lineageTag: ca137859-7dbd-4040-afd6-ad16b1a415c6
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContIde
+		dataType: string
+		lineageTag: 13af0cf0-2d0b-444b-8616-d333aaf4f849
+		summarizeBy: none
+		sourceColumn: ContIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSPRING
+		dataType: string
+		lineageTag: 1160d8b1-c4b9-4cf4-8941-6d8d32155e04
+		summarizeBy: none
+		sourceColumn: ProyCodigoSPRING
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContNombre
+		dataType: string
+		lineageTag: a1077dfe-814c-4169-9156-51545cd183e1
+		summarizeBy: none
+		sourceColumn: ContNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column TipoServicio
+		dataType: string
+		lineageTag: d3c172af-d492-49a5-92c6-dd6fb1ec8b66
+		summarizeBy: none
+		sourceColumn: TipoServicio
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombre
+		dataType: string
+		lineageTag: 8a0b2e63-a6bf-40ac-b4e6-2a26ee9fe707
+		summarizeBy: none
+		sourceColumn: ProyNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContFaseComponente
+		dataType: string
+		lineageTag: 703b9ca5-9777-4729-861d-5a295712f497
+		summarizeBy: none
+		sourceColumn: ContFaseComponente
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoEntidad
+		dataType: string
+		lineageTag: 6020c774-1742-4e59-b11d-ccb1eff1ade2
+		summarizeBy: none
+		sourceColumn: ContCodigoEntidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProveedorNombre
+		dataType: string
+		lineageTag: 384341b0-fb80-47fb-8c5d-11765fb2a371
+		summarizeBy: none
+		sourceColumn: ProveedorNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_contrato_PostCierre-bd3457a5-4295-4434-bd4a-dfe4fc623b83 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_contrato")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ContratoIde", "ProyIde", "ContIde", "AdquisiProceso", "ContCodigoUnicoOrden", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyEstado", "ContFaseComponente", "ContTipoOrden", "ContCodigoOrden", "ContCodigoOrdenItem", "ContCodigo", "ContCodigoEntidad", "ContNombre", "ContGeneNombreCorta", "ContModalidadGestion", "ContGeneAlcance", "ContGeneUbicacion", "ContGeneEstado", "ContTipoSPRING", "ContFechaSuscribe", "ContFechaInicio", "ContFechaTermino", "ContFechaCierre", "ContMontoImponible", "ContMontoImpuesto", "ContMontoTotal", "ContEstado", "ProveedorCodigo", "ProveedorRuc", "ProveedorNombre", "ProveedorDireccion", "ProveedorComentario", "CodResponsable", "Responsable", "Responsable_Base", "Responsable_Tipo", "AdquisicionCodPAC", "AdquisicionNumProEsp", "AdquisicionObjeto"}, {"ContratoIde", "ProyIde", "ContIde", "AdquisiProceso", "ContCodigoUnicoOrden", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyEstado", "ContFaseComponente", "ContTipoOrden", "ContCodigoOrden", "ContCodigoOrdenItem", "ContCodigo", "ContCodigoEntidad", "ContNombre", "ContGeneNombreCorta", "ContModalidadGestion", "ContGeneAlcance", "ContGeneUbicacion", "ContGeneEstado", "ContTipoSPRING", "ContFechaSuscribe", "ContFechaInicio", "ContFechaTermino", "ContFechaCierre", "ContMontoImponible", "ContMontoImpuesto", "ContMontoTotal", "ContEstado", "ProveedorCodigo", "ProveedorRuc", "ProveedorNombre", "ProveedorDireccion", "ProveedorComentario", "CodResponsable", "Responsable", "Responsable_Base", "Responsable_Tipo", "AdquisicionCodPAC", "AdquisicionNumProEsp", "AdquisicionObjeto"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"ContFechaCierre", type datetime}, {"ContFechaTermino", type datetime}, {"ContFechaInicio", type datetime}, {"ContFechaSuscribe", type datetime}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"ContMontoImponible", type number}, {"ContMontoImpuesto", type number}, {"ContMontoTotal", type number}}, "es-PE"),
+				    #"Filas filtradas" = Table.SelectRows(#"Tipo cambiado con configuración regional", each ([ContFaseComponente] = "FASE III: EJECUCIÓN - POST CIERRE")),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Filas filtradas",{"AdquisiProceso", "ContCodigoUnicoOrden", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyEstado", "ContTipoOrden", "ContCodigoOrden", "ContCodigoOrdenItem", "ContCodigo", "ContGeneNombreCorta", "ContModalidadGestion", "ContGeneAlcance", "ContGeneUbicacion", "ContGeneEstado", "ContTipoSPRING", "ContFechaSuscribe", "ContFechaInicio", "ContFechaTermino", "ContFechaCierre", "ContMontoImponible", "ContMontoImpuesto", "ContMontoTotal", "ContEstado", "ProveedorCodigo", "ProveedorRuc", "ProveedorDireccion", "ProveedorComentario", "CodResponsable", "Responsable", "Responsable_Base", "Responsable_Tipo", "AdquisicionCodPAC", "AdquisicionNumProEsp", "AdquisicionObjeto"}),
+				    #"Columnas reordenadas" = Table.ReorderColumns(#"Columnas quitadas",{"ContratoIde", "ProyIde", "ContIde", "ProyCodigoSPRING", "ContNombre", "ProyNombre", "ContFaseComponente", "ContCodigoEntidad", "ProveedorNombre"}),
+				    #"Columna duplicada" = Table.DuplicateColumn(#"Columnas reordenadas", "ContNombre", "ContNombre - Copia"),
+				    #"Columnas reordenadas1" = Table.ReorderColumns(#"Columna duplicada",{"ContratoIde", "ProyIde", "ContIde", "ProyCodigoSPRING", "ContNombre", "ContNombre - Copia", "ProyNombre", "ContFaseComponente", "ContCodigoEntidad", "ProveedorNombre"}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Columnas reordenadas1",{{"ContNombre - Copia", "TipoServicio"}}),
+				    #"Columnas quitadas1" = Table.RemoveColumns(#"Columnas con nombre cambiado",{"TipoServicio"}),
+				    #"Columna condicional agregada" = Table.AddColumn(#"Columnas quitadas1", "TipoServicio", each if Text.Contains([ContNombre], "ADQUISICIÓN") then "Adquisición" else if Text.Contains([ContNombre], "MANTENIMIENTO") then "Mantenimiento" else if Text.Contains([ContNombre], "MONITOREO") then "Monitoreo" else if Text.Contains([ContNombre], "INSTALACIÓN") then "Instalación" else if Text.Contains([ContNombre], "DESCOLMATACIÓN") then "Descolmatación" else "Otros"),
+				    #"Columnas reordenadas2" = Table.ReorderColumns(#"Columna condicional agregada",{"ContratoIde", "ProyIde", "ContIde", "ProyCodigoSPRING", "ContNombre", "TipoServicio", "ProyNombre", "ContFaseComponente", "ContCodigoEntidad", "ProveedorNombre"})
+				in
+				    #"Columnas reordenadas2"
+
+	annotation PBI_ResultType = Exception
+

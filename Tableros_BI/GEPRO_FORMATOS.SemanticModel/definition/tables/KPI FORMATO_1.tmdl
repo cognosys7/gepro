@@ -1,0 +1,23 @@
+table 'KPI FORMATO_1'
+	lineageTag: 5dd24487-849a-4de8-b20e-f094ca10f102
+
+	measure '% AvanceEjecFisica' = ```
+			CALCULATE(max(bibd_proy_costo_componente[AvanceFisico]), USERELATIONSHIP(Proyecto[ProyIde], bibd_proy_costo_componente[ProyIde]) ) 
+			```
+		formatString: 0.00\ %;-0.00\ %;0.00\ %
+		lineageTag: 6514a673-31c0-467c-a367-b0b4de7d8e97
+
+	column Año
+		lineageTag: ce92ade5-7255-41e8-b6c1-b0d23ecb6272
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Año]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'KPI FORMATO_1-e6951199-a9c4-4c93-916d-ccdb310921d2' = calculated
+		mode: import
+		source = DISTINCT(SELECTCOLUMNS(bibd_cont_etapa_control,"Año", bibd_cont_etapa_control[CtlDetAnio]))
+
+	annotation PBI_Id = ff40999effd54eaba0aa995c2785bc7b
+

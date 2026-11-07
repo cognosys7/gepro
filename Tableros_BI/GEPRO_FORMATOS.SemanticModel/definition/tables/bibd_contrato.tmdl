@@ -1,0 +1,708 @@
+table bibd_contrato
+	lineageTag: 2a14ce85-1762-46f1-8ff7-a8dbec8cfa78
+
+	column ContratoIde
+		dataType: string
+		lineageTag: f06efd41-933f-42b0-bdf3-d38214a01103
+		summarizeBy: none
+		sourceColumn: ContratoIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: string
+		lineageTag: c75ef843-efaa-4f76-a3e4-023818b8164a
+		summarizeBy: none
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContIde
+		dataType: string
+		lineageTag: d39c88d7-3a4e-4c09-95cb-2ad9d759f14f
+		summarizeBy: none
+		sourceColumn: ContIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column AdquisiProceso
+		dataType: string
+		lineageTag: 4d0b1858-9e8e-42af-8d6d-0c7c83d290d5
+		summarizeBy: none
+		sourceColumn: AdquisiProceso
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoUnicoOrden
+		dataType: string
+		lineageTag: f807d89e-fb0a-46d3-b205-130727fd8db9
+		summarizeBy: none
+		sourceColumn: ContCodigoUnicoOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoUnico
+		dataType: string
+		lineageTag: 06f82313-4465-4cf6-904c-c91719d517b5
+		summarizeBy: none
+		sourceColumn: ProyCodigoUnico
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSNIP
+		dataType: string
+		lineageTag: a0210780-6d0a-45af-a209-2da0e8c27965
+		summarizeBy: none
+		sourceColumn: ProyCodigoSNIP
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombre
+		dataType: string
+		lineageTag: d4603e0a-9445-4a9b-a9d2-6f090c969bca
+		summarizeBy: none
+		sourceColumn: ProyNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyEstado
+		dataType: string
+		lineageTag: 845ba311-b929-4de5-82f4-f393ced713c8
+		summarizeBy: none
+		sourceColumn: ProyEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContFaseComponente
+		dataType: string
+		lineageTag: 91b44e24-082e-4142-9a1b-c4c172bc9ed7
+		summarizeBy: none
+		sourceColumn: ContFaseComponente
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContTipoOrden
+		dataType: string
+		lineageTag: 7b9f419c-44d9-4f4c-8496-3e268b2d2417
+		summarizeBy: none
+		sourceColumn: ContTipoOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoOrden
+		dataType: string
+		lineageTag: 462c3d85-33a4-4ac2-857c-17e3776166b9
+		summarizeBy: none
+		sourceColumn: ContCodigoOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoOrdenItem
+		dataType: string
+		lineageTag: a46246f8-2f7c-4f0e-bb21-0579476355ed
+		summarizeBy: none
+		sourceColumn: ContCodigoOrdenItem
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigo
+		dataType: string
+		lineageTag: 32806f9b-4a1b-42bc-8a86-b5aad634c73f
+		summarizeBy: none
+		sourceColumn: ContCodigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoEntidad
+		dataType: string
+		lineageTag: 573449f2-208d-484d-ae05-dfc7a4ff4665
+		summarizeBy: none
+		sourceColumn: ContCodigoEntidad
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContNombre
+		dataType: string
+		lineageTag: 5a34aeb1-39ee-4840-be65-1f4505d4af10
+		summarizeBy: none
+		sourceColumn: ContNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContGeneNombreCorta
+		dataType: string
+		lineageTag: fd8f420a-1979-4b3c-8ed7-0d5e9f480341
+		summarizeBy: none
+		sourceColumn: ContGeneNombreCorta
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContGeneAlcance
+		dataType: string
+		lineageTag: fe6ca8db-cb64-4697-9dd1-44e74ace1fbf
+		summarizeBy: none
+		sourceColumn: ContGeneAlcance
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContGeneUbicacion
+		dataType: string
+		lineageTag: 15b7dec4-bae2-4734-9f12-5d1692a80c47
+		summarizeBy: none
+		sourceColumn: ContGeneUbicacion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContGeneEstado
+		dataType: string
+		lineageTag: 422cc729-62fc-49a8-94ab-c30aa947a0ae
+		summarizeBy: none
+		sourceColumn: ContGeneEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContTipoSPRING
+		dataType: string
+		lineageTag: f6e4fe6c-7af4-4dcd-a60f-3f1abd08bebc
+		summarizeBy: none
+		sourceColumn: ContTipoSPRING
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContFechaSuscribe
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: f68866bc-114c-45c0-98ad-369c00d40b0b
+		summarizeBy: none
+		sourceColumn: ContFechaSuscribe
+
+		variation Variación
+			isDefault
+			relationship: 173251c5-13a7-41ce-b143-9ba5853af0f7
+			defaultHierarchy: LocalDateTable_9a203fc7-5cb8-45d6-ac35-19672a0e16f2.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContFechaInicio
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 86bc5d4f-caf1-4808-a605-f1bdfd8855f2
+		summarizeBy: none
+		sourceColumn: ContFechaInicio
+
+		variation Variación
+			isDefault
+			relationship: 7ce34bfe-55a1-4a74-9d6e-2bd11a13ace2
+			defaultHierarchy: LocalDateTable_964934e6-56a0-4159-aa20-0c915e0877e6.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContFechaTermino
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 1a1cdc65-09c2-4698-87f0-6eec18461f6b
+		summarizeBy: none
+		sourceColumn: ContFechaTermino
+
+		variation Variación
+			isDefault
+			relationship: 81cdfe3b-10d5-4fc8-8bae-1558901fb212
+			defaultHierarchy: LocalDateTable_2a61db6f-50b4-4503-861b-d9ef828fae01.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContFechaCierre
+		dataType: dateTime
+		formatString: Short Date
+		lineageTag: 63c0a36f-317f-48ff-bf13-051bf11c33fa
+		summarizeBy: none
+		sourceColumn: ContFechaCierre
+
+		variation Variación
+			isDefault
+			relationship: c07cea19-3396-4308-9176-6e4d6bb4e8d3
+			defaultHierarchy: LocalDateTable_0ce003ff-d11d-416e-bcbe-198959783617.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContMontoImponible
+		dataType: double
+		formatString: "S/"\ #,0.00;#,0.00\ -"S/";"S/"\ #,0.00
+		lineageTag: dad68c89-d295-4587-8eb3-5b939f5c4637
+		summarizeBy: sum
+		sourceColumn: ContMontoImponible
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"quz-PE"}
+
+	column ContMontoImpuesto
+		dataType: double
+		formatString: "S/"\ #,0.00;#,0.00\ -"S/";"S/"\ #,0.00
+		lineageTag: fb7c3e90-1e58-4462-a6d1-33dacf31f1f0
+		summarizeBy: sum
+		sourceColumn: ContMontoImpuesto
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"quz-PE"}
+
+	column ContMontoTotal
+		dataType: double
+		formatString: "S/"\ #,0;-"S/"\ #,0;"S/"\ #,0
+		lineageTag: 9c997177-c76c-487c-baf4-ee1d42d4c9ff
+		summarizeBy: sum
+		sourceColumn: ContMontoTotal
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"currencyCulture":"es-PE"}
+
+	column ContEstado
+		dataType: string
+		lineageTag: dc84e780-bfc7-4a0b-a297-e11119dee4ef
+		summarizeBy: none
+		sourceColumn: ContEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProveedorCodigo
+		dataType: string
+		lineageTag: 2c1d8f3d-1445-4a37-98c8-feee7a84bce2
+		summarizeBy: none
+		sourceColumn: ProveedorCodigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProveedorRuc
+		dataType: string
+		lineageTag: 16e70422-7516-47ab-9c0e-831ff9b54d4d
+		summarizeBy: none
+		sourceColumn: ProveedorRuc
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProveedorNombre
+		dataType: string
+		lineageTag: f54f2b9f-7ae8-4cc7-b445-43e2ee13b0c1
+		summarizeBy: none
+		sourceColumn: ProveedorNombre
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProveedorDireccion
+		dataType: string
+		lineageTag: 141e9c15-1795-4be3-8f15-f22f4c112a5f
+		summarizeBy: none
+		sourceColumn: ProveedorDireccion
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProveedorComentario
+		dataType: string
+		lineageTag: 10852b1a-7d3a-42cf-a317-82f1c56eb5ab
+		summarizeBy: none
+		sourceColumn: ProveedorComentario
+
+		annotation SummarizationSetBy = Automatic
+
+	column CodResponsable
+		dataType: string
+		lineageTag: 4d409cc9-b756-4b38-b187-7c8c70aa207a
+		summarizeBy: none
+		sourceColumn: CodResponsable
+
+		annotation SummarizationSetBy = Automatic
+
+	column Responsable
+		dataType: string
+		lineageTag: ed32504a-05a0-4a8b-b52b-8174d69c2321
+		summarizeBy: none
+		sourceColumn: Responsable
+
+		annotation SummarizationSetBy = Automatic
+
+	column Responsable_Base
+		dataType: string
+		lineageTag: d91f772e-85a6-4952-a3fe-039f06c19402
+		summarizeBy: none
+		sourceColumn: Responsable_Base
+
+		annotation SummarizationSetBy = Automatic
+
+	column Responsable_Tipo
+		dataType: string
+		lineageTag: ff44d6cf-aff0-453d-9588-b6a8dc2c7663
+		summarizeBy: none
+		sourceColumn: Responsable_Tipo
+
+		annotation SummarizationSetBy = Automatic
+
+	column AdquisicionCodPAC
+		dataType: string
+		lineageTag: 70f5c2ba-1549-4d10-96ed-8bc94d7270c9
+		summarizeBy: none
+		sourceColumn: AdquisicionCodPAC
+
+		annotation SummarizationSetBy = Automatic
+
+	column AdquisicionNumProEsp
+		dataType: string
+		lineageTag: d19c4b6a-e6c6-43c4-ba2c-fd379decafc0
+		summarizeBy: none
+		sourceColumn: AdquisicionNumProEsp
+
+		annotation SummarizationSetBy = Automatic
+
+	column AdquisicionObjeto
+		dataType: string
+		lineageTag: ebccc14d-a4fa-4ae3-b616-0cdbe4f34c50
+		summarizeBy: none
+		sourceColumn: AdquisicionObjeto
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyCodigoSPRING
+		dataType: string
+		lineageTag: 39fe523d-0fed-4603-85d2-1bce23f87015
+		summarizeBy: none
+		sourceColumn: ProyCodigoSPRING
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContModalidadGestion
+		dataType: string
+		lineageTag: a48ce0be-802f-4b70-a5fd-557b485ef184
+		summarizeBy: none
+		sourceColumn: ContModalidadGestion
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_contrato","TableItemName":"GrupoValorizaModalidad","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_contrato","TableItemName":"GrupoModifContrato","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_contrato","TableItemName":"GrupoModalidadGestion","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_contrato","TableItemName":"GrupoMGAvanceFisico","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_contrato","TableItemName":"GrupoAdicionales","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column GrupoValorizaModalidad =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_contrato'[ContModalidadGestion]),
+			  "(En blanco)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"CONTRATO PRINCIPAL"},
+			  "1. Contrato Principal (CP)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"ADICIONAL 01",
+			    "ADICIONAL 02",
+			    "ADICIONAL 03",
+			    "ADICIONAL 04",
+			    "ADICIONAL 05",
+			    "ADICIONAL 06",
+			    "AMPLIACIÓN EXCEPCIONAL",
+			    "COSTOS Y GASTOS GENERALES",
+			    "DEDUCTIVO 01",
+			    "DEDUCTIVO 02",
+			    "DEDUCTIVO VINCULANTE 01",
+			    "DEDUCTIVO VINCULANTE 02",
+			    "DEDUCTIVO VINCULANTE 03",
+			    "MAYORES GASTOS GENERALES",
+			    "MAYORES METRADOS 01",
+			    "MAYORES METRADOS 02",
+			    "MAYORES METRADOS 03",
+			    "MAYORES METRADOS 04",
+			    "MAYORES METRADOS 05",
+			    "MAYORES METRADOS 06",
+			    "MAYORES METRADOS 07",
+			    "MAYORES METRADOS 08",
+			    "OTROS"},
+			  "2. Adicionales (AD),  (MM),  (MGG)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"CONTRATO COMPLEMENTARIO"},
+			  "2. Contrato Complementario",
+			  'bibd_contrato'[ContModalidadGestion] IN {"CONTRATACIONES VINCULADAS"},
+			  "3. Contrataciones Vinculantes",
+			  'bibd_contrato'[ContModalidadGestion] IN {"CONTRATACION VINCULADA COMPLEMENTARIA"},
+			  "4. Contratación Vinculada Complementaria",
+			  "Otros"
+			)
+		lineageTag: 434f4efa-b85a-4c7b-a530-4aeb387bcfbe
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_contrato"
+				          }
+				        },
+				        "Property": "ContModalidadGestion"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_contrato"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1. Contrato Principal (CP)","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'CONTRATO PRINCIPAL'"}}]]}}},{"DisplayName":"2. Adicionales (AD),  (MM),  (MGG)","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'ADICIONAL 01'"}}],[{"Literal":{"Value":"'ADICIONAL 02'"}}],[{"Literal":{"Value":"'ADICIONAL 03'"}}],[{"Literal":{"Value":"'ADICIONAL 04'"}}],[{"Literal":{"Value":"'ADICIONAL 05'"}}],[{"Literal":{"Value":"'ADICIONAL 06'"}}],[{"Literal":{"Value":"'AMPLIACIÓN EXCEPCIONAL'"}}],[{"Literal":{"Value":"'COSTOS Y GASTOS GENERALES'"}}],[{"Literal":{"Value":"'DEDUCTIVO 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 03'"}}],[{"Literal":{"Value":"'MAYORES GASTOS GENERALES'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 01'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 02'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 04'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 05'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 06'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 07'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 08'"}}],[{"Literal":{"Value":"'OTROS'"}}]]}}},{"DisplayName":"2. Contrato Complementario","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'CONTRATO COMPLEMENTARIO'"}}]]}}},{"DisplayName":"3. Contrataciones Vinculantes","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'CONTRATACIONES VINCULADAS'"}}]]}}},{"DisplayName":"4. Contratación Vinculada Complementaria","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'CONTRATACION VINCULADA COMPLEMENTARIA'"}}]]}}},{"DisplayName":"Otros"}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoModifContrato =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_contrato'[ContModalidadGestion]),
+			  "(En blanco)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"ADICIONAL 01",
+			    "ADICIONAL 02",
+			    "ADICIONAL 03",
+			    "ADICIONAL 04",
+			    "ADICIONAL 05",
+			    "ADICIONAL 06",
+			    "DEDUCTIVO 01",
+			    "DEDUCTIVO 02",
+			    "DEDUCTIVO VINCULANTE 01",
+			    "DEDUCTIVO VINCULANTE 02",
+			    "DEDUCTIVO VINCULANTE 03",
+			    "MAYORES METRADOS 01",
+			    "MAYORES METRADOS 02",
+			    "MAYORES METRADOS 03",
+			    "MAYORES METRADOS 04",
+			    "MAYORES METRADOS 05",
+			    "MAYORES METRADOS 06",
+			    "MAYORES METRADOS 07",
+			    "MAYORES METRADOS 08"},
+			  "MODIFICACIONES",
+			  'bibd_contrato'[ContModalidadGestion]
+			)
+		lineageTag: 19d41ba2-c7ce-4446-8e70-b4dcd98deb5a
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_contrato"
+				          }
+				        },
+				        "Property": "ContModalidadGestion"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_contrato"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"MODIFICACIONES","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'ADICIONAL 01'"}}],[{"Literal":{"Value":"'ADICIONAL 02'"}}],[{"Literal":{"Value":"'ADICIONAL 03'"}}],[{"Literal":{"Value":"'ADICIONAL 04'"}}],[{"Literal":{"Value":"'ADICIONAL 05'"}}],[{"Literal":{"Value":"'ADICIONAL 06'"}}],[{"Literal":{"Value":"'DEDUCTIVO 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 01'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 02'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 04'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 05'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 06'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 07'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 08'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoModalidadGestion =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_contrato'[ContModalidadGestion]),
+			  "(En blanco)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"ADICIONAL 01",
+			    "ADICIONAL 02",
+			    "ADICIONAL 03",
+			    "ADICIONAL 04",
+			    "ADICIONAL 05",
+			    "ADICIONAL 06",
+			    "AMPLIACIÓN EXCEPCIONAL",
+			    "CONTRATACION VINCULADA COMPLEMENTARIA",
+			    "CONTRATO COMPLEMENTARIO",
+			    "COSTOS Y GASTOS GENERALES",
+			    "DEDUCTIVO 01",
+			    "DEDUCTIVO 02",
+			    "DEDUCTIVO VINCULANTE 01",
+			    "DEDUCTIVO VINCULANTE 02",
+			    "DEDUCTIVO VINCULANTE 03",
+			    "MAYORES GASTOS GENERALES",
+			    "MAYORES METRADOS 01",
+			    "MAYORES METRADOS 02",
+			    "MAYORES METRADOS 03",
+			    "MAYORES METRADOS 04",
+			    "MAYORES METRADOS 05",
+			    "MAYORES METRADOS 06",
+			    "MAYORES METRADOS 07",
+			    "MAYORES METRADOS 08",
+			    "OTROS"},
+			  "MODIFICACIONES",
+			  'bibd_contrato'[ContModalidadGestion] IN {"CONTRATACIONES VINCULADAS",
+			    "CONTRATO PRINCIPAL"},
+			  "PRINCIPAL",
+			  'bibd_contrato'[ContModalidadGestion]
+			)
+		lineageTag: 2de49390-aeda-4935-b759-4408fbb0b8cf
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_contrato"
+				          }
+				        },
+				        "Property": "ContModalidadGestion"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_contrato"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"MODIFICACIONES","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'ADICIONAL 01'"}}],[{"Literal":{"Value":"'ADICIONAL 02'"}}],[{"Literal":{"Value":"'ADICIONAL 03'"}}],[{"Literal":{"Value":"'ADICIONAL 04'"}}],[{"Literal":{"Value":"'ADICIONAL 05'"}}],[{"Literal":{"Value":"'ADICIONAL 06'"}}],[{"Literal":{"Value":"'AMPLIACIÓN EXCEPCIONAL'"}}],[{"Literal":{"Value":"'CONTRATACION VINCULADA COMPLEMENTARIA'"}}],[{"Literal":{"Value":"'CONTRATO COMPLEMENTARIO'"}}],[{"Literal":{"Value":"'COSTOS Y GASTOS GENERALES'"}}],[{"Literal":{"Value":"'DEDUCTIVO 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 03'"}}],[{"Literal":{"Value":"'MAYORES GASTOS GENERALES'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 01'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 02'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 04'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 05'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 06'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 07'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 08'"}}],[{"Literal":{"Value":"'OTROS'"}}]]}}},{"DisplayName":"PRINCIPAL","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'CONTRATACIONES VINCULADAS'"}}],[{"Literal":{"Value":"'CONTRATO PRINCIPAL'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContMontoFin = if(mid(bibd_contrato[ContModalidadGestion],1,3)="DED",0,bibd_contrato[ContMontoTotal]) -  if(mid(bibd_contrato[ContModalidadGestion],1,3)<>"DED",0,ABS(bibd_contrato[ContMontoTotal]))
+		lineageTag: 07446031-2239-4e25-9555-3e545f9dfca8
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column GrupoMGAvanceFisico =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_contrato'[ContModalidadGestion]),
+			  "(En blanco)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"ADICIONAL 01",
+			    "ADICIONAL 02",
+			    "ADICIONAL 03",
+			    "ADICIONAL 04",
+			    "ADICIONAL 05",
+			    "ADICIONAL 06",
+			    "CONTRATACION VINCULADA COMPLEMENTARIA",
+			    "CONTRATACIONES VINCULADAS",
+			    "CONTRATO COMPLEMENTARIO",
+			    "CONTRATO PRINCIPAL",
+			    "DEDUCTIVO 01",
+			    "DEDUCTIVO 02",
+			    "DEDUCTIVO VINCULANTE 01",
+			    "DEDUCTIVO VINCULANTE 02",
+			    "DEDUCTIVO VINCULANTE 03",
+			    "MAYORES METRADOS 01",
+			    "MAYORES METRADOS 02",
+			    "MAYORES METRADOS 03",
+			    "MAYORES METRADOS 04",
+			    "MAYORES METRADOS 05",
+			    "MAYORES METRADOS 06",
+			    "MAYORES METRADOS 07",
+			    "MAYORES METRADOS 08"},
+			  "GrupoAF",
+			  'bibd_contrato'[ContModalidadGestion]
+			)
+		lineageTag: 58f03ec6-6017-4b6f-9fbc-f432cfd69381
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_contrato"
+				          }
+				        },
+				        "Property": "ContModalidadGestion"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_contrato"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"GrupoAF","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'ADICIONAL 01'"}}],[{"Literal":{"Value":"'ADICIONAL 02'"}}],[{"Literal":{"Value":"'ADICIONAL 03'"}}],[{"Literal":{"Value":"'ADICIONAL 04'"}}],[{"Literal":{"Value":"'ADICIONAL 05'"}}],[{"Literal":{"Value":"'ADICIONAL 06'"}}],[{"Literal":{"Value":"'CONTRATACION VINCULADA COMPLEMENTARIA'"}}],[{"Literal":{"Value":"'CONTRATACIONES VINCULADAS'"}}],[{"Literal":{"Value":"'CONTRATO COMPLEMENTARIO'"}}],[{"Literal":{"Value":"'CONTRATO PRINCIPAL'"}}],[{"Literal":{"Value":"'DEDUCTIVO 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 01'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 02'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 04'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 05'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 06'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 07'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 08'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContCodigoEntidadPrincipal = mid(bibd_contrato[ContCodigoEntidad],1,13)
+		lineageTag: 267662b6-beee-4662-832f-5f073c50ba0c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoAdicionales =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_contrato'[ContModalidadGestion]),
+			  "(En blanco)",
+			  'bibd_contrato'[ContModalidadGestion] IN {"ADICIONAL 01",
+			    "ADICIONAL 02",
+			    "ADICIONAL 03",
+			    "ADICIONAL 04",
+			    "ADICIONAL 05",
+			    "ADICIONAL 06"},
+			  "ADICIONAL DE OBRA",
+			  'bibd_contrato'[ContModalidadGestion] IN {"DEDUCTIVO 01",
+			    "DEDUCTIVO 02"},
+			  "DEDUCTIVO",
+			  'bibd_contrato'[ContModalidadGestion] IN {"DEDUCTIVO VINCULANTE 01",
+			    "DEDUCTIVO VINCULANTE 02",
+			    "DEDUCTIVO VINCULANTE 03"},
+			  "DEDUCTIVO VINCULANTE",
+			  'bibd_contrato'[ContModalidadGestion] IN {"AMPLIACIÓN EXCEPCIONAL",
+			    "CONTRATACIONES VINCULADAS",
+			    "CONTRATO COMPLEMENTARIO",
+			    "CONTRATO PRINCIPAL",
+			    "COSTOS Y GASTOS GENERALES",
+			    "MAYORES GASTOS GENERALES",
+			    "MAYORES METRADOS 01",
+			    "MAYORES METRADOS 02",
+			    "MAYORES METRADOS 03",
+			    "MAYORES METRADOS 04",
+			    "MAYORES METRADOS 05",
+			    "MAYORES METRADOS 06",
+			    "MAYORES METRADOS 07",
+			    "MAYORES METRADOS 08",
+			    "OTROS"},
+			  "OTROS",
+			  'bibd_contrato'[ContModalidadGestion]
+			)
+		lineageTag: ca89a98c-8d81-4ca5-8d9b-9f46f4ee2fbf
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_contrato"
+				          }
+				        },
+				        "Property": "ContModalidadGestion"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_contrato"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"ADICIONAL DE OBRA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'ADICIONAL 01'"}}],[{"Literal":{"Value":"'ADICIONAL 02'"}}],[{"Literal":{"Value":"'ADICIONAL 03'"}}],[{"Literal":{"Value":"'ADICIONAL 04'"}}],[{"Literal":{"Value":"'ADICIONAL 05'"}}],[{"Literal":{"Value":"'ADICIONAL 06'"}}]]}}},{"DisplayName":"DEDUCTIVO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'DEDUCTIVO 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO 02'"}}]]}}},{"DisplayName":"DEDUCTIVO VINCULANTE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 01'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 02'"}}],[{"Literal":{"Value":"'DEDUCTIVO VINCULANTE 03'"}}]]}}},{"DisplayName":"OTROS","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"ContModalidadGestion"}}],"Values":[[{"Literal":{"Value":"'AMPLIACIÓN EXCEPCIONAL'"}}],[{"Literal":{"Value":"'CONTRATACIONES VINCULADAS'"}}],[{"Literal":{"Value":"'CONTRATO COMPLEMENTARIO'"}}],[{"Literal":{"Value":"'CONTRATO PRINCIPAL'"}}],[{"Literal":{"Value":"'COSTOS Y GASTOS GENERALES'"}}],[{"Literal":{"Value":"'MAYORES GASTOS GENERALES'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 01'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 02'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 03'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 04'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 05'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 06'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 07'"}}],[{"Literal":{"Value":"'MAYORES METRADOS 08'"}}],[{"Literal":{"Value":"'OTROS'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Año Contrato' = bibd_contrato[ContFechaSuscribe].[Año]
+		formatString: 0
+		lineageTag: 64779842-f3bd-4e70-aa6e-912f0a7cb8df
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_contrato-3b206434-e4f5-4aa7-959d-806c210bf6a3 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_contrato")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"ContratoIde", "ProyIde", "ContIde", "AdquisiProceso", "ContCodigoUnicoOrden", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyEstado", "ContFaseComponente", "ContTipoOrden", "ContCodigoOrden", "ContCodigoOrdenItem", "ContCodigo", "ContCodigoEntidad", "ContNombre", "ContGeneNombreCorta", "ContModalidadGestion", "ContGeneAlcance", "ContGeneUbicacion", "ContGeneEstado", "ContTipoSPRING", "ContFechaSuscribe", "ContFechaInicio", "ContFechaTermino", "ContFechaCierre", "ContMontoImponible", "ContMontoImpuesto", "ContMontoTotal", "ContEstado", "ProveedorCodigo", "ProveedorRuc", "ProveedorNombre", "ProveedorDireccion", "ProveedorComentario", "CodResponsable", "Responsable", "Responsable_Base", "Responsable_Tipo", "AdquisicionCodPAC", "AdquisicionNumProEsp", "AdquisicionObjeto"}, {"ContratoIde", "ProyIde", "ContIde", "AdquisiProceso", "ContCodigoUnicoOrden", "ProyCodigoSPRING", "ProyCodigoUnico", "ProyCodigoSNIP", "ProyNombre", "ProyEstado", "ContFaseComponente", "ContTipoOrden", "ContCodigoOrden", "ContCodigoOrdenItem", "ContCodigo", "ContCodigoEntidad", "ContNombre", "ContGeneNombreCorta", "ContModalidadGestion", "ContGeneAlcance", "ContGeneUbicacion", "ContGeneEstado", "ContTipoSPRING", "ContFechaSuscribe", "ContFechaInicio", "ContFechaTermino", "ContFechaCierre", "ContMontoImponible", "ContMontoImpuesto", "ContMontoTotal", "ContEstado", "ProveedorCodigo", "ProveedorRuc", "ProveedorNombre", "ProveedorDireccion", "ProveedorComentario", "CodResponsable", "Responsable", "Responsable_Base", "Responsable_Tipo", "AdquisicionCodPAC", "AdquisicionNumProEsp", "AdquisicionObjeto"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"ContFechaCierre", type datetime}, {"ContFechaTermino", type datetime}, {"ContFechaInicio", type datetime}, {"ContFechaSuscribe", type datetime}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"ContMontoImponible", type number}, {"ContMontoImpuesto", type number}, {"ContMontoTotal", type number}}, "es-PE")
+				in
+				    #"Tipo cambiado con configuración regional"
+
+	annotation PBI_ResultType = Exception
+

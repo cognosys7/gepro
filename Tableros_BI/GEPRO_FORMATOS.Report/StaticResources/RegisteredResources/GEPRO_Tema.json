@@ -1,0 +1,41 @@
+{
+  "name": "GEPRO",
+  "dataColors": [
+    "#0773B3",
+    "#E07B00",
+    "#0A5E92",
+    "#5BA9D6",
+    "#F5B27A",
+    "#2E7D6B",
+    "#8A6FB0",
+    "#7F8C97"
+  ],
+  "foreground": "#1F2A33",
+  "background": "#FFFFFF",
+  "tableAccent": "#0773B3",
+  "good": "#22B573",
+  "neutral": "#F5FA00",
+  "bad": "#FD625E",
+  "textClasses": {
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 13,
+      "color": "#0A5E92"
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12,
+      "color": "#0A5E92"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 10,
+      "color": "#1F2A33"
+    },
+    "callout": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 26,
+      "color": "#0A5E92"
+    }
+  }
+}

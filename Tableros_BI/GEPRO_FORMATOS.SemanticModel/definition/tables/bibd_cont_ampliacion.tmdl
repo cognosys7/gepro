@@ -1,0 +1,215 @@
+table bibd_cont_ampliacion
+	lineageTag: 83f5cfc4-b83a-4325-8d8d-94336c0074b5
+
+	column AmpIde
+		dataType: string
+		lineageTag: effb93bd-fb3d-4768-a507-575ce4eaf079
+		summarizeBy: none
+		sourceColumn: AmpIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ContIde
+		dataType: string
+		lineageTag: f4ebe50f-0682-4c2e-95b7-e5f003a159e8
+		summarizeBy: none
+		sourceColumn: ContIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column AmpTipoPlazo
+		dataType: string
+		lineageTag: 7fa86459-f2d3-48c6-a5e6-514526b7c1d3
+		summarizeBy: none
+		sourceColumn: AmpTipoPlazo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_cont_ampliacion","TableItemName":"GrupoTipoPlazp","ObjectType":4},"LinkType":"UsedInGroup"},{"LinkTarget":{"TableName":"bibd_cont_ampliacion","TableItemName":"GrupoTipoCalendario","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column AmpNumAmpliacion
+		dataType: int64
+		formatString: 0
+		lineageTag: 72f5aac0-58ec-423b-8048-d1202176aaf9
+		summarizeBy: sum
+		sourceColumn: AmpNumAmpliacion
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column AmpFecInicio
+		dataType: dateTime
+		formatString: d" de "mmmm" de "yyyy
+		lineageTag: 1eacbccf-c86f-4249-9437-2e12c282b6ac
+		summarizeBy: none
+		sourceColumn: AmpFecInicio
+
+		variation Variación
+			isDefault
+			relationship: e8c78378-e967-4338-9413-af00bdc2999e
+			defaultHierarchy: LocalDateTable_63eac0f0-ea20-49d7-98da-8d2d15f8b3cf.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column AmpCantDiasCalendario
+		dataType: int64
+		formatString: #,0
+		lineageTag: 84833625-96e0-4c53-8166-4c6f81474919
+		summarizeBy: sum
+		sourceColumn: AmpCantDiasCalendario
+
+		changedProperty = DataType
+
+		annotation SummarizationSetBy = Automatic
+
+	column AmpFecTermino
+		dataType: dateTime
+		formatString: d" de "mmmm" de "yyyy
+		lineageTag: e956d691-5988-452a-8141-4d7b00143d91
+		summarizeBy: none
+		sourceColumn: AmpFecTermino
+
+		variation Variación
+			isDefault
+			relationship: 89c69f67-a814-4e1c-8c2c-9cc5cae21a7c
+			defaultHierarchy: LocalDateTable_584978ce-6d4c-42fc-91fc-471d935b8c16.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column AmpResolucion
+		dataType: string
+		lineageTag: 62eef54e-847c-4ddd-b17e-98e3c553a095
+		summarizeBy: none
+		sourceColumn: AmpResolucion
+
+		annotation SummarizationSetBy = Automatic
+
+	column AmpEstado
+		dataType: string
+		lineageTag: 20c238da-c547-41e9-bb54-3b5b32449c2a
+		summarizeBy: none
+		sourceColumn: AmpEstado
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoTipoPlazp =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_ampliacion'[AmpTipoPlazo]),
+			  "(En blanco)",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"4. AMPLIACIÓN DE PLAZO"},
+			  "Ampliación de Plazo",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"7. AMPLIACIÓN EXCEPCIONAL DE PLAZO"},
+			  "Ampliación Excepcional de Plazo",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"1. ENTREGA DE TERRENO"},
+			  "Entrega de Terreno",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"2. PLAZO CONTRACTUAL"},
+			  "Plazo Contractual",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"6. REDUCCION DE PLAZO"},
+			  "Reducción de Plazo",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"1. REUNIÓN DE ARRANQUE"},
+			  "Reunión de Arranque",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"5. SUSPENSIÓN DE PLAZO"},
+			  "Suspensión de Plazo de Ejecución",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo]
+			)
+		lineageTag: 67dbf1d7-e43a-48f0-81f9-4ce8094d8df0
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_ampliacion"
+				          }
+				        },
+				        "Property": "AmpTipoPlazo"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_ampliacion"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"Ampliación de Plazo","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'4. AMPLIACIÓN DE PLAZO'"}}]]}}},{"DisplayName":"Ampliación Excepcional de Plazo","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'7. AMPLIACIÓN EXCEPCIONAL DE PLAZO'"}}]]}}},{"DisplayName":"Entrega de Terreno","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'1. ENTREGA DE TERRENO'"}}]]}}},{"DisplayName":"Plazo Contractual","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'2. PLAZO CONTRACTUAL'"}}]]}}},{"DisplayName":"Reducción de Plazo","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'6. REDUCCION DE PLAZO'"}}]]}}},{"DisplayName":"Reunión de Arranque","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'1. REUNIÓN DE ARRANQUE'"}}]]}}},{"DisplayName":"Suspensión de Plazo de Ejecución","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'5. SUSPENSIÓN DE PLAZO'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Plazo Numero' = bibd_cont_ampliacion[GrupoTipoPlazp]&" Nº "&FORMAT(bibd_cont_ampliacion[AmpNumAmpliacion],"00")
+		lineageTag: d65fb2ea-1bc4-40d6-84be-30f0b2dd3cc7
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column NumOrden
+		dataType: int64
+		formatString: 0
+		lineageTag: ec1454a6-9e15-4e5f-a881-bef64e54b106
+		summarizeBy: sum
+		sourceColumn: NumOrden
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoTipoCalendario =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_cont_ampliacion'[AmpTipoPlazo]),
+			  "(En blanco)",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"9.LIQUIDACIÓN"},
+			  "LIQUIDACIÓN",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"2. PLAZO CONTRACTUAL"},
+			  "PROGRAMADO",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"8. RECEPCIÓN"},
+			  "RECEPCIÓN",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo] IN {"4. AMPLIACIÓN DE PLAZO",
+			    "5. SUSPENSIÓN DE PLAZO",
+			    "6. REDUCCION DE PLAZO",
+			    "7. AMPLIACIÓN EXCEPCIONAL DE PLAZO"},
+			  "REPROGRAMADO",
+			  'bibd_cont_ampliacion'[AmpTipoPlazo]
+			)
+		lineageTag: 02a74897-3633-4122-a7bf-545b5628a057
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_cont_ampliacion"
+				          }
+				        },
+				        "Property": "AmpTipoPlazo"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_cont_ampliacion"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"LIQUIDACIÓN","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'9.LIQUIDACIÓN'"}}]]}}},{"DisplayName":"PROGRAMADO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'2. PLAZO CONTRACTUAL'"}}]]}}},{"DisplayName":"RECEPCIÓN","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'8. RECEPCIÓN'"}}]]}}},{"DisplayName":"REPROGRAMADO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"AmpTipoPlazo"}}],"Values":[[{"Literal":{"Value":"'4. AMPLIACIÓN DE PLAZO'"}}],[{"Literal":{"Value":"'5. SUSPENSIÓN DE PLAZO'"}}],[{"Literal":{"Value":"'6. REDUCCION DE PLAZO'"}}],[{"Literal":{"Value":"'7. AMPLIACIÓN EXCEPCIONAL DE PLAZO'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_cont_ampliacion-2c46c62e-d152-4251-b29a-4b0c84a7b274 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb&"bibd_cont_ampliacion")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"AmpIde", "ContIde", "AmpTipoPlazo", "AmpNumAmpliacion", "AmpFecInicio", "AmpCantDiasCalendario", "AmpFecTermino", "AmpResolucion", "AmpEstado", "NumOrden"}, {"AmpIde", "ContIde", "AmpTipoPlazo", "AmpNumAmpliacion", "AmpFecInicio", "AmpCantDiasCalendario", "AmpFecTermino", "AmpResolucion", "AmpEstado", "NumOrden"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"AmpFecTermino", type datetime}, {"AmpFecInicio", type datetime}, {"NumOrden", Int64.Type}})
+				in
+				    #"Tipo cambiado"
+
+	annotation PBI_ResultType = Table
+

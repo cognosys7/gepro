@@ -1,0 +1,58 @@
+table TProg_Reprog
+	lineageTag: de56efd1-608c-4375-b843-75e8744b6692
+
+	column ContCodigoEntidad
+		lineageTag: 481727e2-b3c1-416b-8d5f-c0e58e3b2f8a
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: bibd_contrato[ContCodigoEntidad]
+
+		annotation SummarizationSetBy = Automatic
+
+	column MtoProg
+		lineageTag: 1da46ea1-2fb7-4d09-8481-bf650c6a9b12
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [MtoProg]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MtoReprog
+		lineageTag: eb49286b-affe-4079-887e-632b00fb5502
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [MtoReprog]
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column MaxPlan
+		lineageTag: a059a880-d4a8-4198-a1ad-8cf6b269bb0c
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [MaxPlan]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition TProg_Reprog-ffeb66b4-caf8-49cb-987a-cf08e4891c58 = calculated
+		mode: import
+		source = ```
+				
+				var AnioMesEje = [AnioMesEjecucion]
+				return SUMMARIZE( FILTER(bibd_cont_etapa_control, bibd_cont_etapa_control[Año-Mes-Valorizacion]<= AnioMesEje),  
+				--return SUMMARIZE( FILTER(bibd_cont_etapa_control, bibd_cont_etapa_control[CtlTipoPlan] <> "2. EJECUCIÓN REAL" ),  
+				                    bibd_contrato[ContCodigoEntidad], 
+				                     "MaxPlan", MAX(bibd_cont_etapa_control[ContratoConceptoPlan2]),
+				                     "MtoProg",   CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  bibd_trimestre[Grupo]<>"Posterior", 
+				                                   FILTER(bibd_cont_etapa_control, bibd_cont_etapa_control[CtlTipoPlan] = "1. LÍNEA BASE"), bibd_contrato[GrupoMGAvanceFisico]="GrupoAF", bibd_cont_etapa_control[Año-Mes-Valorizacion] <= AnioMesEje ),
+				                     "MtoReprog", CALCULATE( sum(bibd_cont_etapa_control[CtlDetMontoBruto]),  bibd_trimestre[Grupo]<>"Posterior", 
+				                                   filter(bibd_cont_etapa_control, bibd_cont_etapa_control[ContratoConceptoPlan] = RELATED(TReprogMax[RepMAx])) ,                                        
+				                                   bibd_cont_etapa_control[CtlTipoPlan]="3. REPROGRAMACION", bibd_contrato[GrupoMGAvanceFisico]="GrupoAF", bibd_cont_etapa_control[Año-Mes-Valorizacion] <= AnioMesEje )            
+				                   ) 
+				```
+
+	annotation PBI_Id = 683831fe18c14f7a8778c50b3accd6cb
+

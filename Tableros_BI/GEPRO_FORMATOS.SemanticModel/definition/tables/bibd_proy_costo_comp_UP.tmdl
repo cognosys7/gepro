@@ -1,0 +1,178 @@
+table bibd_proy_costo_comp_UP
+	lineageTag: 12b0b12c-fa1c-4077-9e45-a4a843dc4fb9
+
+	measure CostoComp =
+			CALCULATE(sum(bibd_proy_costo_comp_UP[Costo]), USERELATIONSHIP(bibd_trimestre_gastos[Anio-Trim], bibd_proy_costo_comp_UP[AñoTrimestre]), FILTER(
+					ALLSELECTED(bibd_proy_costo_comp_UP[ProyIde]), bibd_proy_costo_comp_UP[ProyIde] = max(bibd_proy_costo_comp_UP[ProyIde]) ) )
+		formatString: #,0
+		lineageTag: 932b887e-46d3-437e-9665-1f091f7ec52e
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	column CostoCompIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 6551567f-3b37-447c-b1b8-07fc6287caf3
+		summarizeBy: none
+		sourceColumn: CostoCompIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyIde
+		dataType: int64
+		formatString: 0
+		lineageTag: 8a443a98-6ac3-4547-b240-2799abc9aea1
+		summarizeBy: sum
+		sourceColumn: ProyIde
+
+		annotation SummarizationSetBy = Automatic
+
+	column FechaCambio
+		dataType: dateTime
+		formatString: dd/mm/yyyy
+		lineageTag: 252aaeda-5b9e-4f3c-84db-ae73a1714a1f
+		summarizeBy: none
+		sourceColumn: FechaCambio
+
+		variation Variación
+			isDefault
+			relationship: 4aab0abb-b974-41d0-8389-9326610a6dc3
+			defaultHierarchy: LocalDateTable_7e631183-f043-4909-aaba-08c7c8ce8767.'Jerarquía de fechas'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+		annotation PBI_FormatHint = {"isDateTimeCustom":true}
+
+	column Componente
+		dataType: string
+		lineageTag: 05498970-00ad-46ac-9081-104dc0708937
+		summarizeBy: none
+		sourceColumn: Componente
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation __PBI_SemanticLinks = [{"LinkTarget":{"TableName":"bibd_proy_costo_comp_UP","TableItemName":"GrupoComponente","ObjectType":4},"LinkType":"UsedInGroup"}]
+
+	column Costo
+		dataType: double
+		lineageTag: 76fd889d-cf11-494f-94c8-5ebabea175b6
+		summarizeBy: sum
+		sourceColumn: Costo
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column FASE
+		dataType: string
+		lineageTag: 586cda46-5c14-4b9f-a812-6f3955e53647
+		summarizeBy: none
+		sourceColumn: FASE
+
+		annotation SummarizationSetBy = Automatic
+
+	column AñoTrimestre = format(bibd_proy_costo_comp_UP[FechaCambio].[Año],"0000") &"-"&format(bibd_proy_costo_comp_UP[FechaCambio].[NroTrimestre],"0")
+		lineageTag: 228a5f3a-b005-4a64-8902-8e1107e6b2ed
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column ProyNombre = ```
+			related(bibd_proyecto[GrupoProyecto]) 
+			```
+		lineageTag: fa2b6354-8108-4d4a-9dc6-f906f938c26d
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoComponente =
+			SWITCH(
+			  TRUE,
+			  ISBLANK('bibd_proy_costo_comp_UP'[Componente]),
+			  "(En blanco)",
+			  'bibd_proy_costo_comp_UP'[Componente] IN {"1. Plan de Cierre"},
+			  "1. PLAN DE CIERRE",
+			  'bibd_proy_costo_comp_UP'[Componente] IN {"2. Perfil"},
+			  "2. PERFIL",
+			  'bibd_proy_costo_comp_UP'[Componente] IN {"3. Expediente Técnico"},
+			  "3. EXPEDIENTE TÉCNICO",
+			  'bibd_proy_costo_comp_UP'[Componente] IN {"4. Obra",
+			    "5. Supervisión",
+			    "6. Gestión de Proyecto",
+			    "7. Capacitación"},
+			  "4. EJECUCIÓN DE OBRA",
+			  'bibd_proy_costo_comp_UP'[Componente] IN {"8. Post Cierre"},
+			  "5. POST CIERRE",
+			  'bibd_proy_costo_comp_UP'[Componente]
+			)
+		lineageTag: 2a62cfbc-8290-4fab-97b8-a8dae6df0051
+		summarizeBy: none
+
+		extendedProperty GroupingMetadata =
+				{
+				  "version": 0,
+				  "groupedColumns": [
+				    {
+				      "Column": {
+				        "Expression": {
+				          "SourceRef": {
+				            "Entity": "bibd_proy_costo_comp_UP"
+				          }
+				        },
+				        "Property": "Componente"
+				      }
+				    }
+				  ]
+				}
+
+		annotation GroupingDesignState = {"Version":0,"Sources":[{"Name":"b","Entity":"bibd_proy_costo_comp_UP"}],"GroupedColumns":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Componente"}}],"GroupItems":[{"DisplayName":"(En blanco)","BlankDefaultPlaceholder":true},{"DisplayName":"1. PLAN DE CIERRE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Componente"}}],"Values":[[{"Literal":{"Value":"'1. Plan de Cierre'"}}]]}}},{"DisplayName":"2. PERFIL","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Componente"}}],"Values":[[{"Literal":{"Value":"'2. Perfil'"}}]]}}},{"DisplayName":"3. EXPEDIENTE TÉCNICO","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Componente"}}],"Values":[[{"Literal":{"Value":"'3. Expediente Técnico'"}}]]}}},{"DisplayName":"4. EJECUCIÓN DE OBRA","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Componente"}}],"Values":[[{"Literal":{"Value":"'4. Obra'"}}],[{"Literal":{"Value":"'5. Supervisión'"}}],[{"Literal":{"Value":"'6. Gestión de Proyecto'"}}],[{"Literal":{"Value":"'7. Capacitación'"}}]]}}},{"DisplayName":"5. POST CIERRE","Expression":{"In":{"Expressions":[{"Column":{"Expression":{"SourceRef":{"Source":"b"}},"Property":"Componente"}}],"Values":[[{"Literal":{"Value":"'8. Post Cierre'"}}]]}}}]}
+
+		annotation SummarizationSetBy = Automatic
+
+	column GrupoProyCompResumen = bibd_proy_costo_comp_UP[ProyNombre]&"-"&bibd_proy_costo_comp_UP[GrupoComponente]
+		lineageTag: cc0af4c7-9787-4966-9b19-c42e7a44562c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition bibd_proy_costo_comp_UP-5eeeaeda-ab6c-4d53-a4f6-50a73f42d569 = m
+		mode: import
+		queryGroup: 'FORMATO 2'
+		source =
+				let
+				    Origen = Json.Document(Web.Contents(RutaWeb & "bibd_proy_costo_componente")),
+				    #"Convertida en tabla" = Table.FromList(Origen, Splitter.SplitByNothing(), null, null, ExtraValues.Error),
+				    #"Se expandió Column1" = Table.ExpandRecordColumn(#"Convertida en tabla", "Column1", {"CostoCompIde", "ProyIde", "AvanceFisico", "FechaCambio", "CtoPlanCierre", "CtoPerfil", "CtoExpediente", "CtoEjecucionObra", "CtoSupervision", "CtoGestionProyecto", "CtoCapacitacion", "CtoPostCierre", "ComponenteNombre", "ComponenteIde", "ComponenteDescAct", "CostoCompEstado"}, {"CostoCompIde", "ProyIde", "AvanceFisico", "FechaCambio", "CtoPlanCierre", "CtoPerfil", "CtoExpediente", "CtoEjecucionObra", "CtoSupervision", "CtoGestionProyecto", "CtoCapacitacion", "CtoPostCierre", "ComponenteNombre", "ComponenteIde", "ComponenteDescAct", "CostoCompEstado"}),
+				    #"Tipo cambiado" = Table.TransformColumnTypes(#"Se expandió Column1",{{"CostoCompIde", Int64.Type}, {"ProyIde", Int64.Type}, {"FechaCambio", type date}}),
+				    #"Tipo cambiado con configuración regional" = Table.TransformColumnTypes(#"Tipo cambiado", {{"AvanceFisico", type number}, {"CtoPlanCierre", type number}, {"CtoPerfil", type number}, {"CtoExpediente", type number}, {"CtoEjecucionObra", type number}, {"CtoSupervision", type number}, {"CtoGestionProyecto", type number}, {"CtoCapacitacion", type number}, {"CtoPostCierre", type number}}, "es-PE"),
+				    #"Tipo cambiado1" = Table.TransformColumnTypes(#"Tipo cambiado con configuración regional",{{"ComponenteIde", Int64.Type}}),
+				    #"Columnas quitadas" = Table.RemoveColumns(#"Tipo cambiado1",{"AvanceFisico", "ComponenteNombre", "ComponenteIde", "ComponenteDescAct", "CostoCompEstado"}),
+				    #"Columna de anulación de dinamización" = Table.UnpivotOtherColumns(#"Columnas quitadas", {"CostoCompIde", "ProyIde", "FechaCambio"}, "Atributo", "Valor"),
+				    #"Dividir columna por posiciones" = Table.SplitColumn(#"Columna de anulación de dinamización", "Atributo", Splitter.SplitTextByPositions({3}), {"Atributo.1"}),
+				    #"Tipo cambiado2" = Table.TransformColumnTypes(#"Dividir columna por posiciones",{{"Atributo.1", type text}}),
+				    #"Columnas con nombre cambiado" = Table.RenameColumns(#"Tipo cambiado2",{{"Atributo.1", "Componente"}, {"Valor", "Costo"}}),
+				    #"Valor reemplazado" = Table.ReplaceValue(#"Columnas con nombre cambiado","PlanCierre","1. Plan de Cierre",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado1" = Table.ReplaceValue(#"Valor reemplazado","Perfil","2. Perfil",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado2" = Table.ReplaceValue(#"Valor reemplazado1","Expediente","3. Expediente Técnico",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado3" = Table.ReplaceValue(#"Valor reemplazado2","EjecucionObra","4. Obra",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado4" = Table.ReplaceValue(#"Valor reemplazado3","Supervision","5. Supervisión",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado5" = Table.ReplaceValue(#"Valor reemplazado4","GestionProyecto","6. Gestión de Proyecto",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado6" = Table.ReplaceValue(#"Valor reemplazado5","Capacitacion","7. Capacitación",Replacer.ReplaceText,{"Componente"}),
+				    #"Valor reemplazado7" = Table.ReplaceValue(#"Valor reemplazado6","PostCierre","8. Post Cierre",Replacer.ReplaceText,{"Componente"}),
+				    #"Columna duplicada" = Table.DuplicateColumn(#"Valor reemplazado7", "Componente", "Componente - Copia"),
+				    #"Columnas con nombre cambiado1" = Table.RenameColumns(#"Columna duplicada",{{"Componente - Copia", "FASE"}}),
+				    #"Valor reemplazado8" = Table.ReplaceValue(#"Columnas con nombre cambiado1","1. Plan de Cierre","FASE 1",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado9" = Table.ReplaceValue(#"Valor reemplazado8","2. Perfil","FASE 1",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado10" = Table.ReplaceValue(#"Valor reemplazado9","3. Expediente Técnico","FASE 2",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado11" = Table.ReplaceValue(#"Valor reemplazado10","4. Obra","FASE 3",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado12" = Table.ReplaceValue(#"Valor reemplazado11","5. Supervisión","FASE 3",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado13" = Table.ReplaceValue(#"Valor reemplazado12","6. Gestión de Proyecto","FASE 3",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado14" = Table.ReplaceValue(#"Valor reemplazado13","7. Capacitación","FASE 3",Replacer.ReplaceText,{"FASE"}),
+				    #"Valor reemplazado15" = Table.ReplaceValue(#"Valor reemplazado14","8. Post Cierre","FASE 4",Replacer.ReplaceText,{"FASE"})
+				in
+				    #"Valor reemplazado15"
+
+	annotation PBI_ResultType = Table
+
